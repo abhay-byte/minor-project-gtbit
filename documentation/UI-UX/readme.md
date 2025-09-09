@@ -54,4 +54,4 @@ This flow demonstrates the user journey for a **Healthcare Professional** (Docto
 | **Live Consultation** | `7.Live Consultation.png` | ![Live Consultation](./web-demo/7.Live%20Consultation.png) |
 | **Patient Directory** | `8.Patient Directory.png` | ![Patient Directory](./web-demo/8.Patient%20Directory.png) |
 | **My Profile** | `9.My Profile.png`| ![My Profile](./web-demo/9.My%20Profile.png) |
-| **My Profile** | `10.Ngo Portal.png`| ![Ngo](./web-demo/10.Ngo%20Portal.png) |
+| **Ngo Protal** | `10.Ngo Portal.png`| ![Ngo](./web-demo/10.Ngo%20Portal.png) |
