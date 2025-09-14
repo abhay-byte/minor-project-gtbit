@@ -5,7 +5,7 @@
 
 ## 📌 Table of Contents
 1. [Introduction](#introduction)
-2. [Technical Feasibility](./technical-Feasibility.md)
+2. [Technical Feasibility](./technical-feasibility.md)
 3. [Economic Feasibility](./economic-feasibility.md)
 4. [Operational Feasibility](./operational-feasibility.md)
 5. [Legal Feasibility](./legal-feasibility.md)
