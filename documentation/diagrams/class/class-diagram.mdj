@@ -8035,6 +8035,20 @@
 							"propertyLabel": {
 								"$ref": "AAAAAAGZXMaC+VWsjM8="
 							}
+						},
+						{
+							"_type": "UMLTextView",
+							"_id": "AAAAAAGZXOslJF/oXG8=",
+							"_parent": {
+								"$ref": "AAAAAAGZW4qBYqexw1c="
+							},
+							"font": "Arial;13;0",
+							"parentStyle": false,
+							"left": 1531,
+							"top": 1117,
+							"width": 100,
+							"height": 25,
+							"text": "Text"
 						}
 					]
 				},
