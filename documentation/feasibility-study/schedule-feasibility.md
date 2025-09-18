@@ -5,117 +5,103 @@
 ---
 
 ## 🔹 Introduction  
-Schedule feasibility evaluates whether the Clinico project can be realistically completed within the academic semester, specifically by **the first week of October**. The analysis maps project phases against the available timeframe, ensuring all critical deliverables are achievable without overextending the team.
+This schedule feasibility evaluates whether the Clinico project can be realistically completed within the revised timeframe: **September 3, 2025 – November 17, 2025**. The updated plan aligns with your specified phase durations and ensures the project is completed on time.  
 
 ---
 
 ## 🔹 Timeframe Overview  
-- **Project Start:** Early July 2025  
-- **Project Deadline:** First Week of October 2025 (~12–13 weeks)  
-- **Total Duration:** ~3 months  
+- **Project Start:** September 3, 2025  
+- **Project Deadline:** November 17, 2025  
+- **Total Duration:** ~11 weeks  
 
 ---
 
-## 🔹 Proposed Timeline (Based on Project Phases)  
+## 🔹 Proposed Timeline (Updated)
 
-| Phase | Duration | Timeline | Key Deliverables |
-|-------|----------|----------|------------------|
-| **Phase 1 – Planning & Feasibility** | Week 1–2 | July 1 – July 14 | Conduct feasibility study, elicit requirements, create use case & flow diagrams, compile SRS |
-| **Phase 2 – Design** | Week 3–5 | July 15 – Aug 4 | System architecture design (component & deployment diagrams), detailed low-level design (class, sequence, activity diagrams), compile Software Design Document (SDD) |
-| **Phase 3 – Development** | Week 6–10 | Aug 5 – Sept 8 | Develop AI Care Companion service, backend APIs & database, frontend (Flutter mobile app + React web dashboard) |
-| **Phase 4 – Integration & Testing** | Week 11–12 | Sept 9 – Sept 22 | Integrate modules, perform unit/system testing, bug fixing |
-| **Phase 5 – Finalization & Deployment** | Week 13 | Sept 23 – Sept 30 | Finalize documentation, prepare reports, conduct demo |
-| **Submission & Presentation** | First Week of October | Oct 1 – Oct 5 | Final working prototype, academic report, and presentation |
+| Phase | Dates | Duration | Key Deliverables |
+|-------|-------|----------|------------------|
+| **Phase 1 – Planning & Feasibility** | **Sep 3 – Sep 19, 2025** | 17 days (≈ 2.5 weeks) | Feasibility studies, requirements elicitation, diagrams, SRS |
+| **Phase 2 – Design** | **Sep 19 – Sep 25, 2025** | 7 days (1 week) | System architecture & low-level designs, draft SDD |
+| **Phase 3 – Development** | **Sep 26 – Oct 25, 2025** | 30 days (≈ 4.3 weeks) | Core development (AI Care Companion MVP, backend APIs, frontend) |
+| **Phase 4 – Integration & Testing** | **Oct 26 – Nov 1, 2025** | 7 days (1 week) | Integration, unit/system testing, bug fixing |
+| **Phase 5 – Finalization & Deployment** | **Nov 2 – Nov 11, 2025** | 10 days (≈ 1.5 weeks) | UI/UX polishing, documentation, demo prep |
+| **Phase 6 – Submission & Presentation** | **Nov 12 – Nov 17, 2025** | 6 days | Final report, submission, and academic demo |
 
 ---
 
-<!-- ##  Visual Gantt Chart (Markdown Mermaid)  
+<!-- ## 🔹 Visual Gantt Chart (Mermaid)
 
 ```mermaid
 gantt
-    title Clinico Project Schedule (July – October 2025)
+    title Clinico Project Schedule (Sep 3 – Nov 17, 2025)
     dateFormat  YYYY-MM-DD
     axisFormat  %b %d
 
     section Phase 1: Planning & Feasibility
-    Feasibility & SRS         :a1, 2025-07-01, 14d
+    Feasibility & SRS         :p1, 2025-09-03, 17d
 
     section Phase 2: Design
-    System Architecture       :a2, 2025-07-15, 10d
-    Low-Level Design & SDD    :a3, 2025-07-25, 10d
+    System Architecture & SDD :p2, 2025-09-19, 7d
 
     section Phase 3: Development
-    AI Care Companion Service :a4, 2025-08-05, 17d
-    Backend & Database        :a5, 2025-08-10, 20d
-    Frontend (App & Dashboard):a6, 2025-08-15, 25d
+    Core Development Sprint    :p3, 2025-09-26, 30d
 
-    section Phase 4: Testing & Integration
-    Integration & Testing     :a7, 2025-09-09, 14d
+    section Phase 4: Integration & Testing
+    Integration & Testing     :p4, 2025-10-26, 7d
 
-    section Phase 5: Finalization
-    Documentation & Demo Prep :a8, 2025-09-23, 7d
+    section Phase 5: Finalization & Deployment
+    UI polish & Docs          :p5, 2025-11-02, 10d
 
-    section Submission
-    Final Presentation        :a9, 2025-10-01, 5d -->
+    section Phase 6: Submission & Presentation
+    Final Submission & Demo   :p6, 2025-11-12, 6d -->
 
+# 📌 Phase-Wise Explanation  
 
-## 🔹 Phase-Wise Explanation
+## Phase 1 – Planning & Feasibility (Sep 3 – Sep 19)  
+- Conduct feasibility studies (technical, economic, operational, legal, schedule).  
+- Gather requirements and finalize SRS.  
+**Deliverable:** Approved SRS.  
 
-### Phase 1 – Planning & Feasibility (July 1 – July 14)
-- Conduct detailed feasibility studies (technical, economic, operational, legal, schedule).
-- Gather requirements from stakeholders (students, professors, NGO partners).
-- Create diagrams (use case, flowcharts) to visualize processes.  
-**Deliverable:** SRS document finalized and approved.
+---
 
-### Phase 2 – Design (July 15 – Aug 4)
-- Develop high-level system architecture (component & deployment).
-- Create detailed low-level designs (class, sequence, activity diagrams).  
-**Deliverable:** Software Design Document (SDD).
+## Phase 2 – Design (Sep 19 – Sep 25)  
+- Create system architecture diagrams (component & deployment).  
+- Prepare low-level designs (class, sequence, activity).  
+**Deliverable:** Draft Software Design Document (SDD).  
 
-### Phase 3 – Development (Aug 5 – Sept 8)
-- Build AI Care Companion Service (using Gemini AI + RAG for safe responses).
-- Set up backend: Node.js APIs, PostgreSQL database, Firebase for real-time updates.
-- Develop frontend: Flutter mobile app (Android + iOS), React dashboard for doctors/NGOs.  
-**Deliverable:** MVP prototype (basic but functional).
+---
 
-### Phase 4 – Testing & Integration (Sept 9 – Sept 22)
-- Conduct unit testing for AI, backend, and frontend modules.
-- Perform system testing to check module integration.
-- Fix major bugs and ensure basic data security (encryption & secure storage).  
-**Deliverable:** Stable, integrated system ready for demo.
+## Phase 3 – Development (Sep 26 – Oct 25)  
+- Implement AI Care Companion MVP.  
+- Build backend APIs (Node.js + PostgreSQL).  
+- Develop frontend: Flutter app + React web dashboard.  
+**Deliverable:** Working MVP prototype.  
 
-### Phase 5 – Finalization (Sept 23 – Sept 30)
-- Refine user interface (UI/UX polishing).
-- Finalize project documentation.
+---
+
+## Phase 4 – Integration & Testing (Oct 26 – Nov 1)  
+- Integrate AI, backend, and frontend modules.  
+- Perform unit/system testing and bug fixes.  
+**Deliverable:** Stable, integrated build.  
+
+---
+
+## Phase 5 – Finalization & Deployment (Nov 2 – Nov 11)  
+- Polish UI/UX.  
+- Finalize project documentation.  
 - Conduct internal demo rehearsals.  
-**Deliverable:** Final academic report + working demo.
-
-### Submission & Presentation (Oct 1 – Oct 5)
-- Submit project report, code, and documentation.
-- Deliver live prototype demo to faculty/academic panel.  
-**Deliverable:** Final submission + evaluation presentation.
+**Deliverable:** Final documentation + deployed build.  
 
 ---
 
-## 🔹 Risk Factors & Mitigation
-
-| Risk                  | Impact                           | Mitigation Strategy                                    |
-|-----------------------|----------------------------------|-------------------------------------------------------|
-| Tight Timeline        | May cause incomplete features    | Focus on core MVP first; secondary features only if time permits |
-| AI Complexity (Gemini Integration) | Could delay backend           | Use fallback: a simplified chatbot-based model         |
-| Testing Overlap       | Errors discovered late           | Start testing in parallel with development            |
-| Resource Constraints  | Limited access to APIs or servers| Use free-tier APIs, cloud services, and local testing |
-| Dependency Delays     | Academic approvals/reviews may lag| Schedule buffer reviews at end of each phase          |
+## Phase 6 – Submission & Presentation (Nov 12 – Nov 17)  
+- Submit code, docs, and reports.  
+- Deliver final demo & presentation to academic panel.  
+**Deliverable:** Final submission and evaluation.  
 
 ---
 
-## 🔹 Conclusion
-
-The **Clinico project** is **schedule feasible** within the academic semester (July–October 2025), provided the development team adheres to the defined phase structure. By:
-
-- Prioritizing the AI Care Companion MVP,  
-- Ensuring strict milestone tracking, and  
-- Allocating sufficient time for testing & documentation,  
-
-the project will be ready for **submission and demonstration by the first week of October 2025**.
+# 🔹 Conclusion  
+With the updated **continuous schedule (Sep 3 – Nov 17, 2025)**, the project remains **schedule feasible**.  
+The timeline provides sufficient time for **planning, design, development, testing, and presentation** — ensuring readiness for final submission by **November 17, 2025**.  
 

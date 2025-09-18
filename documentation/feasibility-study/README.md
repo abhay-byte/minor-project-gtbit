@@ -1,4 +1,4 @@
-# Project: Clinico – The Healing Hand Initiative
+# Clinico – The Healing Hand Initiative
 
 ## Table of Contents
 1. [Introduction](#introduction)  
