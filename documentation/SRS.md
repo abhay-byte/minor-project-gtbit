@@ -769,7 +769,7 @@ The database architecture follows a hybrid approach combining relational and NoS
 ---
 
 ### 5.2 Entity Relationship Design
-![Entity Relationship Diagram](./documentation/diagrams/err/er.svg)
+![Entity Relationship Diagram](./diagrams/err/er.svg)
 
 #### 5.2.1 Core Entity Groups
 
@@ -989,7 +989,7 @@ The system employs a **cloud-native microservices architecture** designed for **
 ### 6.3.3. Data Flow Diagrams
 
 #### **Level 0 DFD (Context Diagram)**  
-![Level 0 Data Flow Diagram](./documentation/diagrams/dfd/dfd-l0.svg)  
+![Level 0 Data Flow Diagram](./diagrams/dfd/dfd-l0.svg)  
 
 The **Level 0** diagram provides a *bird's-eye view* of the entire Clinico system. It treats the application as a **single process (black box)**, showing only external entities and data flows to define the system's boundary.  
 
@@ -1016,7 +1016,7 @@ The **Level 0 diagram** shows Clinico as a system that receives data from **Pati
 ---
 
 #### **Level 1 DFD**  
-![Level 1 Data Flow Diagram](./documentation/diagrams/dfd/dfd-l1.svg)
+![Level 1 Data Flow Diagram](./diagrams/dfd/dfd-l1.svg)
 
 The **Level 1 DFD** expands the Level 0 diagram into major **sub-processes**, **data stores**, and **flows**.  
 
