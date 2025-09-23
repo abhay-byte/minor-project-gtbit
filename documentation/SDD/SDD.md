@@ -1158,16 +1158,14 @@ The Clinico platform uses **PostgreSQL** as its primary database due to the foll
 ---
 
 ## 4.6 Example SQL Schema Definitions  
-
-Below are example **SQL `CREATE TABLE` definitions** for selected entities.  
-
+  
 
 ### Core User & Role Management  
 ### Appointment & Consultation Core
 
+Below are example **SQL `CREATE TABLE` definitions** for selected entities. 
+
 ```sql
-
-
 CREATE TABLE users (
   user_id SERIAL PRIMARY KEY,
   email VARCHAR(255) UNIQUE NOT NULL,
@@ -1186,7 +1184,6 @@ CREATE TABLE patients (
   address TEXT
 );
 
-
 CREATE TABLE professionals (
   professional_id SERIAL PRIMARY KEY,
   user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
@@ -1202,8 +1199,6 @@ CREATE TABLE ngo_users (
     ngo_name VARCHAR(255),
     verification_status VARCHAR(50) CHECK (verification_status IN ('Pending','Verified')) DEFAULT 'Pending'
 );
-
-
 
 CREATE TABLE appointments (
   appointment_id SERIAL PRIMARY KEY,
@@ -1239,6 +1234,7 @@ CREATE TABLE prescriptions (
   dosage VARCHAR(100),
   instructions TEXT
 );
+```
 
 ---
 
