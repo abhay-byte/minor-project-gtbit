@@ -10,6 +10,25 @@
 
 ---
 
+## 📑 Document Control
+
+**Author:** Tejaswini Singh  
+**Reviewed By:** Clinico Team Members – [Review Date]  
+**Approved By:** Clinico Team Members – [Approval Date]  
+**Next Review Date:** December 2025    
+
+---
+
+## 📜 Document History
+
+| Version | Date          | Author          | Changes Made                      | Approved By          |
+|---------|---------------|----------------|----------------------------------|----------------------|
+| 1.0     | August 2025   | Tejaswini Singh | Initial draft                     | Clinico Team Members |
+| 1.1     | September 2025| Tejaswini Singh | Updated features and architecture | Clinico Team Members |
+
+
+---
+
 ## Table of Contents  
 
 1. [Introduction](#1-introduction)  
