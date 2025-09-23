@@ -1251,65 +1251,79 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 | Operational       | Scalability bottlenecks          | Medium     | Medium         | Load testing, auto-scaling, performance monitoring                 |
      
 
-## 7.3. Clinico Technology Stack
+## 7.3. Clinico Technology Stack (Corrected)
 
 ### 7.3.1. Frontend Technologies
-- **Mobile Development**: Flutter 3+ with Dart  
-  *Reasoning*: A single codebase for both Android and iOS ensures rapid development and consistent user experience.  
+- **Mobile Development**: **Flutter 3+ with Dart**  
+  *Reasoning*: Single cross-platform codebase for Android and iOS to ensure fast development and a uniform UX.  
 
-- **Web Application**: React 18+ (using Create React App)  
-  *Reasoning*: A powerful and widely-adopted library for building dynamic, single-page applications for the professional-facing dashboard.  
+- **Web Application**: **React 18+**  
+  *Reasoning*: Robust SPA framework for the professional-facing dashboard.  
 
-- **State Management**: Bloc or Provider for Flutter; Redux Toolkit with RTK Query for React  
-  *Reasoning*: Robust and scalable state management solutions tailored for each framework.  
+- **State Management**: **Bloc (Flutter)**; **Redux Toolkit with RTK Query (React)**  
+  *Reasoning*: Scalable, testable solutions consistent with modern Flutter and React ecosystems.  
 
-- **UI Components**: Material You (for Flutter); Material-UI (MUI) for React  
-  *Reasoning*: Provides a consistent, modern, and accessible design system across both platforms.  
+- **UI Components**: **Material You (Flutter)**; **Material-UI (React)**  
+  *Reasoning*: Matches the platform’s modern, accessible design requirements.  
 
-- **Testing**: Flutter Test (Widget, Integration); Jest & React Testing Library for the web dashboard  
-  *Reasoning*: Comprehensive testing frameworks to ensure code quality and reliability.  
+- **Maps & Geolocation**: **Google Maps SDK / API**  
+  *Reasoning*: Required for the Hyperlocal Care Discovery feature.  
+
+- **Secure Video Communication**: **WebRTC**  
+  *Reasoning*: Enables encrypted, low-bandwidth P2P consultations.  
+
+- **Testing**: **Flutter Test (Widget & Integration)**; **Jest + React Testing Library**  
+  *Reasoning*: Comprehensive frameworks to maintain frontend reliability.  
 
 ---
 
 ### 7.3.2. Backend Technologies
-- **API Services**: Node.js 18+ with Express.js framework  
-  *Reasoning*: Excellent for handling real-time, I/O-heavy operations like chat, video signaling, and API requests.  
+- **Primary API Services**: **Node.js 18+ with Express.js**  
+  *Reasoning*: Matches Clinico’s real-time backend requirement for chat, signaling, and orchestrating AI calls.  
 
-- **AI Services**: Python 3.9+ with Flask framework  
-  *Reasoning*: The industry standard for AI/ML workloads. Flask is a lightweight and flexible framework, perfect for creating the AI agent microservice API.  
+- **AI Services**: **Python 3.9+ with Flask**  
+  *Reasoning*: Lightweight and flexible for AI/ML microservices.  
 
-- **AI Engine**: Google Gemini Pro / Pro Vision via Vertex AI  
-  *Reasoning*: Provides state-of-the-art multimodal (text and image) reasoning capabilities for the AI Care Companion.  
+- **AI Engine**: **Google Gemini Pro via Vertex AI**  
+  *Reasoning*: Core multimodal reasoning engine for the AI Care Companion.  
 
-- **Authentication**: Custom JWT (JSON Web Token) implementation  
-  *Reasoning*: A stateless, secure, and standard method for authenticating users across the mobile and web clients.  
+- **Authentication**: **Custom JWT Implementation**  
+  *Reasoning*: Stateless and secure for mobile and web clients.  
 
-- **API Documentation**: OpenAPI 3.0 with Swagger UI  
-  *Reasoning*: Creates a clear, interactive contract for the frontend team to understand and test API endpoints.  
+- **API Documentation**: **OpenAPI 3.0 with Swagger UI**  
+  *Reasoning*: Clear interactive contract for frontend teams.  
 
-- **Testing**: Jest & Supertest for Node.js services; PyTest for Python services  
-  *Reasoning*: Ensures the reliability and correctness of the backend logic.  
+- **Testing**: **Jest + Supertest (Node)**; **PyTest (Python)**  
+  *Reasoning*: Ensures backend logic correctness and reliability.  
 
 ---
 
 ### 7.3.3. Data & Infrastructure
-- **Primary Database**: PostgreSQL 13+  
-  *Reasoning*: A robust, reliable, and highly scalable open-source relational database perfect for storing user and application data.  
+- **Primary Database**: **PostgreSQL 13+ (HIPAA-Compliant Configuration)**  
+  *Reasoning*: Reliable relational DB suitable for sensitive patient data.  
 
-- **Vector Database**: Pinecone or Vertex AI Search  
-  *Reasoning*: A specialized database optimized for the high-speed semantic search required by the AI's RAG knowledge base.  
+- **Vector Database**: **Pinecone**  
+  *Reasoning*: Required for Retrieval-Augmented Generation (RAG) in the AI’s knowledge base.  
 
-- **Cache**: Redis 6+  
-  *Reasoning*: For session management, caching frequently accessed data, and reducing database load.  
+- **Cache**: **Redis 6+**  
+  *Reasoning*: Session management and performance optimization.  
 
-- **Message Queue / Push Notifications**: Firebase Cloud Messaging (FCM)  
-  *Reasoning*: A reliable, cross-platform solution for sending real-time appointment reminders and other critical notifications.  
+- **Notifications & Real-Time Updates**: **Firebase (including FCM for push)**  
+  *Reasoning*: Matches the spec for alerts, messaging, and real-time DB (note: FCM is for push, not a general queue).  
 
-- **Cloud Platform**: Google Cloud Platform (GCP) or Amazon Web Services (AWS)  
-  *Reasoning*: Provides all the necessary managed services for a scalable and secure deployment.  
+- **Cloud Platform**: **Google Cloud Platform (GCP)**  
+  *Reasoning*: Aligns with Gemini, Firebase, and Maps integration—avoids multi-cloud complexity.  
 
-- **Container Platform**: Docker deployed on Google App Engine or AWS App Runner  
-  *Reasoning*: This approach combines the simplicity of a managed platform-as-a-service (like App Engine) with the portability and consistency of Docker containers. It handles auto-scaling and networking automatically, simplifying deployment while maintaining a microservice architecture.  
+- **Container Orchestration**: **Kubernetes on GCP**  
+  *Reasoning*: Explicitly required for scalable, resilient deployment.  
+
+---
+
+### 7.3.4. SDLC Alignment Notes
+- **Feasibility Check**: All selected tools verified for technical, economic, operational, and legal feasibility (e.g., HIPAA compliance for PostgreSQL, GCP services availability).  
+- **Requirements Validation**: Choices confirmed against the SRS and use case diagrams before finalizing.  
+- **Design Artifacts**: Component and deployment diagrams will reflect Kubernetes clusters on GCP, React/Flutter clients, and the AI microservices.  
+- **Testing Strategy**: Integration, system, and regression testing will follow the guidelines in Phases 5–6 of the SDLC.  
 
 
 - **Primary Database**: PostgreSQL 13+ with TimescaleDB extension  
