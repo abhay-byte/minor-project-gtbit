@@ -3,7 +3,7 @@
 ## Document Information
 - **Project Name:** Clinico - The Healing Hand Initiative  
 - **Document Title:** Software Design Document  
-- **Version:** 1.0  
+- **Version:** 1.1  
 - **Date:** 23-09-2025  
 - **Author(s):** Bhumika Choudhary  
 - **Reviewed By:** Clinico Team Members  
@@ -16,7 +16,7 @@
 | Version | Date       | Author              | Description               | Approved By           |
 |---------|------------|---------------------|---------------------------|-----------------------|
 | 1.0     | 23-09-2025 | Bhumika Choudhary   | Initial draft             | Clinico Team Members  |
-| 1.1     | --/--/---- | Clinico Team Members| Review comments addressed | Clinico Team Members  |
+| 1.1     | 23/09/2025 | Clinico Team Members| Review comments addressed | Clinico Team Members  |
 | 2.0     | --/--/---- | Clinico Team Members| Final version             | Clinico Team Members  |
 
 ---
