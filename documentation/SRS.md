@@ -1112,7 +1112,9 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 
 ---
 
-#### **Use Case Group 1: Identity, Registration & Consent Management**  
+#### **Use Case Group 1: Identity, Registration & Consent Management** 
+![Use Case Diagram](./diagrams/use-case/%20use_case_diagram1.png)
+
 - **Actors**: Patient, Admin  
 - **Key Use Cases**:  
   - Register/Login (via OTP)  
@@ -1122,6 +1124,8 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 ---
 
 #### **Use Case Group 2: Intake, Triage & Risk Management**  
+![Use Case Diagram](./diagrams/use-case/%20use_case_diagram2.png)
+
 - **Actors**: Patient, CHW, Doctor, Counsellor, Triage Engine  
 - **Key Use Cases**:  
   - Symptom Intake (physical/mental)  
@@ -1130,7 +1134,9 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 
 ---
 
-#### **Use Case Group 3: Scheduling & Teleconsultation Management**  
+#### **Use Case Group 3: Scheduling & Teleconsultation Management** 
+![Use Case Diagram](./diagrams/use-case/%20use_case_diagram3.png)
+
 - **Actors**: Patient, Doctor, Counsellor  
 - **Key Use Cases**:  
   - Appointment Booking (book, reschedule, cancel)  
@@ -1140,6 +1146,8 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 ---
 
 #### **Use Case Group 4: Records, Messaging & Follow-Ups Management**  
+![Use Case Diagram](./diagrams/use-case/%20use_case_diagram4.png)
+
 - **Actors**: Patient, Doctor, Counsellor, CHW  
 - **Key Use Cases**:  
   - EHR-lite Records (timeline of visits, screenings, prescriptions)  
@@ -1148,7 +1156,9 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 
 ---
 
-#### **Use Case Group 5: Volunteer & Workforce Management**  
+#### **Use Case Group 5: Volunteer & Workforce Management** 
+![Use Case Diagram](./diagrams/use-case/%20use_case_diagram5.png)
+
 - **Actors**: Admin, Volunteer Doctor, Counsellor  
 - **Key Use Cases**:  
   - Volunteer Onboarding (license verification, availability)  
@@ -1156,7 +1166,9 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 
 ---
 
-#### **Use Case Group 6: Admin, Audit & Analytics Management**  
+#### **Use Case Group 6: Admin, Audit & Analytics Management** 
+![Use Case Diagram](./diagrams/use-case/%20use_case_diagram6.png)
+
 - **Actors**: Admin, Partner (read-only)  
 - **Key Use Cases**:  
   - Admin Console (manage users, roles, content)  
