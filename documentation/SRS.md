@@ -1249,7 +1249,7 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 | Business          | Volunteer professional retention | High       | Medium         | Engagement programs, recognition systems, impact tracking          |
 | Security          | Healthcare data breach           | Critical    | Low            | Multi-layer security, encryption, regular security audits          |
 | Operational       | Scalability bottlenecks          | Medium     | Medium         | Load testing, auto-scaling, performance monitoring                 |
-     |
+     
 
 ## 7.3. Clinico Technology Stack
 
