@@ -5,7 +5,6 @@
 - **Version:** 1.1  
 - **Date:** September 2025  
 - **Project Type:** Healthcare Platform with AI Integration  
-- **Classification:** Confidential – Internal Use Only  
 - **Review Cycle:** Quarterly  
 
 ---
@@ -151,12 +150,18 @@ This Software Requirements Specification (SRS) document serves as the authoritat
 ---
 
 ### 1.2 Intended Audience  
-**Primary Stakeholders:**  
-- **Development Teams:** Software architects, developers, and QA engineers  
-- **Project Management:** Project managers, product owners, and technical leads  
-- **Healthcare Professionals:** Medical advisors and volunteer coordinators  
-- **Business Stakeholders:** Investors, NGO partners, and regulatory consultants  
-- **End Users:** Patient representatives and community health workers  
+### **Primary Stakeholders:**
+
+- **Patients/Users:** End beneficiaries of the service, including underprivileged communities needing physical and mental healthcare.  
+- **Doctors and Mental Health Professionals:** Volunteer doctors and mental health experts providing consultations and guidance.  
+- **Team Members:** Developers, designers, and testers directly building and maintaining the Clinico platform.  
+
+### **Secondary Stakeholders:**
+
+- **NGOs and Government Bodies:** Provide outreach support, policy guidance, and awareness campaigns but are not directly involved in daily operations.  
+- **Families of Patients:** Indirect beneficiaries who are positively impacted by improved access to healthcare.  
+- **College/Institution:** Acts as an evaluator, mentor, and supporter of the project’s success and credibility.  
+
 
 ---
 
@@ -998,7 +1003,7 @@ The system employs a **cloud-native microservices architecture** designed for **
 ---
 
 ### 6.3.2. Event-Driven Communication
-- **Event Bus**: Apache Kafka for high-throughput event streaming  
+- **Event Bus**: Google Cloud Pub/Sub for asynchronous messaging and event streaming between microservices  
 - **Message Queues**: Redis/RabbitMQ for task queuing and processing  
 - **Event Sourcing**: Audit trail and state reconstruction capabilities  
 - **CQRS Pattern**: Command and Query Responsibility Segregation for performance  
@@ -1306,25 +1311,7 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 - **Container Platform**: Docker deployed on Google App Engine or AWS App Runner  
   *Reasoning*: This approach combines the simplicity of a managed platform-as-a-service (like App Engine) with the portability and consistency of Docker containers. It handles auto-scaling and networking automatically, simplifying deployment while maintaining a microservice architecture.  
 
-### 7.3.1. Frontend Technologies
-- **Mobile Development**: React Native 0.72+ with TypeScript  
-- **Web Application**: React 18+ with Next.js framework  
-- **State Management**: Redux Toolkit with RTK Query  
-- **UI Components**: Material-UI / React Native Elements  
-- **Testing**: Jest, React Testing Library, Detox (for mobile)  
 
----
-
-### 7.3.2. Backend Technologies
-- **API Services**: Node.js 18+ with Express.js framework  
-- **AI Services**: Python 3.9+ with FastAPI framework  
-- **Authentication**: Auth0 or custom JWT implementation  
-- **API Documentation**: OpenAPI 3.0 with Swagger UI  
-- **Testing**: Jest, Supertest, PyTest (for Python services)  
-
----
-
-### 7.3.3. Data & Infrastructure
 - **Primary Database**: PostgreSQL 13+ with TimescaleDB extension  
 - **Vector Database**: Pinecone or Weaviate for AI embeddings  
 - **Cache**: Redis 6+ for session management and caching  
@@ -1353,9 +1340,8 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 ## 8. References
 
 ### 8.1. Project Foundation References
-#### 8.1.1. UNICEF Problem Statement Reference  
-- **UNICEF**. (2024). *Healthcare Access and Digital Innovation Challenges in Underserved Communities.* UNICEF Innovation Lab Problem Statement Initiative. Retrieved September 2024 from [https://www.unicef.org/innovation/](https://www.unicef.org/innovation/)  
-> *Note: Replace with your specific UNICEF source URL and exact title.*
+#### 8.1.1. Healthcare Accessibility Context  
+- This project is based on a comprehensive analysis of healthcare accessibility challenges in underserved regions, aligning with the goals and priorities outlined by global health organizations such as the World Health Organization (WHO) and UNICEF.  
 
 ---
 
@@ -1390,7 +1376,7 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 
 ### 8.6. Technology Stack Documentation
 #### 8.6.1. Development Frameworks  
-- React Native Community. (2024). *React Native Documentation.* Retrieved September 2024 from [https://reactnative.dev/docs](https://reactnative.dev/docs)  
+- Flutter Team. (2024). *Flutter Documentation.* Retrieved September 2024 from [https://docs.flutter.dev/](https://docs.flutter.dev/)  
 - Node.js Foundation. (2024). *Node.js API Documentation.* Retrieved September 2024 from [https://nodejs.org/en/docs/](https://nodejs.org/en/docs/)  
 - PostgreSQL Global Development Group. (2024). *PostgreSQL 13 Official Documentation.* Retrieved September 2024 from [https://www.postgresql.org/docs/13/](https://www.postgresql.org/docs/13/)  
 
@@ -1412,5 +1398,3 @@ All implementation decisions should **reference and comply** with the requiremen
 ---
 
 **End of Document**  
-© 2025 *Clinico: The Healing Hand Initiative*. **All rights reserved.**  
-This document contains **confidential and proprietary information** and is intended solely for **authorized personnel**.  
