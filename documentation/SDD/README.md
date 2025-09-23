@@ -99,7 +99,7 @@ The SDD is structured into the following key sections:
 
 - 📄 [Software Design Document (SDD.md)](./SDD.md)  
 - 📂 [All Diagrams (GitHub Folder)](https://github.com/abhay-byte/minor-project-gtbit/tree/main/documentation/diagrams)  
-<!-- - 📘 [Software Requirements Specification (SRS)](link-to-srs-if-available)   -->
+- 📘 [Software Requirements Specification (SRS)](documentation/SRS.md)  
 
 ---
 
