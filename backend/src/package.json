@@ -1,0 +1,24 @@
+{
+  "name": "clinico-backend",
+  "version": "1.0.0",
+  "description": "routes and controllers for user management, authentication, appointments, and hyperlocal discovery, and connecting them to the database.",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest",
+    "start": "app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhay-byte/minor-project-gtbit.git"
+  },
+  "author": "abhay-byte",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abhay-byte/minor-project-gtbit/issues"
+  },
+  "homepage": "https://github.com/abhay-byte/minor-project-gtbit#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "jest": "^30.2.0"
+  }
+}
