@@ -21,7 +21,7 @@ We encourage responsible disclosure of any security vulnerabilities you might fi
 
 Instead, please report any security issues directly to the project lead via email:
 
-**Email:** `abhay.raj.dev@email.com` (Replace with your actual contact email)
+**Email:** `abhay02delhi@gmail.com`
 
 When reporting a vulnerability, please include a detailed description of the issue, the steps to reproduce it, and the potential impact.
 
