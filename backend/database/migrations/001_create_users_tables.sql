@@ -10,10 +10,13 @@ DROP TABLE IF EXISTS "Patients" CASCADE;
 DROP TABLE IF EXISTS "Users" CASCADE;
 
 CREATE TABLE "Users" (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(200) NOT NULL,
+    user_id INT PRIMARY KEY,
+    fullName VARCHAR(200) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
+    contact_number VARCHAR(255) NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
+    address VARCHAR(255),
+    verification_status BOOLEAN DEFAULT FALSE,
     role VARCHAR(50) NOT NULL CHECK (role IN ('patient','professional','ngo')),
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -21,8 +24,8 @@ CREATE TABLE "Users" (
 );
 
 CREATE TABLE "Patients" (
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL UNIQUE REFERENCES "Users"(id) ON DELETE CASCADE,
+    patient_id INT PRIMARY KEY,
+    user_id INT NOT NULL UNIQUE REFERENCES "Users"(user_id ) ON DELETE CASCADE,
     date_of_birth DATE,
     gender VARCHAR(20),
     blood_group VARCHAR(5),
@@ -32,8 +35,8 @@ CREATE TABLE "Patients" (
 );
 
 CREATE TABLE "Professionals" (
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL UNIQUE REFERENCES "Users"(id) ON DELETE CASCADE,
+    professional_id INT PRIMARY KEY,
+    user_id INT NOT NULL UNIQUE REFERENCES "Users"(user_id ) ON DELETE CASCADE,
     specialization VARCHAR(200),
     license_number VARCHAR(100) UNIQUE,
     experience_years INT,
@@ -43,8 +46,8 @@ CREATE TABLE "Professionals" (
 );
 
 CREATE TABLE "NgoUsers" (
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL UNIQUE REFERENCES "Users"(id) ON DELETE CASCADE,
+    ngoUsers_id INT PRIMARY KEY,
+    user_id INT NOT NULL UNIQUE REFERENCES "Users"(user_id ) ON DELETE CASCADE,
     organization_name VARCHAR(255) NOT NULL,
     registration_number VARCHAR(150),
     address TEXT,

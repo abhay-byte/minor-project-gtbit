@@ -7,10 +7,10 @@ DROP TABLE IF EXISTS "AIChatLogs" CASCADE;
 DROP TABLE IF EXISTS "Reviews" CASCADE;
 
 CREATE TABLE "Reviews" (
-    id SERIAL PRIMARY KEY,
-    patient_id INT NOT NULL REFERENCES "Patients"(id) ON DELETE CASCADE,
-    clinic_id INT NOT NULL REFERENCES "Clinics"(id) ON DELETE CASCADE,
-    appointment_id INT REFERENCES "Appointments"(id) ON DELETE SET NULL,
+    review_id SERIAL PRIMARY KEY,
+    patient_id INT NOT NULL REFERENCES "Patients"(patient_id) ON DELETE CASCADE,
+    clinic_id INT NOT NULL REFERENCES "Clinics"(clinic_id) ON DELETE CASCADE,
+    appointment_id INT REFERENCES "Appointments"(appointment_id) ON DELETE SET NULL,
     rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
     title VARCHAR(255),
     comment TEXT,
@@ -18,8 +18,8 @@ CREATE TABLE "Reviews" (
 );
 
 CREATE TABLE "AIChatLogs" (
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES "Users"(id) ON DELETE CASCADE,
+    ai_chat_logs_id INT PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
     session_id UUID,
     user_message TEXT NOT NULL,
     assistant_response TEXT,

@@ -37,7 +37,7 @@ VALUES
 ('Lakeside Medical Center','45 Lake Street','Mumbai','Maharashtra','400001','India',19.076090,72.877426,'+912223334444','https://lakeside.example.com');
 
 -- ClinicDoctors
--- Note: Professionals ids are 1 & 2 in Professionals table (since inserted after Users)
+ 
 INSERT INTO "ClinicDoctors"(clinic_id,professional_id,department)
 VALUES
 (1,1,'General Medicine'),

@@ -8,8 +8,8 @@ DROP TABLE IF EXISTS "ClinicDoctors" CASCADE;
 DROP TABLE IF EXISTS "Clinics" CASCADE;
 
 CREATE TABLE "Clinics" (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    clinic_id INT PRIMARY KEY,
+    fullName VARCHAR(255) NOT NULL,
     address TEXT,
     city VARCHAR(120),
     state VARCHAR(120),
@@ -26,17 +26,17 @@ CREATE TABLE "Clinics" (
 CREATE INDEX idx_clinics_location ON "Clinics"(latitude, longitude);
 
 CREATE TABLE "ClinicDoctors" (
-    id SERIAL PRIMARY KEY,
-    clinic_id INT NOT NULL REFERENCES "Clinics"(id) ON DELETE CASCADE,
-    professional_id INT NOT NULL REFERENCES "Professionals"(id) ON DELETE CASCADE,
+    clinicDoctor_id INT PRIMARY KEY,
+    clinic_id INT NOT NULL REFERENCES "Clinics"(Clinic_id) ON DELETE CASCADE,
+    professional_id INT NOT NULL REFERENCES "Professionals"(professional_id) ON DELETE CASCADE,
     department VARCHAR(200),
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE "MedicalRecords" (
-    id SERIAL PRIMARY KEY,
-    patient_id INT NOT NULL REFERENCES "Patients"(id) ON DELETE CASCADE,
+    medicalRecord_id INT PRIMARY KEY,
+    patient_id INT NOT NULL REFERENCES "Patients"(patient_id) ON DELETE CASCADE,
     record_date DATE NOT NULL DEFAULT CURRENT_DATE,
     title VARCHAR(255),
     description TEXT,
