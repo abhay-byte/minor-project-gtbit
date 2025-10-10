@@ -1,91 +1,43 @@
--- seed.sql
--- Run after all migrations. Inserts sample data for development.
-
 BEGIN;
 
--- Clear existing dev data (careful in non-dev)
-TRUNCATE TABLE "AIChatLogs","Reviews","Prescriptions","Consultations","Appointments","AvailabilitySlots","MedicalRecords","ClinicDoctors","Clinics","NgoUsers","Professionals","Patients","Users" RESTART IDENTITY CASCADE;
+-- ===== USERS =====
+INSERT INTO "Users" (user_id, email, password_hash, full_name, phone_number, role, created_at) VALUES
+(1, 'john@example.com', 'hashed_pw_1', 'John Doe', '9998887771', 'Patient', NOW()),
+(2, 'dr.smith@example.com', 'hashed_pw_2', 'Dr. Sarah Smith', '9998887772', 'Professional', NOW()),
+(3, 'ngohelp@example.com', 'hashed_pw_3', 'Helping Hands', '9998887773', 'NGO', NOW()),
+(4, 'admin@example.com', 'hashed_pw_4', 'System Admin', '9998887774', 'Admin', NOW());
 
--- Users (Patients, Professionals, NGO)
-INSERT INTO "Users"(name,email,password_hash,role)
-VALUES
-('Aman Kumar','aman.kumar@example.com','dev_hashed_pw','patient'),
-('Priya Gupta','priya.gupta@example.com','dev_hashed_pw','patient'),
-('Dr. Neha Sharma','neha.sharma@example.com','dev_hashed_pw','professional'),
-('Dr. Rohit Verma','rohit.verma@example.com','dev_hashed_pw','professional'),
-('Care Support NGO','care.support@example.com','dev_hashed_pw','ngo');
+-- ===== PATIENTS =====
+INSERT INTO "Patients" (patient_id, user_id, date_of_birth, gender, address) VALUES
+(1, 1, '1995-05-10', 'Male', '123 Main Street, New Delhi');
 
--- Map user_id -> Patients/Professionals/NgoUsers
-INSERT INTO "Patients"(user_id,date_of_birth,gender,blood_group,contact_number)
-VALUES
-(1,'1994-04-21','Female','A+','+919900000001'),
-(2,'1988-11-12','Male','O-','+919900000002');
+-- ===== PROFESSIONALS =====
+INSERT INTO "Professionals" (professional_id, user_id, specialty, credentials, years_of_experience, verification_status) VALUES
+(1, 2, 'General Physician', 'MBBS, MD', 10, 'Verified');
 
-INSERT INTO "Professionals"(user_id,specialization,license_number,experience_years,qualifications,contact_number)
-VALUES
-(3,'General Physician','LIC-GP-1001',6,'MBBS, MD','+919800000003'),
-(4,'Pediatrician','LIC-PED-2002',8,'MBBS, DCH','+919800000004');
+-- ===== NGO USERS =====
+INSERT INTO "Ngo_Users" (ngo_user_id, user_id, ngo_name, verification_status) VALUES
+(1, 3, 'Helping Hands Foundation', TRUE);
 
-INSERT INTO "NgoUsers"(user_id,organization_name,registration_number,address,contact_number)
-VALUES
-(5,'Care Support NGO','REG-2025-999','Sector 12, Sample City','+919700000005');
+-- ===== CLINICS =====
+INSERT INTO "Clinics" (clinic_id, name, address, latitude, longitude) VALUES
+(1, 'City Health Clinic', '456 Health Road, New Delhi', 28.6139, 77.2090);
 
--- Clinics
-INSERT INTO "Clinics"(name,address,city,state,postal_code,country,latitude,longitude,phone_number,website)
-VALUES
-('GreenHealth Clinic','12 MG Road, Central','New Delhi','Delhi','110001','India',28.613939,77.209021,'+911112223333','https://greenhealth.example.com'),
-('Lakeside Medical Center','45 Lake Street','Mumbai','Maharashtra','400001','India',19.076090,72.877426,'+912223334444','https://lakeside.example.com');
+-- ===== CLINIC DOCTORS =====
+INSERT INTO "Clinic_Doctors" (clinic_doctor_id, clinic_id, full_name, specialty, consultation_fee) VALUES
+(1, 1, 'Dr. Sarah Smith', 'General Physician', '₹500');
 
--- ClinicDoctors
- 
-INSERT INTO "ClinicDoctors"(clinic_id,professional_id,department)
-VALUES
-(1,1,'General Medicine'),
-(2,2,'Pediatrics');
+-- ===== MEDICAL RECORDS =====
+INSERT INTO "MedicalRecords" (medicalrecord_id, patient_id, record_date, title, description) VALUES
+(1, 1, '2024-09-20', 'Blood Test Report', 'Normal blood test results');
 
--- AvailabilitySlots for each professional (2 slots each)
-INSERT INTO "AvailabilitySlots"(professional_id,start_time,end_time,slot_type,is_booked)
-VALUES
-(1,'2025-10-15 09:00+05:30','2025-10-15 09:30+05:30','in_person',FALSE),
-(1,'2025-10-15 10:00+05:30','2025-10-15 10:30+05:30','teleconsult',FALSE),
-(2,'2025-10-16 11:00+05:30','2025-10-16 11:30+05:30','in_person',FALSE),
-(2,'2025-10-16 12:00+05:30','2025-10-16 12:30+05:30','teleconsult',FALSE);
+-- ===== REVIEWS =====
+INSERT INTO "Reviews" (review_id, patient_id, rating, comment, target_type, target_id, created_at) VALUES
+(1, 1, 5, 'Excellent service and staff!', 'Clinic', 1, NOW());
 
--- Appointments (link patient 1 with professional 1 using slot 1)
-INSERT INTO "Appointments"(patient_id,professional_id,clinic_id,slot_id,status,reason)
-VALUES
-(1,1,1,1,'scheduled','Fever and cold checkup'),
-(2,2,2,3,'scheduled','Child routine checkup');
-
--- Mark slot as booked for the first appointment
-UPDATE "AvailabilitySlots" SET is_booked = TRUE WHERE id = 1;
-
--- Consultations
-INSERT INTO "Consultations"(appointment_id,start_time,end_time,notes,diagnosis,follow_up_date)
-VALUES
-(1,'2025-10-15 09:00+05:30','2025-10-15 09:20+05:30','Patient had mild fever, advised rest and fluids','Viral fever','2025-10-22'),
-(2,'2025-10-16 11:00+05:30','2025-10-16 11:25+05:30','Routine pediatric check; vaccines up-to-date','Healthy','NULL');
-
--- Prescriptions
-INSERT INTO "Prescriptions"(consultation_id,medicine_name,dosage,instructions,duration_days)
-VALUES
-(1,'Paracetamol 500mg','1-1-1 as needed','After food if stomach upset',3);
-
--- MedicalRecords
-INSERT INTO "MedicalRecords"(patient_id,record_date,title,description,record_type,file_url)
-VALUES
-(1,'2025-09-01','Blood Test Results','CBC normal','lab',NULL),
-(2,'2024-12-10','X-Ray Chest','No abnormality detected','imaging',NULL);
-
--- Reviews
-INSERT INTO "Reviews"(patient_id,clinic_id,appointment_id,rating,title,comment)
-VALUES
-(1,1,1,5,'Excellent Visit','Friendly staff and quick consultation'),
-(2,2,2,4,'Good Care','Pediatrician explained clearly');
-
--- AIChatLogs
-INSERT INTO "AIChatLogs"(user_id,session_id,user_message,assistant_response,metadata)
-VALUES
-(1,gen_random_uuid(),'How do I book an appointment?','Use the available slots on the professional profile to book an appointment.', '{"source":"seed"}');
+-- ===== AI CHAT LOGS =====
+INSERT INTO "AI_Chat_Logs" (log_id, user_id, message_content, sender, timestamp) VALUES
+(1, 1, 'Can I book an appointment?', 'User', NOW()),
+(2, 1, 'Yes, please choose your clinic and doctor.', 'AI', NOW());
 
 COMMIT;
