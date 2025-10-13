@@ -17,4 +17,6 @@ dist/
 .DS_Store
 
 # Editor files (e.g., VS Code)
-.vscode/s
+.vscode/
+
+.venv

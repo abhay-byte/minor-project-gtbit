@@ -1,9 +1,0 @@
-const express = require('express');
-const router = express.Router();
-const auth = require('../middleware/auth.middleware');
-const appointmentController = require('../controllers/appointment.controller');
-
-router.post('/', auth, appointmentController.createAppointment);
-router.get('/me', auth, appointmentController.getMyAppointments);
-
-module.exports = router;
