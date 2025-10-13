@@ -1,0 +1,43 @@
+# =================================================================
+# Docker Compose for Clinico Platform - PostgreSQL Database
+# =================================================================
+#
+#
+version: '3.8'
+
+services:
+  db:
+    # Use a specific version of the official PostgreSQL image for stability.
+    # Alpine versions are lightweight.
+    image: postgres:14-alpine
+    container_name: clinico_postgres_db
+    restart: always
+
+    # Environment variables to configure the PostgreSQL instance.
+    # The postgres image uses these to initialize the database.
+    environment:
+      POSTGRES_DB: clinico_db
+      POSTGRES_USER: clinico_user
+      POSTGRES_PASSWORD: clinico_password
+      POSTGRES_INITDB_ARGS: "--no-locale"
+
+    # Ports mapping: Exposes the container's port 5432 to the host's port 5432.
+    # Format: <HOST_PORT>:<CONTAINER_PORT>
+    ports:
+      - "5432:5432"
+
+    # Volumes for data persistence and initialization scripts.
+    volumes:
+      # Named volume to persist the database data on the host machine.
+      # This ensures your data is not lost when the container is stopped or removed.
+      - postgres_data:/var/lib/postgresql/data
+
+      # Mounts the local `sql` directory into the container's initialization directory.
+      # Any .sql or .sh files in this directory are run automatically when the container
+      # is first created, in alphabetical order.
+      - ./sql:/docker-entrypoint-initdb.d
+
+# Define the named volume for data persistence.
+volumes:
+  postgres_data:
+    driver: local
