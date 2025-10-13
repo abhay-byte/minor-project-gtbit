@@ -62,7 +62,7 @@ const getProfessionalAvailability = async (req, res) => {
 
         res.status(200).json(result.rows);
     } catch (error) {
-        console.error(`Error fetching availability for professional ${id}:`, error);
+        console.error('Error fetching availability for professional %s:', id, error);
         res.status(500).json({ message: 'An error occurred while fetching availability.' });
     }
 };
