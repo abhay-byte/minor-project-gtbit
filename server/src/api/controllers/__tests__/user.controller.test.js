@@ -1,10 +1,11 @@
 // src/api/controllers/__tests__/user.controller.test.js
 
-const { getMe, updateMe } = require('../user.controller');
+const { getMe, updateMe, uploadMedicalRecord, getMyMedicalRecords, deleteMedicalRecord } = require('../user.controller');
 const db = require('../../../config/db');
 
 // Mock the database module
 jest.mock('../../../config/db', () => ({
+    query: jest.fn(),
     connect: jest.fn(),
 }));
 
@@ -136,6 +137,66 @@ describe('User Controller', () => {
             expect(mockRes.status).toHaveBeenCalledWith(500);
             expect(mockRes.json).toHaveBeenCalledWith({ message: 'An error occurred while updating the profile.' });
             expect(mockClient.release).toHaveBeenCalled();
+        });
+    });
+    // --- Medical Record Tests ---
+    describe('Medical Records', () => {
+        it('should upload a medical record successfully', async () => {
+            mockReq.user = { userId: 1, role: 'Patient' };
+            mockReq.body = { documentName: 'Blood Test', documentType: 'Report' };
+            mockReq.file = { originalname: 'test.pdf', buffer: Buffer.from('test') };
+
+            // Mock the sequence of direct db.query calls
+            db.query
+                .mockResolvedValueOnce({ rows: [{ patient_id: 101 }] }) // Find patient_id
+                .mockResolvedValueOnce({ rows: [{ record_id: 501 }] }); // INSERT record
+
+            await uploadMedicalRecord(mockReq, mockRes);
+
+            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('SELECT patient_id'), [1]);
+            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO medical_records'), [101, 'Blood Test', 'Report', expect.any(String)]);
+            expect(mockRes.status).toHaveBeenCalledWith(201);
+            expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ message: 'Medical record uploaded successfully.' }));
+        });
+
+        it('should not allow a professional to upload a record', async () => {
+            mockReq.user = { userId: 4, role: 'Professional' };
+            mockReq.body = { documentName: 'Test', documentType: 'Test' };
+            await uploadMedicalRecord(mockReq, mockRes);
+            expect(mockRes.status).toHaveBeenCalledWith(403);
+        });
+
+        it('should fetch all medical records for a patient', async () => {
+            mockReq.user = { userId: 1, role: 'Patient' };
+            const mockRecords = [{ record_id: 501, document_name: 'Blood Test' }];
+            db.query.mockResolvedValue({ rows: mockRecords });
+
+            await getMyMedicalRecords(mockReq, mockRes);
+
+            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('FROM medical_records'), [1]);
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.json).toHaveBeenCalledWith(mockRecords);
+        });
+
+        it('should delete a medical record for a patient', async () => {
+            mockReq.user = { userId: 1, role: 'Patient' };
+            mockReq.params = { recordId: 501 };
+            db.query.mockResolvedValue({ rowCount: 1 }); // Simulate successful deletion
+
+            await deleteMedicalRecord(mockReq, mockRes);
+
+            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('DELETE FROM medical_records'), [501, 1]);
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.json).toHaveBeenCalledWith({ message: 'Medical record deleted successfully.' });
+        });
+
+        it('should return 404 if trying to delete a non-existent record', async () => {
+            mockReq.user = { userId: 1, role: 'Patient' };
+            mockReq.params = { recordId: 999 };
+            db.query.mockResolvedValue({ rowCount: 0 }); // Simulate record not found
+
+            await deleteMedicalRecord(mockReq, mockRes);
+            expect(mockRes.status).toHaveBeenCalledWith(404);
         });
     });
 });
