@@ -6,20 +6,24 @@ const userController = require('../controllers/user.controller');
 const verifyToken = require('../middleware/auth.middleware');
 const upload = require('../middleware/upload.middleware');
 
-// Define the routes for user profile management.
-// All routes in this file are protected by the verifyToken middleware.
+const rateLimit = require('express-rate-limit');
+const userLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 100 
+});
+
 
 // GET /api/users/me
 // Fetches the profile of the currently logged-in user.
-router.get('/me', verifyToken, userController.getMe);
+router.get('/me', userLimiter, verifyToken, userController.getMe);
 
 // PUT /api/users/me
 // Updates the profile of the currently logged-in user.
-router.put('/me', verifyToken, userController.updateMe);
+router.put('/me', userLimiter, verifyToken, userController.updateMe);
 
 // Routes for the user's medical records
-router.post('/me/records',verifyToken,upload.single('documentFile'),userController.uploadMedicalRecord);
-router.get('/me/records',verifyToken, userController.getMyMedicalRecords);
-router.delete('/me/records/:recordId',verifyToken, userController.deleteMedicalRecord);
+router.post('/me/records', userLimiter, verifyToken, upload.single('documentFile'), userController.uploadMedicalRecord);
+router.get('/me/records', userLimiter, verifyToken, userController.getMyMedicalRecords);
+router.delete('/me/records/:recordId', userLimiter, verifyToken, userController.deleteMedicalRecord);
 
 module.exports = router;

@@ -66,7 +66,7 @@ exports.getClinicById = async (req, res) => {
 
         res.status(200).json(clinicData);
     } catch (error) {
-        console.error(`Error fetching clinic with ID ${id}:`, error);
+        console.error('Error fetching clinic with ID %s:', id, error);
         res.status(500).json({ message: 'An error occurred while fetching clinic details.' });
     }
 };
