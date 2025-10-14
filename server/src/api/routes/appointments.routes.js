@@ -5,7 +5,6 @@ const verifyToken = require('../middleware/auth.middleware');
 const { apiLimiter,createAppointmentLimiter } = require('../middleware/rateLimiter.middleware'); 
 const router = express.Router();
 
-
 // All routes in this file are protected by the JWT authentication middleware.
 router.use(apiLimiter);
 router.use(verifyToken);

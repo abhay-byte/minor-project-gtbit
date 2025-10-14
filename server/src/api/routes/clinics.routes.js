@@ -3,7 +3,9 @@ const express = require('express');
 const router = express.Router();
 const clinicController = require('../controllers/clinic.controller');
 const verifyToken = require('../middleware/auth.middleware');
+const { userLimiter } = require('../middleware/rateLimiter.middleware'); 
 
+router.use(userLimiter);
 router.use(verifyToken);
 
 // Public endpoints for clinic discovery
