@@ -1,5 +1,4 @@
 @ECHO OFF
-CLS
 REM =================================================================
 REM Clinico PostgreSQL Smart Setup Script for Windows
 REM =================================================================
@@ -33,7 +32,7 @@ FOR /F "tokens=* delims= " %%A IN ("%TABLE_EXISTS%") DO SET TABLE_EXISTS=%%A
 REM Check if the variable is empty. If so, the table doesn't exist.
 IF "%TABLE_EXISTS%"=="" (
     ECHO.
-    ECHO --- Database appears to be uninitialized. Running migrations and seeding... ---
+    ECHO --- Database appears to be uninitialized. Running migrations... ---
 
     ECHO.
     ECHO --- Running Database Migrations... ---
@@ -42,14 +41,10 @@ IF "%TABLE_EXISTS%"=="" (
         docker exec -i clinico_postgres_db psql -U clinico_user -d clinico_db < "%%F"
     )
 
-    ECHO.
-    ECHO --- Seeding Database... ---
-    ECHO Executing database\seeds\seed.sql...
-    docker exec -i clinico_postgres_db psql -U clinico_user -d clinico_db < "database\seeds\seed.sql"
 
 ) ELSE (
     ECHO.
-    ECHO --- Database table 'users' found. Skipping migrations and seeding. ---
+    ECHO --- Database table 'users' found. Skipping migrations. ---
 )
 
 ECHO.

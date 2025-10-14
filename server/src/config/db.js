@@ -11,5 +11,6 @@ module.exports = {
   query: (text, params) => pool.query(text, params),
   // Used for transactions to get a dedicated client
   connect: () => pool.connect(),
+  end: () => pool.end(), 
 };
 

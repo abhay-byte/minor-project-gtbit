@@ -8,8 +8,6 @@
 # If NOT initialized, it runs all migration and seed scripts.
 # If ALREADY initialized, it skips the scripts to preserve data.
 
-clear
-
 echo
 echo "--- Starting PostgreSQL container in the background... ---"
 docker-compose up -d
@@ -28,7 +26,7 @@ TABLE_EXISTS=$(docker exec clinico_postgres_db psql -U clinico_user -d clinico_d
 # Check if the result string is empty.
 if [ -z "$TABLE_EXISTS" ]; then
     echo
-    echo "--- Database appears to be uninitialized. Running migrations and seeding... ---"
+    echo "--- Database appears to be uninitialized. Running migrations... ---"
 
     echo
     echo "--- Running Database Migrations... ---"
@@ -38,14 +36,9 @@ if [ -z "$TABLE_EXISTS" ]; then
         docker exec -i clinico_postgres_db psql -U clinico_user -d clinico_db < "$f"
     done
 
-    echo
-    echo "--- Seeding Database... ---"
-    echo "Executing database/seeds/seed.sql..."
-    docker exec -i clinico_postgres_db psql -U clinico_user -d clinico_db < "database/seeds/seed.sql"
-
 else
     echo
-    echo "--- Database table 'users' found. Skipping migrations and seeding. ---"
+    echo "--- Database table 'users' found. Skipping migrations. ---"
 fi
 
 echo
