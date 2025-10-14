@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.io Test Client</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Socket.io Test Client</h1>
+
+        <!-- JWT Input -->
+        <div class="mb-4">
+            <label for="jwt-token" class="block text-sm font-medium text-gray-700 mb-1">JWT Auth Token</label>
+            <textarea id="jwt-token" rows="4" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="Paste your JWT from the login endpoint..."></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex space-x-4 mb-6">
+            <button id="connect-btn" class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300">Connect</button>
+            <button id="disconnect-btn" class="w-full bg-gray-300 text-gray-800 py-3 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition duration-300" disabled>Disconnect</button>
+        </div>
+
+        <!-- Status & Logs -->
+        <div>
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Status & Logs</h2>
+            <div id="status" class="mb-4 p-3 rounded-md font-mono text-sm">
+                <span class="text-gray-500">Not Connected</span>
+            </div>
+            <div id="logs" class="bg-gray-50 h-40 p-3 border rounded-md overflow-y-auto text-sm font-mono space-y-2">
+                <!-- Log messages will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const connectBtn = document.getElementById('connect-btn');
+        const disconnectBtn = document.getElementById('disconnect-btn');
+        const jwtInput = document.getElementById('jwt-token');
+        const statusDiv = document.getElementById('status');
+        const logsDiv = document.getElementById('logs');
+        let socket;
+
+        function addLog(message, type = 'info') {
+            const p = document.createElement('p');
+            const time = new Date().toLocaleTimeString();
+            p.innerHTML = `<span class="text-gray-400">${time}</span> > ${message}`;
+            if (type === 'error') p.classList.add('text-red-600');
+            if (type === 'success') p.classList.add('text-green-600');
+            logsDiv.appendChild(p);
+            logsDiv.scrollTop = logsDiv.scrollHeight; // Auto-scroll to bottom
+        }
+
+        function updateStatus(message, type) {
+            statusDiv.innerHTML = `<span>${message}</span>`;
+            statusDiv.className = 'mb-4 p-3 rounded-md font-mono text-sm'; // Reset classes
+            if (type === 'connected') statusDiv.classList.add('bg-green-100', 'text-green-800');
+            if (type === 'disconnected') statusDiv.classList.add('bg-red-100', 'text-red-800');
+            if (type === 'connecting') statusDiv.classList.add('bg-yellow-100', 'text-yellow-800');
+        }
+
+        connectBtn.addEventListener('click', () => {
+            const token = jwtInput.value.trim();
+            if (!token) {
+                addLog('JWT Token is required.', 'error');
+                return;
+            }
+
+            // Disconnect if already connected
+            if (socket && socket.connected) {
+                socket.disconnect();
+            }
+
+            addLog('Attempting to connect...');
+            updateStatus('Connecting...', 'connecting');
+
+            socket = io('http://localhost:5000', {
+                auth: { token }
+            });
+
+            // --- Socket Event Listeners ---
+            socket.on('connect', () => {
+                updateStatus('Connected', 'connected');
+                addLog(`Successfully connected with Socket ID: ${socket.id}`, 'success');
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = false;
+            });
+
+            socket.on('disconnect', (reason) => {
+                updateStatus('Disconnected', 'disconnected');
+                addLog(`Disconnected: ${reason}`);
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+            });
+
+            socket.on('connect_error', (err) => {
+                updateStatus('Connection Failed', 'disconnected');
+                addLog(`Connection Error: ${err.message}`, 'error');
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+            });
+        });
+
+        disconnectBtn.addEventListener('click', () => {
+            if (socket && socket.connected) {
+                addLog('Disconnecting...');
+                socket.disconnect();
+            }
+        });
+
+        // Initial state
+        updateStatus('Not Connected', 'disconnected');
+    </script>
+
+</body>
+</html>
