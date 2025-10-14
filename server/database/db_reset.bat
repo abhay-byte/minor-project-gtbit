@@ -34,11 +34,6 @@ FOR %%F IN (migrations\*.sql) DO (
 )
 
 ECHO.
-ECHO --- Seeding Database... ---
-ECHO Executing seeds\seed.sql...
-docker exec -i clinico_postgres_db psql -U clinico_user -d clinico_db < "seeds\seed.sql"
-
-ECHO.
 ECHO --- Checking container status: ---
 docker-compose ps
 

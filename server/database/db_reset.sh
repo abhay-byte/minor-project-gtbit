@@ -38,11 +38,6 @@ for f in migrations/*.sql; do
 done
 
 echo
-echo "--- Seeding Database... ---"
-echo "Executing seeds/seed.sql..."
-docker exec -i clinico_postgres_db psql -U clinico_user -d clinico_db < "seeds/seed.sql"
-
-echo
 echo "--- Checking container status: ---"
 docker-compose ps
 
