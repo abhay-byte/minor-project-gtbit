@@ -5,13 +5,7 @@ const router = express.Router();
 const userController = require('../controllers/user.controller');
 const verifyToken = require('../middleware/auth.middleware');
 const upload = require('../middleware/upload.middleware');
-
-const rateLimit = require('express-rate-limit');
-const userLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 100 
-});
-
+const { userLimiter } = require('../middleware/rateLimiter.middleware'); 
 
 // GET /api/users/me
 // Fetches the profile of the currently logged-in user.

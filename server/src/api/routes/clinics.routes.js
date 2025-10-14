@@ -2,7 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const clinicController = require('../controllers/clinic.controller');
-const { verifyToken } = require('../middleware/auth.middleware');
+const verifyToken = require('../middleware/auth.middleware');
+
+router.use(verifyToken);
 
 // Public endpoints for clinic discovery
 router.get('/search', clinicController.searchClinics);
