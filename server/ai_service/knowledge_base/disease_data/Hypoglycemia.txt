@@ -1,0 +1,22 @@
+Disease: Hypoglycemia
+================================================================================
+
+Symptoms (12):
+1.  vomiting
+2.  fatigue
+3.  anxiety
+4.  sweating
+5.  headache
+6.  nausea
+7.  blurred_and_distorted_vision
+8.  excessive_hunger
+9.  drying_and_tingling_lips
+10.  slurred_speech
+11.  irritability
+12.  palpitations
+
+Precautions (4):
+1. lie down on side
+2. check in pulse
+3. drink sugary drinks
+4. consult doctor

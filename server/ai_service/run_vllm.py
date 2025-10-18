@@ -3,12 +3,14 @@ import subprocess
 import sys
 
 def main():
-
-    model_name = "Qwen/QwQ-32B"
+    model_name = "Qwen/Qwen3-0.6B"
+    
     command = [
-        sys.executable,  # Use the python from the current virtual env
+        sys.executable, 
         "-m", "vllm.entrypoints.openai.api_server",
-        "--model", model_name
+        "--model", model_name,
+        "--max-model-len", "2048",
+        "avx512f"
     ]
 
     print(f"--- Starting vLLM server for model: {model_name} ---")
@@ -19,12 +21,13 @@ def main():
         # Execute the command
         subprocess.run(command, check=True)
     except subprocess.CalledProcessError as e:
-        print(f"An error occurred while trying to start the vLLM server: {e}")
+        print(f"❌ An error occurred while trying to start the vLLM server: {e}")
     except FileNotFoundError:
-        print("Error: 'vllm' command not found. Make sure vLLM is installed in your Poetry environment.")
-        print("Run: poetry add vllm")
+        print("❌ Error: 'vllm' command not found. Make sure vLLM is installed in your Poetry environment.")
+        print("   Run: poetry add vllm")
     except KeyboardInterrupt:
         print("\n--- vLLM server shutting down. ---")
 
 if __name__ == "__main__":
     main()
+

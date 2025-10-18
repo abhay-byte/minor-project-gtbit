@@ -1,0 +1,19 @@
+Disease: Migraine
+================================================================================
+
+Symptoms (9):
+1.  acidity
+2.  indigestion
+3.  headache
+4.  blurred_and_distorted_vision
+5.  excessive_hunger
+6.  stiff_neck
+7.  depression
+8.  irritability
+9.  visual_disturbances
+
+Precautions (4):
+1. meditation
+2. reduce stress
+3. use poloroid glasses in sun
+4. consult doctor

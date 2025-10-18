@@ -1,0 +1,22 @@
+Disease: Hepatitis B
+================================================================================
+
+Symptoms (12):
+1. itching
+2.  fatigue
+3.  lethargy
+4.  yellowish_skin
+5.  dark_urine
+6.  loss_of_appetite
+7.  abdominal_pain
+8.  yellow_urine
+9.  yellowing_of_eyes
+10.  malaise
+11.  receiving_blood_transfusion
+12.  receiving_unsterile_injections
+
+Precautions (4):
+1. consult nearest hospital
+2. vaccination
+3. eat healthy
+4. medication

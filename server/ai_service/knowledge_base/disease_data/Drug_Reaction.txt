@@ -1,0 +1,15 @@
+Disease: Drug Reaction
+================================================================================
+
+Symptoms (5):
+1. itching
+2.  skin_rash
+3.  stomach_pain
+4.  burning_micturition
+5.  spotting_ urination
+
+Precautions (4):
+1. stop irritation
+2. consult nearest hospital
+3. stop taking drug
+4. follow up

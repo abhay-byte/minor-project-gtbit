@@ -1,1 +1,5 @@
 .env
+/promts
+/db
+kaggle.py
+/__pycache__

@@ -1,0 +1,13 @@
+Disease: Allergy
+================================================================================
+
+Symptoms (4):
+1.  continuous_sneezing
+2.  shivering
+3.  chills
+4.  watering_from_eyes
+
+Precautions (3):
+1. apply calamine
+2. cover area with bandage
+3. use ice to compress itching

@@ -1,0 +1,20 @@
+Disease: Diabetes 
+================================================================================
+
+Symptoms (10):
+1.  fatigue
+2.  weight_loss
+3.  restlessness
+4.  lethargy
+5.  irregular_sugar_level
+6.  blurred_and_distorted_vision
+7.  obesity
+8.  excessive_hunger
+9.  increased_appetite
+10.  polyuria
+
+Precautions (4):
+1. have balanced diet
+2. exercise
+3. consult doctor
+4. follow up

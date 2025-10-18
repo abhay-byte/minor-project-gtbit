@@ -1,0 +1,23 @@
+Disease: Hypothyroidism
+================================================================================
+
+Symptoms (13):
+1.  fatigue
+2.  weight_gain
+3.  cold_hands_and_feets
+4.  mood_swings
+5.  lethargy
+6.  dizziness
+7.  puffy_face_and_eyes
+8.  enlarged_thyroid
+9.  brittle_nails
+10.  swollen_extremeties
+11.  depression
+12.  irritability
+13.  abnormal_menstruation
+
+Precautions (4):
+1. reduce stress
+2. exercise
+3. eat healthy
+4. get proper sleep

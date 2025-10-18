@@ -1,0 +1,19 @@
+Disease: Hepatitis D
+================================================================================
+
+Symptoms (9):
+1.  joint_pain
+2.  vomiting
+3.  fatigue
+4.  yellowish_skin
+5.  dark_urine
+6.  nausea
+7.  loss_of_appetite
+8.  abdominal_pain
+9.  yellowing_of_eyes
+
+Precautions (4):
+1. consult doctor
+2. medication
+3. eat healthy
+4. follow up

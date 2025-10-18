@@ -1,0 +1,15 @@
+Disease: Dimorphic hemmorhoids(piles)
+================================================================================
+
+Symptoms (5):
+1.  constipation
+2.  pain_during_bowel_movements
+3.  pain_in_anal_region
+4.  bloody_stool
+5.  irritation_in_anus
+
+Precautions (4):
+1. avoid fatty spicy food
+2. consume witch hazel
+3. warm bath with epsom salt
+4. consume alovera juice

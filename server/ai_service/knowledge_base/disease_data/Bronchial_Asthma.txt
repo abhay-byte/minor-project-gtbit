@@ -1,0 +1,16 @@
+Disease: Bronchial Asthma
+================================================================================
+
+Symptoms (6):
+1.  fatigue
+2.  cough
+3.  high_fever
+4.  breathlessness
+5.  family_history
+6.  mucoid_sputum
+
+Precautions (4):
+1. switch to loose cloothing
+2. take deep breaths
+3. get away from trigger
+4. seek help

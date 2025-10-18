@@ -1,0 +1,16 @@
+Disease: Psoriasis
+================================================================================
+
+Symptoms (6):
+1.  skin_rash
+2.  joint_pain
+3.  skin_peeling
+4.  silver_like_dusting
+5.  small_dents_in_nails
+6.  inflammatory_nails
+
+Precautions (4):
+1. wash hands with warm soapy water
+2. stop bleeding using pressure
+3. consult doctor
+4. salt baths
