@@ -1,0 +1,29 @@
+Action Class: Glucocorticoids
+
+OVERVIEW
+Total medicines: 5310
+
+MECHANISM OF ACTION
+These medicines work by: Glucocorticoids
+
+EXAMPLE MEDICINES
+1. avamys nasal spray
+2. allegra nasal spray
+3. atonide gel
+4. atonide-h cream
+5. atonide cream
+6. auradex 4mg tablet
+7. alerflo nasal spray
+8. austril 27.5mcg nasal spray
+9. anort 30 tablet
+10. aquamet 50mcg nasal spray
+11. acticort 10mg tablet
+12. acucort 100mg injection
+13. acticort 5mg tablet
+14. axunil nasal spray
+15. azacort 6 tablet
+16. avemome 0.1% cream
+17. alerkim 0.5mg tablet
+18. avemome 0.1% cream
+19. alerkim 0.5mg tablet
+20. aquamet nasal spray

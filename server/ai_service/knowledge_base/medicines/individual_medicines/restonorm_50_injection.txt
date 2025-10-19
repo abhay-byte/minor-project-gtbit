@@ -1,0 +1,21 @@
+restonorm 50 injection
+
+Therapeutic Class: NEURO CNS
+Action Class: Atypical Antipsychotics
+Chemical Class: Benzisoxazole Derivative
+Habit Forming: No
+
+USES
+Treatment of Schizophrenia
+Mania
+
+SIDE EFFECTS
+Depression
+Headache
+Insomnia (difficulty in sleeping)
+Parkinsonism
+Drowsiness
+Sedation
+
+SUBSTITUTES
+Risperdal Consta 50mg Injection

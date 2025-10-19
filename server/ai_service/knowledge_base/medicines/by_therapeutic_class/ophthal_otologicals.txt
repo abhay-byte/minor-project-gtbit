@@ -1,0 +1,74 @@
+Therapeutic Class: OPHTHAL OTOLOGICALS
+
+OVERVIEW
+Total medicines: 1725
+Percentage of database: 0.69%
+
+HABIT FORMING STATUS
+No: 1725 medicines
+
+COMMON USES
+Treatment of Bacterial eye infections: 417 medicines
+Treatment and prevention of Wound infection: 365 medicines
+Treatment of Severe allergic reactions: 213 medicines
+Treatment of Allergic conditions: 213 medicines
+Treatment of Rheumatic disorder: 213 medicines
+Treatment of Skin disorders: 202 medicines
+Treatment of Bacterial infections: 192 medicines
+Fungal infections: 167 medicines
+Treatment of Eye disorders: 155 medicines
+Treatment of Eye infection with inflammation: 135 medicines
+Treatment of Bacterial eye / ear infections: 127 medicines
+Treatment of Fungal infections: 95 medicines
+Treatment of Mouth infection: 55 medicines
+Treatment of Sore throat: 55 medicines
+Treatment of Dry mouth: 55 medicines
+
+COMMON SIDE EFFECTS
+Application site reactions (burning, irritation, itching and redness): 46 occurrences
+Eye irritation: 26 occurrences
+Upset stomach: 20 occurrences
+Reduction in bone density: 17 occurrences
+Behavioral changes: 17 occurrences
+Mood changes: 17 occurrences
+Weight gain: 17 occurrences
+Burning sensation: 14 occurrences
+Stinging in the eyes: 9 occurrences
+Eye redness: 9 occurrences
+Eye itching: 9 occurrences
+Eye discomfort: 8 occurrences
+Itching: 7 occurrences
+Blurred vision: 5 occurrences
+Dryness: 5 occurrences
+
+EXAMPLE MEDICINES
+1. apdrops lp  eye drop bak free
+2. alciflox d eye/ear drops
+3. acticort 10mg tablet
+4. acticort 5mg tablet
+5. albucid 30% eye drop
+6. albucid 30% eye drop
+7. apidine eye drop
+8. apidine eye drop
+9. aurofort opthalmic suspension
+10. akrogat p eye drop
+11. androl 16mg tablet
+12. aedit ep soap
+13. acticort 20mg tablet
+14. atiket tablet
+15. azolbest-kt shampoo
+16. anchlor eye ointment
+17. anchlor eye ointment
+18. amgargl
+19. amgargl
+20. arogat-p eye drop
+21. a pred 20mg tablet
+22. alcadin 2% gargle
+23. aropred 1% eye drop
+24. aldine 5% ointment
+25. adred 20mg tablet
+26. alight eye drop
+27. atepred m eye drop
+28. alphadin rf 5% cream
+29. alitop 80 injection
+30. arridruff 2% shampoo

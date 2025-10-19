@@ -1,0 +1,74 @@
+Therapeutic Class: BLOOD RELATED
+
+OVERVIEW
+Total medicines: 2659
+Percentage of database: 1.07%
+
+HABIT FORMING STATUS
+No: 2659 medicines
+
+COMMON USES
+Prevention of heart attack and stroke: 501 medicines
+Treatment of Bleeding: 361 medicines
+Treatment of Heavy menstrual bleeding: 304 medicines
+Treatment of Menstrual pain: 304 medicines
+Treatment and prevention of Blood clots: 277 medicines
+Treatment of Anemia due to chronic kidney disease: 247 medicines
+Treatment of Anemia due to cancer chemotherapy: 239 medicines
+Bleeding: 219 medicines
+Heavy menstrual bleeding: 144 medicines
+Prevention of Blood clots: 108 medicines
+Prevention of Heart attack: 102 medicines
+Short term fluid replacement after trauma: 92 medicines
+Prevention of Stroke: 68 medicines
+Prevention of Angina (heart-related chest pain): 42 medicines
+Treatment and prevention of Heart attack: 42 medicines
+
+COMMON SIDE EFFECTS
+Nausea: 62 occurrences
+Vomiting: 47 occurrences
+Fever: 26 occurrences
+Chills: 26 occurrences
+Flushing (sense of warmth in the face, ears, neck and trunk): 22 occurrences
+Hives: 22 occurrences
+Slow heart rate: 22 occurrences
+Bleeding: 19 occurrences
+Headache: 19 occurrences
+Upset stomach: 17 occurrences
+Bruise: 16 occurrences
+Nosebleeds: 16 occurrences
+Increased bleeding tendency: 16 occurrences
+Blood in urine: 15 occurrences
+Hematoma: 15 occurrences
+
+EXAMPLE MEDICINES
+1. axcer  90mg tablet
+2. apigat 2.5 tablet
+3. alburel 20gm solution for infusion
+4. apigat 5 tablet
+5. axcer  90mg tablet
+6. anfoe 10000iu injection
+7. axcer  60mg tablet
+8. aspirin 300mg tablet
+9. aggribloc 5mg infusion
+10. aggribloc 5mg infusion
+11. anfoe 4000iu injection
+12. augplat 250mcg injection
+13. aggramed 5mg infusion
+14. asa 75mg tablet
+15. anfoe 6000iu injection
+16. apigy 2.5 tablet
+17. alburel-t injection
+18. actorise 25 injection
+19. apixator 2.5 tablet
+20. apixator 5 tablet
+21. asunra 400mg tablet
+22. acetyl salicylic acid 50mg tablet
+23. actorise 60 injection
+24. apigy 5 tablet
+25. apale tablet
+26. asa 50mg tablet
+27. aspirin  50mg tablet dr
+28. apigy 5mg tablet
+29. aspin 100mg tablet
+30. alburel-os solution for infusion

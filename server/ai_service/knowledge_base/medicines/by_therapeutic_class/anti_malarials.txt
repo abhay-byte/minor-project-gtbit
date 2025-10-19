@@ -1,0 +1,61 @@
+Therapeutic Class: ANTI MALARIALS
+
+OVERVIEW
+Total medicines: 1679
+Percentage of database: 0.68%
+
+HABIT FORMING STATUS
+No: 1679 medicines
+
+COMMON USES
+Malaria: 1239 medicines
+Treatment of Malaria: 440 medicines
+
+COMMON SIDE EFFECTS
+Headache: 100 occurrences
+Dizziness: 83 occurrences
+Weakness: 79 occurrences
+Joint pain: 63 occurrences
+Muscle pain: 63 occurrences
+Loss of appetite: 60 occurrences
+Injection site reactions (pain, swelling, redness): 51 occurrences
+Vomiting: 17 occurrences
+Nausea: 16 occurrences
+Abdominal pain: 13 occurrences
+Diarrhea: 4 occurrences
+Feeling of fullness: 3 occurrences
+Mouth sore: 3 occurrences
+Skin rash: 3 occurrences
+Fatigue: 3 occurrences
+
+EXAMPLE MEDICINES
+1. azunate 60mg injection
+2. azunate l 480 mg/80 mg tablet
+3. azunate l 480 mg/80 mg tablet
+4. azunate 120mg injection
+5. artether l 80 mg/480 mg tablet
+6. artisun 150mg injection
+7. arsufee kit 100mg/500mg/25mg kit
+8. artisun 150mg injection
+9. arsufee kit 100mg/500mg/25mg kit
+10. alpha beta-click injection
+11. azunate ab 150mg injection
+12. artefan 80mg/480mg tablet
+13. azunate l 240 mg/40 mg tablet
+14. artither 150mg injection
+15. amalar xl forte 80mg/480mg tablet
+16. abmal 150mg injection
+17. azunate 100mg tablet
+18. amalar xl 20mg/120mg tablet
+19. artinate 60mg injection
+20. ab at injection
+21. alither forte tablet
+22. arteross 60mg injection
+23. arteross plus 80mg/480mg tablet
+24. artivil tablet
+25. artifer tablet
+26. artifer tablet
+27. azunate ab 75mg injection
+28. arsufact 50mg tablet
+29. artheria 75mg injection
+30. artheria 75mg injection

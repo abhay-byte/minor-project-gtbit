@@ -1,0 +1,25 @@
+monit gtn 6.4 tablet cr
+
+Therapeutic Class: CARDIAC
+Action Class: NO Donors
+Chemical Class: Nitrates {Short acting}
+Habit Forming: No
+
+USES
+Treatment of Angina (heart-related chest pain)
+
+SIDE EFFECTS
+Blurred vision
+Decreased blood pressure
+Dizziness
+Headache
+Increased heart rate
+Lightheadedness
+Paresthesia (tingling or pricking sensation)
+
+SUBSTITUTES
+Nitrosol CR 6.4 Tablet
+Anglit 6.4 Tablet CR
+Nestin 6.4mg Tablet CR
+Ntgn 6.4 Tablet CR
+Nitrovib 6.4 Tablet CR

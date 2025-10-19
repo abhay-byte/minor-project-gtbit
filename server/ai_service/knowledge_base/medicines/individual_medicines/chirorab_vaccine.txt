@@ -1,0 +1,23 @@
+chirorab vaccine
+
+Therapeutic Class: VACCINES
+Action Class: Killed vaccine
+Chemical Class: Vaccines
+Habit Forming: No
+
+USES
+Prevention of Rabies
+
+SIDE EFFECTS
+Pain
+Joint pain
+Injection site redness
+Injection site swelling
+Swelling of lymph nodes
+
+SUBSTITUTES
+Worab 2.5IU Vaccine
+Zoonovac 2.5IU Injection
+Indirab 2.5IU Injection
+Verorab Antirabies Vaccine
+Verorab Vaccine

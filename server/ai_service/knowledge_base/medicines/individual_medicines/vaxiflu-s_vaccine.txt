@@ -1,0 +1,20 @@
+vaxiflu-s vaccine
+
+Therapeutic Class: VACCINES
+Action Class: Killed vaccine
+Chemical Class: Vaccines
+Habit Forming: No
+
+USES
+Prevention of Influenza (flu)
+
+SIDE EFFECTS
+Headache
+Weakness
+Injection site reactions (pain, swelling, redness)
+
+SUBSTITUTES
+Influvac 2015/2016 Vaccine
+Lupienza Vaccine
+Vaxigrip SH Vaccine
+Vaxigrip Adult Vaccine

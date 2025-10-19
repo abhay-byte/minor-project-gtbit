@@ -1,0 +1,23 @@
+sb clox capsule
+
+Therapeutic Class: ANTI INFECTIVES
+Habit Forming: No
+
+USES
+Bacterial infections
+
+SIDE EFFECTS
+Rash
+Vomiting
+Allergic reaction
+Stomach pain
+Nausea
+Flatulence
+Diarrhea
+
+SUBSTITUTES
+Keeclox L Capsule
+Wasoclox 250mg/250mg Capsule
+Siclomox 250mg/250mg/60Million spores Capsule
+Zonemox CL Capsule
+Cloxipen LB 250mg/250mg/60Million spores Capsule

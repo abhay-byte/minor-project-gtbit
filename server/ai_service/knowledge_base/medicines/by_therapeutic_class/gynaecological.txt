@@ -1,0 +1,74 @@
+Therapeutic Class: GYNAECOLOGICAL
+
+OVERVIEW
+Total medicines: 4406
+Percentage of database: 1.78%
+
+HABIT FORMING STATUS
+No: 4406 medicines
+
+COMMON USES
+Hormone replacement therapy: 1502 medicines
+Treatment of Female infertility: 1206 medicines
+Female infertility: 870 medicines
+Treatment of Endometriosis: 490 medicines
+Treatment of Premenstrual syndrome (PMS): 328 medicines
+Treatment of Premature Labor: 310 medicines
+Treatment of Iron deficiency anemia: 304 medicines
+Treatment of Pain during menstruation: 279 medicines
+Treatment of Heavy menstrual bleeding: 257 medicines
+Prevention of Premature Labor: 252 medicines
+Treatment of Peripheral vascular disease: 247 medicines
+Treatment of Male hypogonadism: 167 medicines
+Contraception: 154 medicines
+Male hypogonadism: 146 medicines
+Syndromic treatment of vaginal discharge: 104 medicines
+
+COMMON SIDE EFFECTS
+Headache: 51 occurrences
+Nausea: 49 occurrences
+Vomiting: 41 occurrences
+Dizziness: 34 occurrences
+Diarrhea: 34 occurrences
+Taste change: 27 occurrences
+Stomach pain: 27 occurrences
+Indigestion: 23 occurrences
+Loss of appetite: 23 occurrences
+Hot flushes: 20 occurrences
+Vaginal itching: 19 occurrences
+Vaginal infection: 19 occurrences
+Fatigue: 17 occurrences
+Bloating: 12 occurrences
+Excessive hair growth on face: 10 occurrences
+
+EXAMPLE MEDICINES
+1. af kit tablet
+2. a kare combipack
+3. ab2 kit
+4. aqsusten  25 solution for injection
+5. anin tablet
+6. abortab 200mg tablet
+7. alivher es tablet
+8. anin 500mg injection
+9. adilin 40mg tablet sr
+10. aquagest 25mg injection
+11. adilan 40mg tablet sr
+12. algest sr 200 tablet
+13. avort kit
+14. acnechio-m tablet
+15. acnechio-m tablet
+16. algest sr 300 tablet
+17. amenor 5mg tablet
+18. azithral xp 150mg/1000mg/1000mg tablet
+19. anca-v  vaginal pessaries
+20. aqsusten  25 solution for injection
+21. anin 250 injection
+22. a-3 kit
+23. asmita tablet
+24. amenova 5mg tablet
+25. anofer s 100mg injection
+26. afs 3 kit
+27. adilan 10 tablet
+28. azobat 3 kit
+29. adilan 10 tablet
+30. azobat 3 kit

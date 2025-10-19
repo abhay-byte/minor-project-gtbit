@@ -1,0 +1,74 @@
+Therapeutic Class: VITAMINS MINERALS NUTRIENTS
+
+OVERVIEW
+Total medicines: 4216
+Percentage of database: 1.70%
+
+HABIT FORMING STATUS
+No: 4216 medicines
+
+COMMON USES
+Appetite stimulant: 1179 medicines
+Vitamin B12 deficiency: 1116 medicines
+Treatment of Nutritional deficiencies: 600 medicines
+Nutritional deficiencies: 574 medicines
+Treatment of Allergic conditions: 243 medicines
+Treatment of Vitamin D deficiency: 217 medicines
+Treatment of Osteoporosis: 205 medicines
+Carnitine deficiency: 82 medicines
+Treatment of Pernicious Anemia: 75 medicines
+Treatment of Allergic skin conditions: 58 medicines
+Fatty liver disease: 46 medicines
+Treatment and prevention of Calcium deficiency: 45 medicines
+Cognitive enhancer: 37 medicines
+Treatment of Vitamin & mineral deficiency: 35 medicines
+Treatment of Calcium deficiency: 35 medicines
+
+COMMON SIDE EFFECTS
+Dryness in mouth: 32 occurrences
+Constipation: 30 occurrences
+Drowsiness: 28 occurrences
+Sleepiness: 28 occurrences
+Blurred vision: 28 occurrences
+Injection site reactions (pain, swelling, redness): 14 occurrences
+No common side effects seen: 13 occurrences
+Nausea: 13 occurrences
+Headache: 13 occurrences
+Vomiting: 13 occurrences
+Limited data available: 13 occurrences
+Abdominal pain: 12 occurrences
+Dizziness: 12 occurrences
+Rash: 8 occurrences
+Diarrhea: 8 occurrences
+
+EXAMPLE MEDICINES
+1. arachitol 6l injection
+2. aquasol a capsule
+3. aptimust syrup
+4. alphadol 0.25mcg capsule
+5. adtrol xt tablet
+6. apetamin syrup
+7. alamin injection
+8. astymin-sn infusion
+9. astymin-3  10mg/8mg infusion
+10. addphos granules
+11. antoxid e softgel capsule
+12. arachitol 3l injection
+13. ageless tablet
+14. aminowel infusion
+15. absolut dm capsule
+16. addkay tablet pr
+17. absolut dm capsule
+18. addkay tablet pr
+19. apilysin syrup
+20. app.up plus syrup
+21. aisa  tablet
+22. app up syrup
+23. adefresh 400 tablet
+24. absolut dm capsule
+25. argihope infusion
+26. aptiquik syrup
+27. apitone plus syrup
+28. alka kcl syrup
+29. amintoz injection
+30. apetox syrup

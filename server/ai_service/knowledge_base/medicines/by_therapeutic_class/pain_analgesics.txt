@@ -1,0 +1,75 @@
+Therapeutic Class: PAIN ANALGESICS
+
+OVERVIEW
+Total medicines: 32267
+Percentage of database: 13.00%
+
+HABIT FORMING STATUS
+No: 31034 medicines
+Yes: 1233 medicines
+
+COMMON USES
+Pain relief: 22829 medicines
+Treatment of Fever: 4571 medicines
+Treatment of Pain due to muscle spasm: 2689 medicines
+Treatment of Muscular pain: 1395 medicines
+Moderate to severe pain: 954 medicines
+Osteoarthritis: 846 medicines
+Treatment of Gout: 715 medicines
+Swelling: 482 medicines
+Muscle relaxation: 476 medicines
+Treatment of Menstrual pain: 473 medicines
+Treatment of Abdominal cramp: 473 medicines
+Pain due to muscle spasm: 373 medicines
+Osteoporosis: 190 medicines
+Local anesthesia (Numb tissues in a specific area): 190 medicines
+Rheumatoid arthritis: 180 medicines
+
+COMMON SIDE EFFECTS
+Nausea: 90 occurrences
+Diarrhea: 80 occurrences
+Vomiting: 79 occurrences
+Heartburn: 65 occurrences
+Loss of appetite: 61 occurrences
+Stomach pain: 40 occurrences
+Indigestion: 39 occurrences
+Stomach pain/epigastric pain: 29 occurrences
+Dizziness: 10 occurrences
+Sleepiness: 8 occurrences
+Constipation: 7 occurrences
+Dryness in mouth: 7 occurrences
+Flatulence: 5 occurrences
+Tiredness: 5 occurrences
+Headache: 4 occurrences
+
+EXAMPLE MEDICINES
+1. altraday capsule sr
+2. aldigesic p 100mg/325mg tablet
+3. aldigesic-sp tablet
+4. acemiz plus tablet
+5. aceclo plus tablet
+6. anobliss cream
+7. aulin 100mg tablet
+8. acemiz -mr tablet
+9. acenac-p  tablet
+10. ace proxyvon tablet
+11. aceclo-mr tablet
+12. acemiz-s tablet
+13. acton-or tablet sr
+14. acenac-mr tablet
+15. acuvin tablet
+16. ace-proxyvon cr tablet
+17. aprezo 30mg tablet
+18. acenext p 100mg/325mg tablet
+19. anacin tablet
+20. algesia cr 200mg/20mg capsule
+21. alensol-d tablet
+22. aceclo tablet
+23. aceclo sr tablet
+24. anaflam th  4  tablet
+25. arflur 3d tablet
+26. akilos-p tablet
+27. acceclowoc-sp tablet
+28. aceflam p 100mg/325mg tablet
+29. acimol mr 100mg/325mg/250mg tablet
+30. aprezo 10 tablet

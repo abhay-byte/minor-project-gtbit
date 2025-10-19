@@ -1,0 +1,26 @@
+cb-tol cr 200 tablet
+
+Therapeutic Class: NEURO CNS
+Action Class: Sodium channel modulators (AED)
+Chemical Class: Iminostilbene Derivative
+Habit Forming: No
+
+USES
+Epilepsy/Seizures
+Trigeminal neuralgia
+Diabetic nerve pain
+
+SIDE EFFECTS
+Dizziness
+Nausea
+Vomiting
+Constipation
+Sleepiness
+Abnormality of voluntary movements
+
+SUBSTITUTES
+Acetol 200mg Tablet CR
+Carbesta 200mg Tablet CR
+Antilep 200mg Tablet CR
+Carbazep 200mg Tablet CR
+Zepcar 200mg Tablet CR

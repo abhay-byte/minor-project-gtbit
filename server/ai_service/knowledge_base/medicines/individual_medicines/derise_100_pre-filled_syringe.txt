@@ -1,0 +1,28 @@
+derise 100 pre-filled syringe
+
+Therapeutic Class: BLOOD RELATED
+Action Class: Erythropoiesis-stimulating agent (ESA)
+Chemical Class: Amino Acids, Peptides Analogues
+Habit Forming: No
+
+USES
+Treatment of Anemia due to chronic kidney disease
+Treatment of Anemia due to cancer chemotherapy
+
+SIDE EFFECTS
+High blood pressure
+Rash
+Injection site pain
+Breathlessness
+Cough
+Peripheral edema
+Procedural hypotension (low blood pressure)
+Convulsion
+Thromboembolism
+
+SUBSTITUTES
+Ibidarb 100mcg Injection
+Cresp 100 Injection
+Cresp Onco 100mcg Injection
+Darbelife 100mcg Injection
+Zynesp 100mcg Injection

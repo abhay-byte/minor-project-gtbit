@@ -1,0 +1,74 @@
+Therapeutic Class: ANTI INFECTIVES
+
+OVERVIEW
+Total medicines: 57503
+Percentage of database: 23.17%
+
+HABIT FORMING STATUS
+No: 57503 medicines
+
+COMMON USES
+Treatment of Bacterial infections: 38643 medicines
+Bacterial infections: 8686 medicines
+Severe bacterial infections: 1810 medicines
+Treatment of Respiratory tract infection: 1459 medicines
+Treatment of Resistance Tuberculosis (TB): 1177 medicines
+Treatment of Parasitic infections: 1160 medicines
+Treatment of Fungal infections: 1093 medicines
+Treatment of Resistant Tuberculosis (TB): 940 medicines
+Treatment of Severe bacterial infections: 931 medicines
+Treatment of Worm infections: 550 medicines
+Fungal infections: 405 medicines
+Herpes labialis: 347 medicines
+Genital herpes infection: 347 medicines
+Tuberculosis (TB): 344 medicines
+Treatment of Acne: 340 medicines
+
+COMMON SIDE EFFECTS
+Nausea: 98 occurrences
+Vomiting: 91 occurrences
+Diarrhea: 84 occurrences
+Abdominal pain: 51 occurrences
+Rash: 17 occurrences
+Skin rash: 16 occurrences
+Stomach pain: 15 occurrences
+Allergic reaction: 14 occurrences
+Allergy: 12 occurrences
+Dizziness: 11 occurrences
+Headache: 10 occurrences
+Increased liver enzymes: 9 occurrences
+Fever: 8 occurrences
+Loss of appetite: 4 occurrences
+Fatigue: 4 occurrences
+
+EXAMPLE MEDICINES
+1. augmentin 625 duo tablet
+2. azithral 500 tablet
+3. amoxyclav 625 tablet
+4. azee 500 tablet
+5. augmentin duo oral suspension
+6. albendazole 400mg tablet
+7. almox 500 capsule
+8. azithral 200 liquid
+9. althrocin 500 tablet
+10. augmentin dds suspension
+11. azicip 500 tablet
+12. amoxycillin 500mg capsule
+13. azee 200mg dry syrup
+14. akt 4 kit
+15. azax 500 tablet
+16. akurit 4 tablet
+17. acivir 400 dt tablet
+18. augmentin 1000 duo tablet
+19. ampoxin 500 capsule
+20. azee 250 tablet
+21. augmentin 375 tablet
+22. augmentin 1.2gm injection
+23. althrocin 250 tablet
+24. azikem 500mg tablet
+25. af 150 tablet dt
+26. azithral xl 200 liquid
+27. af 400 tablet
+28. amantrel tablet
+29. ampilox capsule
+30. advent forte 457mg syrup tangy orange

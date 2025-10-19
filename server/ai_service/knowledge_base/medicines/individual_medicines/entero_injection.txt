@@ -1,0 +1,19 @@
+entero injection
+
+Therapeutic Class: OTOLOGICALS
+Action Class: Chloramphenicol
+Chemical Class: Amphenicols
+Habit Forming: No
+
+USES
+Treatment of Severe bacterial infections
+
+SIDE EFFECTS
+Vomiting
+Nausea
+Diarrhea
+Taste change
+Injection site reactions (pain, swelling, redness)
+
+SUBSTITUTES
+Klorum Injection

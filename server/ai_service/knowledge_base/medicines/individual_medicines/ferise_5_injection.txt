@@ -1,0 +1,16 @@
+ferise 5 injection
+
+Therapeutic Class: OPHTHAL
+Action Class: Haemopoetic agents
+Chemical Class: Homogeneous Transition Metal Compounds
+Habit Forming: No
+
+USES
+Iron deficiency anemia
+
+SIDE EFFECTS
+Nausea
+Vomiting
+Constipation
+Dark colored stool
+

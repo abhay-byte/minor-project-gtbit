@@ -1,0 +1,16 @@
+sentim-sf toothpaste
+
+Therapeutic Class: STOMATOLOGICALS
+Action Class: Stomatological-Hypersensitivity
+Chemical Class: Post-Transition Metal Fluorides
+Habit Forming: No
+
+USES
+Treatment of Hypersensitivity
+Treatment of Inflammation of gums
+Treatment of Dental cavities
+
+SIDE EFFECTS
+Taste change
+Gum Irritation
+

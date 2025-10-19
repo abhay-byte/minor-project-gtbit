@@ -1,0 +1,17 @@
+cdef lb dry syrup
+
+Therapeutic Class: ANTI INFECTIVES
+Habit Forming: No
+
+USES
+Bacterial infections
+
+SIDE EFFECTS
+Nausea
+Diarrhea
+Stomach pain
+Bloating
+Headache
+
+SUBSTITUTES
+Cefpopen LB Dry Syrup

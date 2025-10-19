@@ -1,0 +1,74 @@
+Therapeutic Class: HORMONES
+
+OVERVIEW
+Total medicines: 5629
+Percentage of database: 2.27%
+
+HABIT FORMING STATUS
+No: 5629 medicines
+
+COMMON USES
+Treatment of Inflammatory conditions: 2271 medicines
+Treatment of Autoimmune conditions: 2271 medicines
+Treatment of Cancer: 2201 medicines
+Treatment of Post menopausal osteoporosis: 1587 medicines
+Treatment of Allergic conditions: 1286 medicines
+Treatment of Rheumatic disorder: 1282 medicines
+Treatment of Systemic lupus erythematosus (SLE): 1282 medicines
+Treatment of Eye disorders: 1282 medicines
+Treatment of Skin disorders: 1278 medicines
+Treatment of Hypothyroidism: 194 medicines
+Bleeding esophageal varices: 112 medicines
+Treatment of Duchenne muscular dystrophy(DMD): 84 medicines
+Acromegaly: 65 medicines
+Carcinoid tumours: 65 medicines
+Prostate cancer: 33 medicines
+
+COMMON SIDE EFFECTS
+Weight gain: 67 occurrences
+Cushing syndrome: 47 occurrences
+Increased appetite: 47 occurrences
+Frequent urge to urinate: 45 occurrences
+Cough: 45 occurrences
+Upper respiratory tract infection: 45 occurrences
+Abnormal hair growth: 45 occurrences
+Obesity: 45 occurrences
+Nasopharyngitis (inflammation of the throat and nasal passages): 45 occurrences
+Nausea: 30 occurrences
+Mood changes: 22 occurrences
+Behavioral changes: 22 occurrences
+Edema (swelling): 21 occurrences
+Breast enlargement: 20 occurrences
+Acne: 20 occurrences
+
+EXAMPLE MEDICINES
+1. anti-thyrox 10 tablet
+2. anti-thyrox 5 tablet
+3. auradex 4mg tablet
+4. alkem nandrolone 50mg injection
+5. anti-thyrox 20 tablet
+6. acton prolongatum 60iu injection
+7. anadrol 50mg injection
+8. anort 30 tablet
+9. asporelix 0.25mg injection
+10. azacort 6 tablet
+11. actide 0.1mg injection
+12. adiuretin 0.1mg tablet
+13. aumento injection
+14. avillin 25mg injection
+15. alcort 6mg tablet
+16. adiuretin 0.2mg tablet
+17. alpred 4mg tablet
+18. andol injection
+19. alnacort 6mg tablet
+20. aminodrip infusion
+21. avocort 6mg tablet
+22. arocort 6mg tablet
+23. and 25mg injection
+24. alnacort 6mg tablet
+25. aminodrip infusion
+26. avocort 6mg tablet
+27. arocort 6mg tablet
+28. and 25mg injection
+29. auradex 8mg tablet
+30. anucort 6mg tablet

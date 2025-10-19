@@ -1,0 +1,75 @@
+Therapeutic Class: NEURO CNS
+
+OVERVIEW
+Total medicines: 23319
+Percentage of database: 9.39%
+
+HABIT FORMING STATUS
+No: 19265 medicines
+Yes: 4054 medicines
+
+COMMON USES
+Treatment of Neuropathic pain: 4352 medicines
+Treatment of Anxiety disorder: 3266 medicines
+Treatment of Depression: 3128 medicines
+Treatment of Epilepsy/Seizures: 2846 medicines
+Treatment of Panic disorder: 2420 medicines
+Schizophrenia: 1837 medicines
+Treatment of Schizophrenia: 1564 medicines
+Treatment of Mania: 1459 medicines
+Depression: 1344 medicines
+Epilepsy/Seizures: 1327 medicines
+Treatment of Meniere's disease: 1170 medicines
+Prevention of Migraine: 1152 medicines
+Stroke: 857 medicines
+Treatment of Anxiety: 789 medicines
+Treatment of Insomnia: 770 medicines
+
+COMMON SIDE EFFECTS
+Constipation: 51 occurrences
+Nausea: 51 occurrences
+Headache: 46 occurrences
+Fatigue: 45 occurrences
+Sleepiness: 43 occurrences
+Dizziness: 42 occurrences
+Weight gain: 39 occurrences
+Dryness in mouth: 36 occurrences
+Orthostatic hypotension (sudden lowering of blood pressure on standing): 34 occurrences
+Blurred vision: 33 occurrences
+Drowsiness: 31 occurrences
+Vomiting: 29 occurrences
+Confusion: 28 occurrences
+Tremors: 27 occurrences
+Insomnia (difficulty in sleeping): 25 occurrences
+
+EXAMPLE MEDICINES
+1. alprax 0.25 tablet
+2. alprax 0.5mg tablet
+3. amixide-h tablet
+4. amitone 10mg tablet
+5. anxit 0.5 tablet
+6. anxit 0.25mg tablet
+7. admenta 5 tablet
+8. addnok 0.2mg tablet
+9. alzolam 0.5mg tablet
+10. ambulax tablet
+11. alzolam 0.25mg tablet
+12. axogurd-sr tablet
+13. arip mt 5 tablet
+14. admenta 10 tablet
+15. acamprol tablet
+16. amnurite  10 tablet sr
+17. amicobal 10mg/1500mcg tablet
+18. amnurite  5 mg/1500 mcg tablet
+19. addwize 10mg tablet
+20. amitone 25mg tablet
+21. aculip h 12.5 mg/5 mg tablet
+22. alzil-m 5 tablet
+23. arip mt 10 tablet
+24. aricep 5 tablet
+25. amitop 10 tablet
+26. ambulax m tablet
+27. alzil 5 tablet
+28. amitone plus tablet
+29. amixide 10mg tablet
+30. arpizol 2mg tablet

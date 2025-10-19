@@ -1,0 +1,15 @@
+headon injection
+
+Therapeutic Class: HORMONES
+Action Class: Growth hormone agonist
+Chemical Class: Growth Hormone
+Habit Forming: No
+
+USES
+Growth failure due to growth hormone deficiency
+
+SIDE EFFECTS
+Injection site reactions (pain, swelling, redness)
+Headache
+Rash
+

@@ -1,0 +1,74 @@
+Therapeutic Class: OTHERS
+
+OVERVIEW
+Total medicines: 481
+Percentage of database: 0.19%
+
+HABIT FORMING STATUS
+No: 481 medicines
+
+COMMON USES
+Obesity: 135 medicines
+High phosphate levels in blood: 126 medicines
+Treatment of Insomnia: 51 medicines
+Severe fungal infections: 51 medicines
+Treatment of Jet lag: 48 medicines
+Nutritional deficiencies: 24 medicines
+Diagnostic agent: 23 medicines
+Organophosphate poisoning: 22 medicines
+Preservative: 10 medicines
+Bleeding: 9 medicines
+Heparin overdose: 6 medicines
+Treatment of High phosphate levels in blood: 5 medicines
+Sunburn: 4 medicines
+Varicose veins: 3 medicines
+Treatment of Methaemoglobinemia: 2 medicines
+
+COMMON SIDE EFFECTS
+Diarrhea: 62 occurrences
+Chills: 42 occurrences
+Decreased potassium level in blood: 42 occurrences
+Fever: 42 occurrences
+Increased alkaline phosphatase level in blood: 42 occurrences
+Increased liver enzymes: 42 occurrences
+Rash: 42 occurrences
+Nausea: 31 occurrences
+Headache: 25 occurrences
+Drowsiness: 19 occurrences
+Vomiting: 19 occurrences
+Dizziness: 14 occurrences
+Flatulence: 12 occurrences
+Upper abdominal pain: 10 occurrences
+Constipation: 10 occurrences
+
+EXAMPLE MEDICINES
+1. altonil 3mg tablet
+2. altonil 5 tablet md
+3. asklerol 3% injection
+4. altonil 10 tablet
+5. asklerol 3% injection
+6. altonil 10 tablet
+7. acutrol c 400 tablet
+8. altonil syrup
+9. aldopam 500mg injection
+10. acutrol c 800 tablet
+11. altonil tablet md
+12. acutrol 400 tablet
+13. aculife sterile water for injection
+14. alfence tablet
+15. alfence tablet
+16. aquapam injection
+17. altonil 10 tablet md
+18. adrovit z syrup
+19. angiografin 65% injection
+20. aculife sterile water for injection
+21. actozinc syrup
+22. am slim 120mg capsule
+23. asponet 50 injection
+24. acutrol 800 tablet
+25. adipam 25mg injection
+26. auxicasp 50mg injection
+27. angiografin infusion
+28. asponet 70 injection
+29. allslim capsule
+30. am slim 60mg capsule

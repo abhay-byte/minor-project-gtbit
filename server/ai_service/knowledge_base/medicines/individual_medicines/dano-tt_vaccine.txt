@@ -1,0 +1,21 @@
+dano-tt vaccine
+
+Therapeutic Class: VACCINES
+Action Class: Toxoid (Inactivated toxins)
+Chemical Class: Vaccines
+Habit Forming: No
+
+USES
+Prevention of Tetanus
+
+SIDE EFFECTS
+Injection site reactions (pain, swelling, redness)
+Loss of appetite
+Fever
+
+SUBSTITUTES
+Tetanus Toxoid Adsorbed 5LF Injection
+Bett Vaccine (Each 0.5ml)
+Tetanus Toxoid Vaccine Adsorbed
+Bett Vaccine
+Bett Vaccine (Each 0.5ml)
