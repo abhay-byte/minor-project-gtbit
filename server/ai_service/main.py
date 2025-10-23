@@ -11,7 +11,7 @@ import json
 import base64
 from io import BytesIO
 from PIL import Image
-from rate_limiter import rate_limit, get_rate_limit_status, log_rate_limit_hit
+from rate_limiter import rate_limit, get_rate_limit_status
 from monitoring import (
     metrics, monitor_request, log_agent_usage, log_collection_query,
     log_image_processing, log_crisis_detection, HealthCheck
@@ -1540,11 +1540,11 @@ def health_check():
             "monitoring": os.getenv("MONITORING_ENABLED", "true")
         }
     
-    if metrics:
-        summary = metrics.get_metrics
+    # if metrics:
+    #     summary = metrics.get_metrics
 
 
-    return jsonify(status,summary)
+    return jsonify(status)
 
 @app.route('/v1/collections', methods=['GET'])
 def list_collections():
@@ -1589,6 +1589,7 @@ def get_recent_errors():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/v1/health/detailed', methods=['GET'])
 def detailed_health_check():
     """
     Comprehensive health check of all system components.
@@ -1597,13 +1598,13 @@ def detailed_health_check():
         health_status = HealthCheck.check_all()
         
         # Add metrics if available
-        if metrics:
-            summary = metrics.get_metrics_summary()
-            health_status['metrics'] = {
-                'total_requests': summary['requests']['total'],
-                'error_rate': summary['errors']['error_rate'],
-                'uptime_hours': round(summary['uptime_seconds'] / 3600, 2)
-            }
+        # if metrics:
+        #     summary = metrics.get_metrics_summary()
+        #     health_status['metrics'] = {
+        #         'total_requests': summary['requests']['total'],
+        #         'error_rate': summary['errors']['error_rate'],
+        #         'uptime_hours': round(summary['uptime_seconds'] / 3600, 2)
+        #     }
         
         status_code = 200
         if health_status['status'] == 'unhealthy':
