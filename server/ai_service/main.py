@@ -1,4 +1,5 @@
 import os
+import time
 from flask import Flask, request, jsonify
 import jwt
 from functools import wraps
@@ -10,6 +11,11 @@ import json
 import base64
 from io import BytesIO
 from PIL import Image
+from rate_limiter import rate_limit, get_rate_limit_status, log_rate_limit_hit
+from monitoring import (
+    metrics, monitor_request, log_agent_usage, log_collection_query,
+    log_image_processing, log_crisis_detection, HealthCheck
+)
 
 # --- Configuration ---
 load_dotenv()
@@ -1274,6 +1280,8 @@ def handle_care_coordination(user_query: str, conversation_state: dict = None):
 # --- Main API Endpoint: The AI Orchestrator ---
 @app.route('/v1/agent/orchestrate', methods=['POST'])
 @verify_user_token 
+@rate_limit 
+@monitor_request
 def orchestrate_agent():
     """
     Main orchestration endpoint with image support.
@@ -1420,6 +1428,19 @@ def orchestrate_agent():
         
         print(f"\n✅ Response by: {response_data['agent']}")
         print(f"{'='*80}\n")
+
+        if 'agent' in response_data:
+            log_agent_usage(
+                response_data['agent'],
+                intent=response_data.get('intent')
+            )
+        
+        if 'collections_used' in response_data:
+            for collection in response_data['collections_used']:
+                log_collection_query(collection)
+        
+        if is_crisis:
+            log_crisis_detection(intent_data.get('emergency_type', 'unknown'))
         
         return jsonify(response_data)
 
@@ -1431,6 +1452,8 @@ def orchestrate_agent():
 
 @app.route('/v1/agent/analyze-image', methods=['POST'])
 @verify_user_token 
+@rate_limit
+@monitor_request
 def analyze_image_only():
     """
     Endpoint for image analysis without query context.
@@ -1470,9 +1493,12 @@ def analyze_image_only():
         }
         
         prompt = prompts.get(analysis_type, prompts['general'])
+
+        image_start = time.time()
         analysis = analyze_image_with_vision_model(image_info['base64'], prompt)
         
         # Log image analysis
+        log_image_processing(image_start)
         log_chat_to_database(user_id, f"[Image Analysis - {analysis_type}]", 'User')
         log_chat_to_database(user_id, analysis, 'AI')
         
@@ -1503,13 +1529,22 @@ def analyze_image_only():
 @app.route('/v1/health', methods=['GET'])
 def health_check():
     """Health check endpoint."""
-    return jsonify({
-        "status": "healthy",
-        "collections": list(collections.keys()),
-        "text_model": GENERATOR_MODEL,
-        "vision_model": VISION_MODEL,
-        "capabilities": ["text_query", "image_analysis", "multi_turn_conversation"]
-    })
+    status = {
+            "status": "healthy",
+            "timestamp": time.time(),
+            "collections": list(collections.keys()) if collections else [],
+            "text_model": GENERATOR_MODEL,
+            "vision_model": VISION_MODEL,
+            "capabilities": ["text_query", "image_analysis", "multi_turn_conversation"],
+            "rate_limiting": os.getenv("RATE_LIMIT_ENABLED", "true"),
+            "monitoring": os.getenv("MONITORING_ENABLED", "true")
+        }
+    
+    if metrics:
+        summary = metrics.get_metrics
+
+
+    return jsonify(status,summary)
 
 @app.route('/v1/collections', methods=['GET'])
 def list_collections():
@@ -1520,6 +1555,103 @@ def list_collections():
             for name, col in collections.items()
         }
     })
+
+@app.route('/v1/metrics', methods=['GET'])
+def get_metrics():
+    """
+    Get application metrics and statistics.
+    Public endpoint for monitoring dashboards.
+    """
+    if not metrics:
+        return jsonify({"error": "Monitoring not enabled"}), 503
+    
+    try:
+        return jsonify(metrics.get_metrics_summary())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/v1/metrics/errors', methods=['GET'])
+def get_recent_errors():
+    """
+    Get recent error logs.
+    """
+    if not metrics:
+        return jsonify({"error": "Monitoring not enabled"}), 503
+    
+    try:
+        limit = int(request.args.get('limit', 20))
+        errors = metrics.get_recent_errors(limit)
+        
+        return jsonify({
+            "errors": errors,
+            "count": len(errors)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def detailed_health_check():
+    """
+    Comprehensive health check of all system components.
+    """
+    try:
+        health_status = HealthCheck.check_all()
+        
+        # Add metrics if available
+        if metrics:
+            summary = metrics.get_metrics_summary()
+            health_status['metrics'] = {
+                'total_requests': summary['requests']['total'],
+                'error_rate': summary['errors']['error_rate'],
+                'uptime_hours': round(summary['uptime_seconds'] / 3600, 2)
+            }
+        
+        status_code = 200
+        if health_status['status'] == 'unhealthy':
+            status_code = 503
+        elif health_status['status'] == 'degraded':
+            status_code = 200  # Still functional
+        
+        return jsonify(health_status), status_code
+        
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+@app.route('/v1/rate-limit/status', methods=['GET'])
+@verify_user_token
+def get_user_rate_limit_status():
+    """
+    Get rate limit status for the authenticated user.
+    """
+    try:
+        user_id = request.user['user_id']
+        role = request.user['role']
+        
+        status = get_rate_limit_status(user_id, role)
+        
+        return jsonify(status)
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/v1/metrics/reset', methods=['POST'])
+def reset_metrics():
+    """
+    Reset all metrics (admin only, use with caution).
+    Requires special admin token.
+    """
+    admin_token = request.headers.get('X-Admin-Token')
+    
+    if admin_token != os.getenv('ADMIN_RESET_TOKEN'):
+        return jsonify({"error": "Unauthorized"}), 403
+    
+    if metrics:
+        metrics.reset_metrics()
+        return jsonify({"message": "Metrics reset successfully"})
+    
+    return jsonify({"error": "Monitoring not enabled"}), 503
 
 if __name__ == '__main__':
     print("\n" + "="*80)
