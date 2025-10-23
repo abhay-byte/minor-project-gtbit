@@ -134,6 +134,119 @@ def log_chat_to_database(user_id: int, message: str, sender: str):
         print(f"⚠️  Error logging chat: {e}")
         # Don't fail the request if logging fails
 
+def fetch_professionals_from_api(specialty: str = None) -> list:
+    """
+    Fetch verified professionals from Node.js API.
+    
+    Args:
+        specialty: Optional specialty filter (e.g., 'Psychiatrist', 'Cardiologist')
+    
+    Returns:
+        List of professional dictionaries
+    """
+    try:
+        url = f"{NODE_SERVER_URL}/api/professionals"
+        params = {}
+        
+        if specialty:
+            params['specialty'] = specialty
+        
+        print(f"  📡 Fetching professionals from API (specialty: {specialty or 'all'})")
+        
+        response = requests.get(
+            url,
+            params=params,
+            timeout=10
+        )
+        response.raise_for_status()
+        
+        professionals = response.json()
+        print(f"  ✓ Found {len(professionals)} professionals")
+        
+        return professionals
+        
+    except requests.exceptions.RequestException as e:
+        print(f"  ⚠️  Error fetching professionals: {e}")
+        return []
+    except Exception as e:
+        print(f"  ⚠️  Unexpected error: {e}")
+        return []
+
+def fetch_professional_availability(professional_id: int) -> list:
+    """
+    Fetch available time slots for a specific professional.
+    
+    Args:
+        professional_id: The professional's ID
+    
+    Returns:
+        List of available time slot dictionaries
+    """
+    try:
+        url = f"{NODE_SERVER_URL}/api/professionals/{professional_id}/availability"
+        
+        print(f"  📡 Fetching availability for professional {professional_id}")
+        
+        response = requests.get(
+            url,
+            timeout=10
+        )
+        response.raise_for_status()
+        
+        slots = response.json()
+        print(f"  ✓ Found {len(slots)} available slots")
+        
+        return slots
+        
+    except requests.exceptions.RequestException as e:
+        print(f"  ⚠️  Error fetching availability: {e}")
+        return []
+    except Exception as e:
+        print(f"  ⚠️  Unexpected error: {e}")
+        return []
+
+def format_availability_text(slots: list) -> str:
+    """
+    Format availability slots into human-readable text.
+    
+    Args:
+        slots: List of time slot dictionaries
+    
+    Returns:
+        Formatted availability string
+    """
+    if not slots:
+        return "No available slots"
+    
+    from datetime import datetime
+    
+    # Group by date
+    by_date = {}
+    for slot in slots[:5]:  # Show first 5 slots
+        try:
+            start_time = datetime.fromisoformat(slot['start_time'].replace('Z', '+00:00'))
+            date_key = start_time.strftime('%Y-%m-%d')
+            time_str = start_time.strftime('%I:%M %p')
+            
+            if date_key not in by_date:
+                by_date[date_key] = []
+            by_date[date_key].append(time_str)
+        except:
+            continue
+    
+    if not by_date:
+        return "Available (contact for timing)"
+    
+    # Format output
+    availability_parts = []
+    for date, times in list(by_date.items())[:3]:  # Show max 3 dates
+        date_obj = datetime.strptime(date, '%Y-%m-%d')
+        date_str = date_obj.strftime('%b %d')
+        times_str = ', '.join(times[:2])  # Show max 2 times per date
+        availability_parts.append(f"{date_str}: {times_str}")
+    
+    return " | ".join(availability_parts)
+
 def detect_emergency_situation(user_query: str) -> dict:
     """
     Detect if the user is in an emergency/crisis situation requiring immediate help.
@@ -805,7 +918,7 @@ def extract_specialization_from_query(user_query: str) -> str:
 def handle_care_coordination(user_query: str, conversation_state: dict = None):
     """
     The Care Coordinator Agent with multi-step workflow.
-    Handles appointment booking with structured options.
+    Fetches real doctors from Node.js API.
     """
     print("📅 Agent: Care Coordinator Agent activated.")
     
@@ -851,9 +964,8 @@ def handle_care_coordination(user_query: str, conversation_state: dict = None):
             selected_type = "virtual"
             type_label = "virtual"
         else:
-            # Try to detect from original query
-            selected_type = "in_person"  # default
-            type_label = "in-person"
+            selected_type = "virtual"  # default to virtual
+            type_label = "virtual"
         
         return {
             "agent": "Care Coordinator Agent",
@@ -890,7 +1002,7 @@ def handle_care_coordination(user_query: str, conversation_state: dict = None):
                 "answer": "Please select the medical specialty you need:",
                 "conversation_state": {
                     "step": "specialization_selected",
-                    "appointment_type": conversation_state.get("appointment_type", "in_person")
+                    "appointment_type": conversation_state.get("appointment_type", "virtual")
                 },
                 "options": [
                     {"id": f"spec_{i}", "label": spec, "value": spec}
@@ -903,180 +1015,213 @@ def handle_care_coordination(user_query: str, conversation_state: dict = None):
             specialization = conversation_state.get("predicted_specialization", "General Physician")
             conversation_state["specialization"] = specialization
             conversation_state["step"] = "specialization_selected"
-            # Continue to next step
     
-    # STEP 4: After specialization is selected, get location/preferences
+    # STEP 4: Fetch real professionals from API
     if current_step == "specialization_selected" or (current_step == "confirm_specialization" and "confirm" in user_query.lower()):
-        appointment_type = conversation_state.get("appointment_type", "in_person")
+        appointment_type = conversation_state.get("appointment_type", "virtual")
         specialization = conversation_state.get("specialization") or extract_specialization_from_query(user_query)
         
-        if appointment_type == "in_person":
+        if appointment_type == "virtual":
+            # Fetch real professionals from API
+            professionals = fetch_professionals_from_api(specialty=specialization)
+            
+            if not professionals:
+                return {
+                    "agent": "Care Coordinator Agent",
+                    "response_type": "no_professionals_available",
+                    "answer": (
+                        f"I apologize, but I couldn't find any verified {specialization}s available for virtual consultation at the moment.\n\n"
+                        "Would you like to:\n"
+                        "1. Try a different specialty\n"
+                        "2. Search for in-person doctors instead\n"
+                        "3. Check back later"
+                    ),
+                    "conversation_state": {
+                        "step": "select_type",
+                        "specialization": specialization
+                    },
+                    "options": [
+                        {"id": "different_specialty", "label": "🔄 Different Specialty", "value": "choose_different"},
+                        {"id": "in_person", "label": "🏥 In-Person Instead", "value": "in_person"},
+                        {"id": "later", "label": "⏰ Check Later", "value": "check_later"}
+                    ],
+                    "sources": []
+                }
+            
+            # Format professionals for display
+            suggestions = []
+            for prof in professionals[:5]:  # Show max 5 professionals
+                # Fetch availability for each professional
+                slots = fetch_professional_availability(prof['professional_id'])
+                availability_text = format_availability_text(slots)
+                
+                suggestions.append({
+                    "professional_id": prof['professional_id'],
+                    "name": f"Dr. {prof['full_name']}",
+                    "specialty": prof['specialty'],
+                    "credentials": prof.get('credentials', 'N/A'),
+                    "experience": f"{prof.get('years_of_experience', 0)} years",
+                    "availability": availability_text,
+                    "available_slots": slots[:10],  # Keep first 10 slots
+                    "is_volunteer": True  # All platform professionals are volunteer
+                })
+            
+            suggestions_text = "\n".join([
+                f"**{i+1}. {doc['name']}** ({doc['specialty']})\n"
+                f"   📋 Experience: {doc['experience']}\n"
+                f"   🕐 {doc['availability']}"
+                + (" | 💚 Volunteer Doctor (Free)" if doc['is_volunteer'] else "")
+                for i, doc in enumerate(suggestions)
+            ])
+            
+            return {
+                "agent": "Care Coordinator Agent",
+                "response_type": "doctor_suggestions",
+                "answer": (
+                    f"Here are verified {specialization}s available for virtual consultation:\n\n"
+                    f"{suggestions_text}\n\n"
+                    "Select a doctor to see their full availability and book an appointment:"
+                ),
+                "conversation_state": {
+                    "step": "doctor_selected",
+                    "appointment_type": appointment_type,
+                    "specialization": specialization,
+                    "suggestions": suggestions
+                },
+                "options": [
+                    {"id": f"doc_{i}", "label": f"{doc['name']}", "value": f"doctor_{i}"}
+                    for i, doc in enumerate(suggestions)
+                ] + [
+                    {"id": "different_specialty", "label": "🔄 Different Specialty", "value": "choose_different"}
+                ],
+                "sources": []
+            }
+        
+        else:  # in_person
             return {
                 "agent": "Care Coordinator Agent",
                 "response_type": "location_input",
                 "answer": (
-                    f"Perfect! Looking for an **{specialization}** for an in-person visit.\n\n"
-                    "To find doctors near you, please provide:\n"
-                    "• Your location (city/area)\n"
-                    "OR\n"
-                    "• Use the 'Find a Clinic' map in the app"
+                    f"Perfect! Looking for a **{specialization}** for an in-person visit.\n\n"
+                    "To find doctors near you, please:\n"
+                    "• Use the 'Find a Clinic' map in the app\n"
+                    "• Filter by specialty: {specialization}\n\n"
+                    "The map will show nearby clinics with available doctors."
                 ),
                 "conversation_state": {
-                    "step": "show_suggestions",
+                    "step": "show_map",
                     "appointment_type": appointment_type,
                     "specialization": specialization
                 },
                 "options": [
-                    {"id": "enter_location", "label": "📍 Enter Location Manually", "value": "enter_location"},
-                    {"id": "use_map", "label": "🗺️ Use Clinic Map", "value": "use_map"},
-                    {"id": "use_current", "label": "📱 Use My Current Location", "value": "current_location"}
-                ],
-                "sources": []
-            }
-        else:  # virtual
-            return {
-                "agent": "Care Coordinator Agent",
-                "response_type": "virtual_preferences",
-                "answer": (
-                    f"Excellent! Searching for **{specialization}** available for virtual consultation.\n\n"
-                    "When would you like to schedule your appointment?"
-                ),
-                "conversation_state": {
-                    "step": "show_virtual_suggestions",
-                    "appointment_type": appointment_type,
-                    "specialization": specialization
-                },
-                "options": [
-                    {"id": "today", "label": "🕐 Today", "value": "today"},
-                    {"id": "tomorrow", "label": "📅 Tomorrow", "value": "tomorrow"},
-                    {"id": "this_week", "label": "📆 This Week", "value": "this_week"},
-                    {"id": "choose_date", "label": "🗓️ Choose Specific Date", "value": "choose_date"}
+                    {"id": "use_map", "label": "🗺️ Open Clinic Map", "value": "use_map"},
+                    {"id": "virtual_instead", "label": "💻 Try Virtual Instead", "value": "virtual"}
                 ],
                 "sources": []
             }
     
-    # STEP 5: Show suggestions and booking options
-    elif current_step == "show_suggestions" or current_step == "show_virtual_suggestions":
-        appointment_type = conversation_state.get("appointment_type", "in_person")
-        specialization = conversation_state.get("specialization", "General Physician")
+    # STEP 5: Show selected doctor's full availability
+    elif current_step == "doctor_selected":
+        # Extract doctor index from user query
+        doctor_idx = 0
+        if "doctor_" in user_query:
+            try:
+                doctor_idx = int(user_query.split("doctor_")[1])
+            except:
+                doctor_idx = 0
         
-        # Mock doctor suggestions (in real system, query from database)
-        suggestions = [
-            {
-                "name": f"Dr. Rajesh Kumar ({specialization})",
-                "rating": "4.8/5",
-                "experience": "15 years",
-                "availability": "Available Today",
-                "is_volunteer": False
-            },
-            {
-                "name": f"Dr. Priya Sharma ({specialization})",
-                "rating": "4.9/5", 
-                "experience": "12 years",
-                "availability": "Available Tomorrow",
-                "is_volunteer": True
-            },
-            {
-                "name": f"Dr. Amit Patel ({specialization})",
-                "rating": "4.7/5",
-                "experience": "10 years",
-                "availability": "Available This Week",
-                "is_volunteer": False
+        suggestions = conversation_state.get("suggestions", [])
+        
+        if doctor_idx >= len(suggestions):
+            return {
+                "agent": "Care Coordinator Agent",
+                "response_type": "error",
+                "answer": "Invalid doctor selection. Please choose from the list.",
+                "conversation_state": conversation_state,
+                "options": []
             }
-        ]
         
-        suggestions_text = "\n".join([
-            f"**{i+1}. {doc['name']}**\n"
-            f"   ⭐ Rating: {doc['rating']} | 📋 Experience: {doc['experience']}\n"
-            f"   🕐 {doc['availability']}"
-            + (" | 💚 Volunteer Doctor (Free)" if doc['is_volunteer'] else "")
-            for i, doc in enumerate(suggestions)
-        ])
+        selected_doctor = suggestions[doctor_idx]
+        available_slots = selected_doctor.get('available_slots', [])
+        
+        if not available_slots:
+            return {
+                "agent": "Care Coordinator Agent",
+                "response_type": "no_slots_available",
+                "answer": (
+                    f"**{selected_doctor['name']}** currently has no available time slots.\n\n"
+                    "Would you like to:\n"
+                    "1. Choose a different doctor\n"
+                    "2. Check back later"
+                ),
+                "conversation_state": conversation_state,
+                "options": [
+                    {"id": "go_back", "label": "🔙 Choose Different Doctor", "value": "go_back"},
+                    {"id": "check_later", "label": "⏰ Check Later", "value": "check_later"}
+                ],
+                "sources": []
+            }
+        
+        # Format time slots for display
+        from datetime import datetime
+        slots_text = []
+        for i, slot in enumerate(available_slots[:10], 1):
+            try:
+                start_time = datetime.fromisoformat(slot['start_time'].replace('Z', '+00:00'))
+                end_time = datetime.fromisoformat(slot['end_time'].replace('Z', '+00:00'))
+                
+                date_str = start_time.strftime('%B %d, %Y')
+                time_str = f"{start_time.strftime('%I:%M %p')} - {end_time.strftime('%I:%M %p')}"
+                
+                slots_text.append(f"{i}. {date_str} at {time_str}")
+            except:
+                continue
         
         return {
             "agent": "Care Coordinator Agent",
-            "response_type": "doctor_suggestions",
+            "response_type": "slot_selection",
             "answer": (
-                f"Here are some {specialization}s available for {appointment_type.replace('_', '-')} consultation:\n\n"
-                f"{suggestions_text}\n\n"
-                "Select a doctor to proceed with booking:"
+                f"**{selected_doctor['name']}**\n"
+                f"📋 {selected_doctor['specialty']} | Experience: {selected_doctor['experience']}\n"
+                f"💚 Volunteer Doctor (Free Consultation)\n\n"
+                f"**Available Time Slots:**\n" +
+                "\n".join(slots_text[:10]) + "\n\n"
+                "Please select a time slot to book your appointment:"
             ),
             "conversation_state": {
-                "step": "doctor_selected",
-                "appointment_type": appointment_type,
-                "specialization": specialization,
-                "suggestions": suggestions
+                "step": "confirm_booking",
+                "appointment_type": conversation_state.get("appointment_type"),
+                "doctor": selected_doctor,
+                "available_slots": available_slots
             },
             "options": [
-                {"id": f"doc_{i}", "label": f"{doc['name']}", "value": f"doctor_{i}"}
-                for i, doc in enumerate(suggestions)
+                {"id": f"slot_{i}", "label": f"Slot {i+1}", "value": f"slot_{slot['slot_id']}"}
+                for i, slot in enumerate(available_slots[:10])
             ] + [
-                {"id": "more_options", "label": "🔍 Show More Doctors", "value": "more_doctors"}
+                {"id": "go_back", "label": "🔙 Choose Different Doctor", "value": "go_back"}
             ],
             "sources": []
         }
     
-    # STEP 6: Doctor selected - Collect contact details or book
-    elif current_step == "doctor_selected":
-        selected_doctor_idx = 0  # Extract from user selection
-        suggestions = conversation_state.get("suggestions", [])
-        appointment_type = conversation_state.get("appointment_type", "in_person")
+    # STEP 6: Confirm booking
+    elif current_step == "confirm_booking":
+        # Extract slot ID from user query
+        slot_id = None
+        if "slot_" in user_query:
+            try:
+                slot_id = int(user_query.split("slot_")[1])
+            except:
+                pass
         
-        if selected_doctor_idx < len(suggestions):
-            doctor = suggestions[selected_doctor_idx]
-            
-            if doctor["is_volunteer"]:
-                # Volunteer doctor - direct booking
-                return {
-                    "agent": "Care Coordinator Agent",
-                    "response_type": "volunteer_booking",
-                    "answer": (
-                        f"Great choice! You've selected **{doctor['name']}** (Volunteer Doctor - Free Consultation)\n\n"
-                        "Please provide your details to confirm the booking:\n"
-                        "• Full Name\n"
-                        "• Phone Number\n"
-                        "• Preferred Date & Time\n"
-                        "• Brief description of your concern"
-                    ),
-                    "conversation_state": {
-                        "step": "confirm_booking",
-                        "doctor": doctor,
-                        "appointment_type": appointment_type
-                    },
-                    "options": [
-                        {"id": "provide_details", "label": "✍️ Provide Details", "value": "provide_details"},
-                        {"id": "go_back", "label": "🔙 Choose Different Doctor", "value": "go_back"}
-                    ],
-                    "sources": []
-                }
-            else:
-                # Regular doctor - show contact details
-                return {
-                    "agent": "Care Coordinator Agent",
-                    "response_type": "contact_details",
-                    "answer": (
-                        f"You've selected **{doctor['name']}**\n\n"
-                        "📞 **Contact Information:**\n"
-                        f"   Phone: +91-XXXXX-XXXXX\n"
-                        f"   Clinic Address: [Address based on location]\n"
-                        f"   Consultation Fee: ₹500-800\n\n"
-                        "Would you like to:"
-                    ),
-                    "conversation_state": {
-                        "step": "booking_action",
-                        "doctor": doctor,
-                        "appointment_type": appointment_type
-                    },
-                    "options": [
-                        {"id": "book_now", "label": "📅 Book Appointment Now", "value": "book_now"},
-                        {"id": "call_direct", "label": "📞 Call Doctor Directly", "value": "call_direct"},
-                        {"id": "go_back", "label": "🔙 Choose Different Doctor", "value": "go_back"}
-                    ],
-                    "sources": []
-                }
-    
-    # STEP 7: Confirm booking
-    elif current_step == "confirm_booking" or current_step == "booking_action":
+        if not slot_id:
+            return {
+                "agent": "Care Coordinator Agent",
+                "response_type": "error",
+                "answer": "Invalid slot selection. Please choose a time slot.",
+                "conversation_state": conversation_state,
+                "options": []
+            }
+        
         doctor = conversation_state.get("doctor", {})
         
         return {
@@ -1086,26 +1231,36 @@ def handle_care_coordination(user_query: str, conversation_state: dict = None):
                 f"✅ **Appointment Booking Request Submitted!**\n\n"
                 f"📋 **Details:**\n"
                 f"   Doctor: {doctor.get('name', 'N/A')}\n"
-                f"   Type: {conversation_state.get('appointment_type', 'N/A').replace('_', '-').title()}\n"
+                f"   Specialty: {doctor.get('specialty', 'N/A')}\n"
+                f"   Type: Virtual Consultation\n"
+                f"   Professional ID: {doctor.get('professional_id', 'N/A')}\n"
+                f"   Slot ID: {slot_id}\n"
                 f"   Status: Pending Confirmation\n\n"
+                "🎉 **Free Volunteer Consultation!**\n\n"
                 "You will receive a confirmation SMS/Email within 1 hour with:\n"
-                "• Confirmed appointment date & time\n"
-                "• Doctor's contact details\n"
-                "• Any pre-consultation instructions\n\n"
-                "📱 Track your appointment status in the 'My Appointments' section.\n\n"
-                "Is there anything else I can help you with?"
+                "• Video consultation link\n"
+                "• Final appointment time\n"
+                "• Pre-consultation instructions\n\n"
+                "📱 Track your appointment in the 'My Appointments' section."
             ),
-            "conversation_state": {"step": "completed"},
+            "conversation_state": {
+                "step": "completed",
+                "booking_data": {
+                    "professional_id": doctor.get('professional_id'),
+                    "slot_id": slot_id,
+                    "appointment_type": "Virtual"
+                }
+            },
             "options": [
-                {"id": "new_appointment", "label": "📅 Book Another Appointment", "value": "new_appointment"},
-                {"id": "main_menu", "label": "🏠 Return to Main Menu", "value": "main_menu"}
+                {"id": "new_appointment", "label": "📅 Book Another", "value": "new_appointment"},
+                {"id": "main_menu", "label": "🏠 Main Menu", "value": "main_menu"}
             ],
             "sources": []
         }
     
     # Default fallback
     return {
-        "agent": "Care Coordinator Agent", 
+        "agent": "Care Coordinator Agent",
         "response_type": "guidance",
         "answer": "I'm here to help you book a medical appointment. Would you like to start?",
         "conversation_state": {"step": "initial"},
