@@ -1254,6 +1254,7 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 ## 7.3. Clinico Technology Stack (Corrected)
 
 ### 7.3.1. Frontend Technologies
+
 - **Mobile Development**: **Flutter 3+ with Dart**  
   *Reasoning*: Single cross-platform codebase for Android and iOS to ensure fast development and a uniform UX.  
 
@@ -1278,6 +1279,7 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 ---
 
 ### 7.3.2. Backend Technologies
+
 - **Primary API Services**: **Node.js 18+ with Express.js**  
   *Reasoning*: Matches Clinico’s real-time backend requirement for chat, signaling, and orchestrating AI calls.  
 
@@ -1299,6 +1301,7 @@ Based on the comprehensive use case analysis, the Clinico system supports **six 
 ---
 
 ### 7.3.3. Data & Infrastructure
+
 - **Primary Database**: **PostgreSQL 13+ (HIPAA-Compliant Configuration)**  
   *Reasoning*: Reliable relational DB suitable for sensitive patient data.  
 
