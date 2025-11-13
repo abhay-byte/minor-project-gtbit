@@ -17,7 +17,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     OnboardingData(
       image: 'assets/images/onboarding1.png',
       title: 'Chat with Elphie our AI Care Companion',
-      description: 'Get instant, intelligent health advice anytime, and\nanywhere.',
+      description:
+          'Get instant, intelligent health advice anytime, and\nanywhere.',
       dashImage: 'assets/images/green_dash.png',
       dashPaddingLeft: 0,
       dashPaddingRight: 165,
@@ -25,7 +26,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     OnboardingData(
       image: 'assets/images/onboarding2.png',
       title: 'Find a Doctor Near You',
-      description: 'Hyperlocal search helps you connect with trusted\nspecialists and clinics in your community.',
+      description:
+          'Hyperlocal search helps you connect with trusted\nspecialists and clinics in your community.',
       dashImage: 'assets/images/green_dash.png',
       dashPaddingLeft: 65,
       dashPaddingRight: 65,
@@ -33,7 +35,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     OnboardingData(
       image: 'assets/images/onboarding3.png',
       title: 'Video Consultations',
-      description: 'Connect with doctors virtually, anytime, and\nanywhere. Your health, on your schedule.',
+      description:
+          'Connect with doctors virtually, anytime, and\nanywhere. Your health, on your schedule.',
       dashImage: 'assets/images/green_dash.png',
       dashPaddingLeft: 85,
       dashPaddingRight: 0,
@@ -60,9 +63,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 children: [
                   // Background network pattern dots
                   Positioned.fill(
-                    child: CustomPaint(
-                      painter: NetworkPatternPainter(),
-                    ),
+                    child: CustomPaint(painter: NetworkPatternPainter()),
                   ),
 
                   // Background image container with shadow - 327x396
@@ -98,7 +99,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   // PageView with character images centered - 218px width from measurements
                   Positioned(
                     left: 0,
-                    top: 82.5, // Adjusted to center vertically within bg container
+                    top:
+                        82.5, // Adjusted to center vertically within bg container
                     right: 0,
                     child: SizedBox(
                       height: 350,
@@ -114,7 +116,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           return Center(
                             child: Image.asset(
                               _pages[index].image,
-                              width: 257, // Matching the design width (from 101.5 to 210 ≈ 257 at center)
+                              width:
+                                  257, // Matching the design width (from 101.5 to 210 ≈ 257 at center)
                               height: 350,
                               fit: BoxFit.contain,
                             ),
@@ -247,7 +250,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const SignupScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => const SignupScreen(),
+                      ),
                     );
                   }
                 },
@@ -274,7 +279,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   child: Center(
                     child: Text(
-                      _currentPage == _pages.length - 1 ? 'Get Started' : 'Next',
+                      _currentPage == _pages.length - 1
+                          ? 'Get Started'
+                          : 'Next',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -309,28 +316,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ? const Color(0xFF5DB4E0)
             : const Color(0xFFD6F1FF),
         shape: BoxShape.circle,
-        border: Border.all(
-          width: 0.5,
-          color: const Color(0xFF47B1FF),
-        ),
+        border: Border.all(width: 0.5, color: const Color(0xFF47B1FF)),
       ),
       child: Center(
         child: isCompleted
-            ? const Icon(
-          Icons.check,
-          size: 12,
-          color: Colors.white,
-        )
+            ? const Icon(Icons.check, size: 12, color: Colors.white)
             : Text(
-          '${step + 1}',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: isCurrent ? Colors.white : const Color(0xFF404040),
-            fontSize: 9,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+                '${step + 1}',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: isCurrent ? Colors.white : const Color(0xFF404040),
+                  fontSize: 9,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
       ),
     );
   }
