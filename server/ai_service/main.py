@@ -11,6 +11,7 @@ import json
 import base64
 from io import BytesIO
 from PIL import Image
+from google import genai
 from rate_limiter import rate_limit, get_rate_limit_status
 from monitoring import (
     metrics, monitor_request, log_agent_usage, log_collection_query,
@@ -20,11 +21,14 @@ from monitoring import (
 # --- Configuration ---
 load_dotenv()
 app = Flask(__name__)
+API_KEY = os.getenv("GOOGLE_API_KEY")
+use_gemini=True
 
 # --- Ollama Configuration ---
 OLLAMA_API_URL = "http://localhost:11434"
 GENERATOR_MODEL = "qwen3:0.6b"
 VISION_MODEL = "qwen2.5vl:3b"  # Vision model for image analysis
+GEMINI_MODEL = "gemini-2.5-flash-lite"
 
 # --- Security ---
 API_AUTH_TOKEN = os.getenv("AI_SERVICE_AUTH_TOKEN")
@@ -39,6 +43,103 @@ CRISIS_KEYWORDS = ["suicide", "kill myself", "hopeless", "end my life", "want to
 
 if not JWT_SECRET:
     print("⚠️  Warning: JWT_SECRET not set. User authentication will not work.")
+
+from google import genai
+
+client = genai.Client(api_key=API_KEY)
+
+def get_final_answer(prompt: str):
+    try:
+        if use_gemini:
+            # --- GEMINI MODE ---
+            response = client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=prompt
+            )
+            final_answer = response.text
+
+        else:
+            # --- LOCAL OLLAMA MODE ---
+            response = requests.post(
+                f"{OLLAMA_API_URL}/v1/chat/completions",
+                json={
+                    "model": GENERATOR_MODEL,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "temperature": 0.7
+                }
+            )
+            response.raise_for_status()
+            final_answer = response.json()['choices'][0]['message']['content']
+
+        return final_answer
+
+    except Exception as e:
+        print("Error generating answer:", e)
+        return "An error occurred while generating the response."
+
+def call_model(system_prompt: str, user_query: str):
+    if use_gemini:
+        # GEMINI VERSION
+        full_prompt = f"{system_prompt}\n\nUser: {user_query}"
+        response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=full_prompt,
+            config={
+                "temperature": 0.0
+            }
+        )
+        return response.text.strip()
+    else:
+        # LOCAL OLLAMA VERSION
+        response = requests.post(
+            f"{OLLAMA_API_URL}/v1/chat/completions",
+            json={
+                "model": GENERATOR_MODEL,
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_query}
+                ],
+                "temperature": 0.0
+            }
+        )
+        response.raise_for_status()
+        return response.json()['choices'][0]['message']['content'].strip()
+
+def get_specialization(prompt: str):
+    """
+    Returns specialization based on the given prompt.
+    Uses Gemini or local Ollama depending on `use_gemini`.
+    Falls back to 'General Physician' on any error.
+    """
+    try:
+        if use_gemini:
+            # --- GEMINI VERSION ---
+            response = client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=prompt,
+                config={
+                    "temperature": 0.0
+                }
+            )
+            specialization = response.text.strip()
+
+        else:
+            # --- LOCAL OLLAMA VERSION ---
+            response = requests.post(
+                f"{OLLAMA_API_URL}/v1/chat/completions",
+                json={
+                    "model": GENERATOR_MODEL,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "temperature": 0.0
+                }
+            )
+            specialization = response.json()['choices'][0]['message']['content'].strip()
+
+        return specialization
+
+    except Exception as e:
+        print("Specialization error:", e)
+        return "General Physician"
 
 def verify_user_token(f):
     """
@@ -296,6 +397,7 @@ def detect_emergency_situation(user_query: str) -> dict:
 
 # --- Model & Database Initialization ---
 embedding_model = None
+client = genai.Client(api_key=API_KEY)
 collections = {}
 
 try:
@@ -404,16 +506,7 @@ def handle_health_inquiry(user_query: str, collection_names: list):
     )
     
     try:
-        response = requests.post(
-            f"{OLLAMA_API_URL}/v1/chat/completions",
-            json={
-                "model": GENERATOR_MODEL,
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.7
-            }
-        )
-        response.raise_for_status()
-        final_answer = response.json()['choices'][0]['message']['content']
+        final_answer = get_final_answer(prompt)
     except Exception as e:
         print(f"  ⚠️  Error generating answer: {e}")
         final_answer = "I apologize, but I encountered an error generating a response. Please try again."
@@ -480,16 +573,8 @@ def handle_mental_wellness(user_query: str, is_crisis: bool = False):
     )
     
     try:
-        response = requests.post(
-            f"{OLLAMA_API_URL}/v1/chat/completions",
-            json={
-                "model": GENERATOR_MODEL,
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.8
-            }
-        )
-        response.raise_for_status()
-        final_answer = response.json()['choices'][0]['message']['content']
+        final_answer = get_final_answer(prompt)
+
     except Exception as e:
         print(f"  ⚠️  Error generating response: {e}")
         final_answer = "I'm here to listen and support you. Would you like to tell me more about how you're feeling?"
@@ -669,20 +754,8 @@ def determine_intent(user_query: str, has_image: bool = False) -> dict:
     )
     
     try:
-        response = requests.post(
-            f"{OLLAMA_API_URL}/v1/chat/completions",
-            json={
-                "model": GENERATOR_MODEL,
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_query}
-                ],
-                "temperature": 0.0
-            }
-        )
-        response.raise_for_status()
-        
-        content = response.json()['choices'][0]['message']['content'].strip()
+        content = call_model(system_prompt, user_query)
+
         
         import re
         json_match = re.search(r'\{.*\}', content, re.DOTALL)
@@ -764,16 +837,8 @@ def handle_image_based_inquiry(user_query: str, image_base64: str, collection_na
     )
     
     try:
-        response = requests.post(
-            f"{OLLAMA_API_URL}/v1/chat/completions",
-            json={
-                "model": GENERATOR_MODEL,
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.7
-            }
-        )
-        response.raise_for_status()
-        final_answer = response.json()['choices'][0]['message']['content']
+        get_final_answer(prompt)
+
     except Exception as e:
         print(f"  ⚠️  Error generating answer: {e}")
         final_answer = "I analyzed your image but encountered an error generating a complete response. Please consult a healthcare professional."
@@ -907,19 +972,8 @@ def extract_specialization_from_query(user_query: str) -> str:
         f"Query: {user_query}"
     )
     
-    try:
-        response = requests.post(
-            f"{OLLAMA_API_URL}/v1/chat/completions",
-            json={
-                "model": GENERATOR_MODEL,
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.0
-            }
-        )
-        specialization = response.json()['choices'][0]['message']['content'].strip()
-        return specialization
-    except:
-        return "General Physician"
+    return get_specialization(prompt)
+
 
 def handle_care_coordination(user_query: str, conversation_state: dict = None):
     """
@@ -1530,19 +1584,21 @@ def analyze_image_only():
 def health_check():
     """Health check endpoint."""
     status = {
-            "status": "healthy",
-            "timestamp": time.time(),
-            "collections": list(collections.keys()) if collections else [],
-            "text_model": GENERATOR_MODEL,
-            "vision_model": VISION_MODEL,
-            "capabilities": ["text_query", "image_analysis", "multi_turn_conversation"],
-            "rate_limiting": os.getenv("RATE_LIMIT_ENABLED", "true"),
-            "monitoring": os.getenv("MONITORING_ENABLED", "true")
-        }
-    
-    # if metrics:
-    #     summary = metrics.get_metrics
-
+        "status": "healthy",
+        "timestamp": time.time(),
+        "collections": list(collections.keys()) if collections else [],
+        "text_model": GENERATOR_MODEL if not use_gemini else "gemini-2.5-flash-lite",
+        "vision_model": VISION_MODEL,
+        "capabilities": [
+            "text_query",
+            "image_analysis",
+            "multi_turn_conversation"
+        ],
+        "rate_limiting": os.getenv("RATE_LIMIT_ENABLED", "true"),
+        "monitoring": os.getenv("MONITORING_ENABLED", "true"),
+        "using_gemini": str(use_gemini).lower(),      # "true" / "false"
+        "local_llm_available": not use_gemini         # for clarity in frontend
+    }
 
     return jsonify(status)
 
@@ -1660,6 +1716,7 @@ if __name__ == '__main__':
     print("="*80)
     print(f"Collections loaded: {list(collections.keys())}")
     print(f"Text Generator model: {GENERATOR_MODEL}")
+    print(f"Gemini model: {GEMINI_MODEL}")
     print(f"Vision model: {VISION_MODEL}")
     print("="*80 + "\n")
     
