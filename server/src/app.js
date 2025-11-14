@@ -10,6 +10,7 @@ const userRoutes = require('./api/routes/users.routes');
 const professionalRoutes = require('./api/routes/professional.routes');
 const appointmentsRoutes = require('./api/routes/appointments.routes');
 const clinicRoutes = require('./api/routes/clinics.routes');
+const chatRoutes = require('./api/routes/chat.routes');
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/professionals', professionalRoutes); 
 app.use('/api/appointments', appointmentsRoutes); 
 app.use('/api/clinics', clinicRoutes);
+app.use('/api/chat', chatRoutes);
 
 // --- Server Setup ---
 const PORT = process.env.PORT || 5000;

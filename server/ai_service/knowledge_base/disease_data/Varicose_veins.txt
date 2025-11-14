@@ -1,0 +1,17 @@
+Disease: Varicose veins
+================================================================================
+
+Symptoms (7):
+1.  fatigue
+2.  cramps
+3.  bruising
+4.  obesity
+5.  swollen_legs
+6.  swollen_blood_vessels
+7.  prominent_veins_on_calf
+
+Precautions (4):
+1. lie down flat and raise the leg high
+2. use oinments
+3. use vein compression
+4. dont stand still for long

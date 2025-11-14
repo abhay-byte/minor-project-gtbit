@@ -1,0 +1,69 @@
+Therapeutic Class: STOMATOLOGICALS
+
+OVERVIEW
+Total medicines: 173
+Percentage of database: 0.07%
+
+HABIT FORMING STATUS
+No: 173 medicines
+
+COMMON USES
+Treatment of Mouth ulcers: 83 medicines
+Mouth infection: 23 medicines
+Treatment of Mouth infection: 21 medicines
+Treatment of Dental cavities: 17 medicines
+Dental cavities: 12 medicines
+Treatment of Inflammation of gums: 8 medicines
+Dry mouth: 5 medicines
+Treatment of Dental pain: 3 medicines
+Treatment of Fungal skin infections: 1 medicines
+Mouth ulcers: 1 medicines
+Treatment of Hypersensitivity: 1 medicines
+
+COMMON SIDE EFFECTS
+No common side effects seen: 54 occurrences
+Staining of teeth: 30 occurrences
+Taste change: 16 occurrences
+Application site reactions (burning, irritation, itching and redness): 11 occurrences
+Bitter taste: 11 occurrences
+Burning sensation: 8 occurrences
+Stinging sensation: 6 occurrences
+Limited data available: 4 occurrences
+Dryness: 3 occurrences
+Metallic taste: 3 occurrences
+Nausea: 3 occurrences
+Burning sensation in mouth: 1 occurrences
+Paresthesia (tingling or pricking sensation): 1 occurrences
+Dry skin: 1 occurrences
+
+EXAMPLE MEDICINES
+1. anabel liquid gel
+2. anabel-ct gel
+3. alsore gel
+4. aqua joy mouth wash
+5. arident toothpaste
+6. bi-folate mouth ulcer gel
+7. b-folcin gel
+8. benzonac gel
+9. bioclin sg dental gel
+10. biqol xero mouth spray
+11. bonzela oromucosal ointment dental gel
+12. banxero mouth spray
+13. banxero mouth spray
+14. benxate toothpaste
+15. bensodyl 7.5mg/6mg mouth wash
+16. buglac mouth wash
+17. candid mouth gel
+18. curasil gel
+19. calphorinz rinse
+20. clostrine mouth wash green tea
+21. canforce mouth wash
+22. crodent toothpaste
+23. crodent toothpaste
+24. clodiv mouth wash
+25. clodiv mouth wash
+26. dologel-ct gel
+27. dologel
+28. dentogel
+29. dresin mouthwash & gargle
+30. dentogel liquid

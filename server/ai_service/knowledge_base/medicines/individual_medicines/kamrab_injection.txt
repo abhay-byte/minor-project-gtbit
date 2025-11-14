@@ -1,0 +1,21 @@
+kamrab injection
+
+Therapeutic Class: VACCINES
+Action Class: Killed vaccine
+Chemical Class: Vaccines
+Habit Forming: No
+
+USES
+Prevention of Rabies
+
+SIDE EFFECTS
+Nephrotic syndrome
+Pain
+Anaphylactic reaction
+Angioedema (swelling of deeper layers of skin)
+Injection site stiffness
+Soreness
+Tenderness
+
+SUBSTITUTES
+Berirab P Injection

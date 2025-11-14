@@ -1,0 +1,26 @@
+nasovac-s vaccine
+
+Therapeutic Class: VACCINES
+Action Class: Killed vaccine
+Chemical Class: Vaccines
+Habit Forming: No
+
+USES
+Prevention of Influenza (flu)
+
+SIDE EFFECTS
+Headache
+Weakness
+Injection site allergic reaction
+Nasal discomfort
+Sneezing
+Runny nose
+Chills
+Facial swelling
+Fever
+Fatigue
+Sore throat
+Cough
+Wheezing
+Nausea
+

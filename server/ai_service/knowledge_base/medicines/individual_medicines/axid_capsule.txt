@@ -1,0 +1,20 @@
+axid capsule
+
+Therapeutic Class: GASTRO INTESTINAL
+Action Class: H2 Receptor Blocker
+Chemical Class: Thiazole Derivative
+Habit Forming: No
+
+USES
+Heartburn
+Gastroesophageal reflux disease (Acid reflux)
+Peptic ulcer disease
+
+SIDE EFFECTS
+Fatigue
+Drowsiness
+Headache
+Constipation
+Diarrhea
+Muscle pain
+

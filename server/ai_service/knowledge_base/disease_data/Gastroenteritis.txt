@@ -1,0 +1,14 @@
+Disease: Gastroenteritis
+================================================================================
+
+Symptoms (4):
+1.  vomiting
+2.  sunken_eyes
+3.  dehydration
+4.  diarrhoea
+
+Precautions (4):
+1. stop eating solid food for while
+2. try taking small sips of water
+3. rest
+4. ease back into eating

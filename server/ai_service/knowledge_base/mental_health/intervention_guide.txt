@@ -1,0 +1,56 @@
+Mental Health Intervention Guide
+
+NORMAL
+- Maintain positive engagement
+- Support healthy lifestyle choices
+- Encourage continued self-care
+- Provide resources for general wellness
+
+STRESS
+- Teach stress management techniques
+- Encourage breaks and relaxation
+- Help prioritize tasks and responsibilities
+- Suggest time management strategies
+- Recommend physical exercise and sleep hygiene
+
+ANXIETY
+- Teach grounding techniques (5-4-3-2-1 method)
+- Practice deep breathing exercises
+- Challenge catastrophic thinking
+- Encourage gradual exposure to fears
+- Recommend professional therapy (CBT)
+- Suggest mindfulness and meditation
+
+DEPRESSION
+- Show empathy and validate feelings
+- Encourage professional mental health support
+- Suggest behavioral activation (small activities)
+- Challenge negative thought patterns
+- Recommend therapy and possible medication evaluation
+- Help build support network
+
+BIPOLAR
+- Encourage mood tracking and journaling
+- Recommend psychiatric evaluation
+- Support medication adherence
+- Help establish routine and sleep schedule
+- Identify triggers for mood episodes
+- Long-term therapy and support
+
+PERSONALITY_DISORDER
+- Recommend specialized therapy (DBT, schema therapy)
+- Support emotion regulation skills
+- Encourage consistent treatment
+- Help develop healthy relationships
+- Long-term professional support needed
+
+SUICIDAL
+- IMMEDIATE ACTION REQUIRED
+- Call emergency services (112) if immediate danger
+- National Suicide Prevention Lifeline: 9152987821
+- Stay with person, remove means of harm
+- Do not leave person alone
+- Get professional help immediately
+- Create safety plan
+- Contact emergency contacts or family
+

@@ -1,0 +1,24 @@
+nacl ep 0.9% injection
+
+Therapeutic Class: RESPIRATORY
+Action Class: Crystalloids
+Chemical Class: Alkali Metal Chlorides
+Habit Forming: No
+
+USES
+Treatment of Short term fluid replacement after trauma
+Treatment of Dehydration
+
+SIDE EFFECTS
+Injection site reactions (pain, swelling, redness)
+Hypotension (low blood pressure)
+Fever
+Tremors
+Chills
+
+SUBSTITUTES
+B Braun Sodium Chloride 0.9% Injection
+Ultra NS Injection
+Leu NS 0.9% Injection
+NS 0.9% Injection
+Denis NS 0.9% Sodium Chloride Injection

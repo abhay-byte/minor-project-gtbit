@@ -1,0 +1,14 @@
+Disease: Paralysis (brain hemorrhage)
+================================================================================
+
+Symptoms (4):
+1.  vomiting
+2.  headache
+3.  weakness_of_one_body_side
+4.  altered_sensorium
+
+Precautions (4):
+1. massage
+2. eat healthy
+3. exercise
+4. consult doctor

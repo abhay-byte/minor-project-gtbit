@@ -1,0 +1,20 @@
+typhibev vaccine
+
+Therapeutic Class: VACCINES
+Action Class: Subunit (Purified antigen)
+Chemical Class: Vaccines
+Habit Forming: No
+
+USES
+Prevention of Typhoid fever
+
+SIDE EFFECTS
+Injection site reactions (pain, swelling, redness)
+Feeling of discomfort
+Nausea
+Diarrhea
+Fever
+Headache
+
+SUBSTITUTES
+Typbar TCV Vaccine

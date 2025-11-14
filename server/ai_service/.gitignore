@@ -1,0 +1,6 @@
+.env
+/promts
+/db
+kaggle.py
+/__pycache__
+/db/chroma.sqlite3

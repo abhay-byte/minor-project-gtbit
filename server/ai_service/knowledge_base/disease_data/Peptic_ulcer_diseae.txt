@@ -1,0 +1,16 @@
+Disease: Peptic ulcer diseae
+================================================================================
+
+Symptoms (6):
+1.  vomiting
+2.  indigestion
+3.  loss_of_appetite
+4.  abdominal_pain
+5.  passage_of_gases
+6.  internal_itching
+
+Precautions (4):
+1. avoid fatty spicy food
+2. consume probiotic food
+3. eliminate milk
+4. limit alcohol

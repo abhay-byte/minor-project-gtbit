@@ -1,0 +1,93 @@
+Keyword Patterns by Mental Health Status
+
+ANXIETY
+Top keywords:
+  end: 918
+  anxious: 586
+  panic: 551
+  worried: 548
+  scared: 482
+  fear: 462
+  well: 456
+  good: 395
+  die: 383
+  fine: 364
+
+NORMAL
+Top keywords:
+  end: 1098
+  good: 698
+  well: 378
+  sad: 248
+  great: 244
+  tired: 212
+  happy: 190
+  okay: 161
+  die: 150
+  hurt: 136
+
+DEPRESSION
+Top keywords:
+  end: 6818
+  good: 2800
+  depressed: 2298
+  die: 2088
+  happy: 2074
+  alone: 1886
+  well: 1839
+  kill: 1792
+  sad: 1687
+  tired: 1649
+
+SUICIDAL
+Top keywords:
+  end: 4742
+  die: 2725
+  kill: 2704
+  good: 1786
+  tired: 1357
+  suicidal: 1248
+  hurt: 1201
+  happy: 1122
+  alone: 1117
+  well: 968
+
+STRESS
+Top keywords:
+  end: 845
+  stressed: 320
+  well: 295
+  good: 288
+  anxious: 140
+  die: 140
+  scared: 132
+  panic: 132
+  fear: 115
+  great: 114
+
+BIPOLAR
+Top keywords:
+  end: 1030
+  well: 529
+  good: 510
+  depressed: 333
+  great: 232
+  happy: 224
+  tired: 210
+  scared: 197
+  alone: 195
+  die: 195
+
+PERSONALITY_DISORDER
+Top keywords:
+  end: 495
+  good: 200
+  alone: 132
+  well: 122
+  hurt: 102
+  fear: 97
+  scared: 77
+  anxious: 69
+  lonely: 67
+  kill: 66
+

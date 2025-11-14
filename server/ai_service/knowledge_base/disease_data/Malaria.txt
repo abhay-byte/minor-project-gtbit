@@ -1,0 +1,18 @@
+Disease: Malaria
+================================================================================
+
+Symptoms (8):
+1.  chills
+2.  vomiting
+3.  high_fever
+4.  sweating
+5.  headache
+6.  nausea
+7.  diarrhoea
+8.  muscle_pain
+
+Precautions (4):
+1. Consult nearest hospital
+2. avoid oily food
+3. avoid non veg food
+4. keep mosquitos out

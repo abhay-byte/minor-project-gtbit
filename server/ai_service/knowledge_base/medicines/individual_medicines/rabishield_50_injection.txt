@@ -1,0 +1,16 @@
+rabishield 50 injection
+
+Therapeutic Class: VACCINES
+Action Class: Immunoglobulin
+Chemical Class: Vaccines
+Habit Forming: No
+
+USES
+Treatment of Rabies
+
+SIDE EFFECTS
+Injection site reactions (pain, swelling, redness)
+Headache
+Muscle pain
+Upper respiratory tract infection
+

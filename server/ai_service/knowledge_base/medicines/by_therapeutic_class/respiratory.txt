@@ -1,0 +1,75 @@
+Therapeutic Class: RESPIRATORY
+
+OVERVIEW
+Total medicines: 23052
+Percentage of database: 9.29%
+
+HABIT FORMING STATUS
+No: 22578 medicines
+Yes: 474 medicines
+
+COMMON USES
+Treatment of Sneezing and runny nose due to allergies: 5243 medicines
+Treatment of Allergic conditions: 4320 medicines
+Treatment of Allergic skin conditions: 3786 medicines
+Treatment of Hay fever: 3667 medicines
+Treatment of Common cold: 3022 medicines
+Cough: 1710 medicines
+Treatment of Dry cough: 1502 medicines
+Chronic obstructive pulmonary disease (COPD): 1127 medicines
+Treatment of Cough with mucus: 1116 medicines
+Treatment of Cough: 734 medicines
+Treatment of Chronic obstructive pulmonary disease (COPD): 686 medicines
+Dry cough: 685 medicines
+Common cold: 632 medicines
+Treatment of Skin conditions with inflammation & itching: 525 medicines
+Cough with mucus: 448 medicines
+
+COMMON SIDE EFFECTS
+Headache: 72 occurrences
+Nausea: 64 occurrences
+Vomiting: 62 occurrences
+Dizziness: 46 occurrences
+Upset stomach: 34 occurrences
+Tremors: 34 occurrences
+Diarrhea: 30 occurrences
+Increased heart rate: 27 occurrences
+Palpitations: 26 occurrences
+Rash: 25 occurrences
+Stomach pain: 23 occurrences
+Hives: 22 occurrences
+Sleepiness: 22 occurrences
+Allergic reaction: 17 occurrences
+Muscle cramp: 17 occurrences
+
+EXAMPLE MEDICINES
+1. ascoril ls syrup
+2. allegra 120mg tablet
+3. avil 25 tablet
+4. allegra-m tablet
+5. atarax 25mg tablet
+6. ascoril d plus syrup sugar free
+7. alex syrup
+8. ambrodil-s syrup
+9. asthakind-dx syrup sugar free
+10. allegra 180mg tablet
+11. asthalin syrup
+12. ativan 2mg tablet
+13. ascoril ls junior syrup
+14. asthalin 100mcg inhaler
+15. atarax 10mg tablet
+16. allegra suspension raspberry & vanilla
+17. atarax syrup
+18. ativan 1mg tablet
+19. alex junior syrup
+20. ab phylline capsule
+21. asthakind expectorant sugar free
+22. alex cough lozenges lemon ginger
+23. asthalin respules
+24. avil injection
+25. asthakind-ls expectorant cola sugar free
+26. ascoril ls drops
+27. ab-flo-n tablet
+28. ascoril d junior cough syrup
+29. ambrodil-lx syrup
+30. ab phylline sr 200 tablet

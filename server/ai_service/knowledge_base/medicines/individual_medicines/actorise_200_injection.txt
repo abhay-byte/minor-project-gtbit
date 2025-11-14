@@ -1,0 +1,28 @@
+actorise 200 injection
+
+Therapeutic Class: BLOOD RELATED
+Action Class: Erythropoiesis-stimulating agent (ESA)
+Chemical Class: Amino Acids, Peptides Analogues
+Habit Forming: No
+
+USES
+Treatment of Anemia due to chronic kidney disease
+Treatment of Anemia due to cancer chemotherapy
+
+SIDE EFFECTS
+High blood pressure
+Rash
+Injection site pain
+Breathlessness
+Cough
+Peripheral edema
+Procedural hypotension (low blood pressure)
+Convulsion
+Thromboembolism
+
+SUBSTITUTES
+Ibidarb 200mcg Injection
+Derise 200 Injection
+Darbelife 200 Injection
+Cresp Onco 200mcg Injection
+Zynesp 200 Injection

@@ -1,0 +1,75 @@
+Therapeutic Class: CARDIAC
+
+OVERVIEW
+Total medicines: 18381
+Percentage of database: 7.41%
+
+HABIT FORMING STATUS
+No: 18375 medicines
+Yes: 6 medicines
+
+COMMON USES
+Treatment of Hypertension (high blood pressure): 7917 medicines
+Prevention of Heart attack: 4240 medicines
+Prevention of heart attack and stroke: 3620 medicines
+Hypertension (high blood pressure): 3522 medicines
+Treatment of Heart failure: 2247 medicines
+High cholesterol: 2210 medicines
+Treatment of Angina (heart-related chest pain): 2059 medicines
+Treatment of Arrhythmia: 1624 medicines
+Treatment of High cholesterol: 1548 medicines
+Prevention of Migraine: 1416 medicines
+Prevention of Angina (heart-related chest pain): 1414 medicines
+Heart failure: 884 medicines
+Prevention of Stroke: 762 medicines
+Treatment of Edema: 570 medicines
+Treatment of Prevention of heart attack and stroke: 401 medicines
+
+COMMON SIDE EFFECTS
+Nausea: 75 occurrences
+Headache: 64 occurrences
+Sleepiness: 42 occurrences
+Abdominal pain: 42 occurrences
+Dizziness: 37 occurrences
+Diarrhea: 31 occurrences
+Ankle swelling: 29 occurrences
+Flushing (sense of warmth in the face, ears, neck and trunk): 29 occurrences
+Fatigue: 28 occurrences
+Palpitations: 28 occurrences
+Constipation: 28 occurrences
+Indigestion: 21 occurrences
+Slow heart rate: 20 occurrences
+Tiredness: 20 occurrences
+Edema (swelling): 19 occurrences
+
+EXAMPLE MEDICINES
+1. arkamin tablet
+2. aldactone tablet
+3. amlokind-at tablet
+4. atorva tablet
+5. azmarda 50mg tablet
+6. amlokind 5 tablet
+7. amlong tablet
+8. aztor 10 tablet
+9. atorva 40 tablet
+10. acitrom 2 tablet
+11. angispan - tr 2.5mg capsule
+12. amlip 5 tablet
+13. aldactone 50 tablet
+14. amifru 40 tablet
+15. ano metrogyl cream
+16. aztolet  10 tablet
+17. amlopres-at tablet
+18. aquazide 12.5 tablet
+19. aldosmin 500mg tablet
+20. amlovas 5 tablet
+21. acitrom 1 tablet
+22. atorva 20 tablet
+23. adrenaline tartrate injection
+24. atorlip-f tablet
+25. amlodac 5 tablet
+26. aztor 40 tablet
+27. amlip at tablet
+28. aldosmin 1000mg tablet
+29. aten 50 tablet
+30. azmarda 100mg tablet

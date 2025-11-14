@@ -1,0 +1,74 @@
+Therapeutic Class: OPHTHAL
+
+OVERVIEW
+Total medicines: 10573
+Percentage of database: 4.26%
+
+HABIT FORMING STATUS
+No: 10573 medicines
+
+COMMON USES
+Treatment of Fungal infections: 2631 medicines
+Bacterial infections: 2098 medicines
+Treatment of Bacterial infections: 2077 medicines
+Treatment of Bacterial eye infections: 896 medicines
+Treatment of Dry eyes: 650 medicines
+Post-operative eye pain and inflammation: 274 medicines
+Glaucoma: 262 medicines
+Bacterial eye infections: 217 medicines
+Ocular hypertension: 205 medicines
+Treatment of Glaucoma: 165 medicines
+Dry eyes: 159 medicines
+Pain relief: 152 medicines
+Treatment of Malaria: 151 medicines
+Treatment of Allergic conditions: 136 medicines
+Treatment of Ocular hypertension: 134 medicines
+
+COMMON SIDE EFFECTS
+Eye irritation: 35 occurrences
+Eye pain: 33 occurrences
+Blurred vision: 27 occurrences
+Eye discomfort: 23 occurrences
+Burning eyes: 22 occurrences
+Eye itching: 22 occurrences
+Nausea: 15 occurrences
+Stinging sensation: 12 occurrences
+Injection site reactions (pain, swelling, redness): 10 occurrences
+Increased blood urea: 9 occurrences
+Eye redness: 9 occurrences
+Burning sensation: 9 occurrences
+Foreign body sensation in eyes: 9 occurrences
+Stinging in the eyes: 8 occurrences
+Taste change: 8 occurrences
+
+EXAMPLE MEDICINES
+1. amikacin sulphate 500mg injection
+2. andre i-kul eye drop
+3. atropine sulphate injection
+4. add tears lubricant eye drop
+5. apdrops pd eye drop
+6. apdrops eye drop
+7. acivir eye ointment
+8. azopt opthalmic suspension
+9. aquasurge  eye drop
+10. aqualube eye drop
+11. alphagan z ophthalmic solution
+12. accentrix solution for injection
+13. acular ls ophthalmic solution
+14. acupat ophthalmic solution
+15. atropine 1% eye drop
+16. aquim pf eye drop
+17. alcros 100 capsule
+18. alevo 500 tablet
+19. amplinak opthalmic suspension
+20. artificial tears bp eye drop
+21. alcarex eye drop
+22. amiject 500mg injection
+23. apdrops kt 0.4 eye drops bak free
+24. amitax 500mg injection
+25. arpimune me 50mg capsule
+26. alphagan p eye drop
+27. alcros 200 capsule
+28. alcros sb 50 capsule
+29. apdrops dm eye drop
+30. aquasurge  max eye drop

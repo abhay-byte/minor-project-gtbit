@@ -1,0 +1,74 @@
+Therapeutic Class: ANTI NEOPLASTICS
+
+OVERVIEW
+Total medicines: 3513
+Percentage of database: 1.42%
+
+HABIT FORMING STATUS
+No: 3513 medicines
+
+COMMON USES
+Breast cancer: 737 medicines
+Non-small cell lung cancer: 687 medicines
+Prevention of organ rejection in transplant patients: 549 medicines
+Pancreatic cancer: 359 medicines
+Ovarian cancer: 309 medicines
+Cancer: 289 medicines
+Prostate cancer: 264 medicines
+Cancer of colon and rectum: 262 medicines
+Treatment of Rheumatoid arthritis: 250 medicines
+Treatment of Breast cancer: 216 medicines
+Treatment of Psoriasis: 190 medicines
+Treatment of Infertility due to anovulation: 175 medicines
+Blood cancer: 153 medicines
+Blood cancer (Chronic myeloid leukaemia): 139 medicines
+Cancer of head and neck: 134 medicines
+
+COMMON SIDE EFFECTS
+Nausea: 62 occurrences
+Diarrhea: 41 occurrences
+Decreased white blood cell count: 36 occurrences
+Vomiting: 34 occurrences
+Infection: 30 occurrences
+Loss of appetite: 28 occurrences
+Fatigue: 27 occurrences
+High blood pressure: 25 occurrences
+Weakness: 24 occurrences
+Headache: 24 occurrences
+Increased bleeding tendency: 22 occurrences
+Rash: 21 occurrences
+Anemia (low number of red blood cells): 20 occurrences
+Cough: 20 occurrences
+Upper respiratory tract infection: 18 occurrences
+
+EXAMPLE MEDICINES
+1. azoran tablet
+2. azoran tablet
+3. azr tablet
+4. arimidex 1mg tablet
+5. azathioprine 50mg tablet
+6. armotraz tablet
+7. avastin 100mg injection
+8. actemra 400 mg injection
+9. actemra 400 mg injection
+10. abirapro 250mg tablet
+11. adriamycin 50mg injection
+12. adalipca 40mg injection
+13. azapure tablet
+14. adfrar injection
+15. azadine injection
+16. aretha tablet
+17. arimidex 1mg tablet
+18. atz 50 tablet
+19. adova capsule
+20. azel 80 capsule
+21. aromita tablet
+22. azithioprine 50mg tablet
+23. azithioprine 50mg tablet
+24. adlumab 40mg injection
+25. avastin 400mg injection
+26. actemra 200 mg injection
+27. azel 40mg capsule
+28. abiratas 500mg tablet
+29. advacan 0.5mg tablet
+30. anolet 2.5mg tablet

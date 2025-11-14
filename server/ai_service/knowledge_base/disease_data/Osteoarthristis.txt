@@ -1,0 +1,16 @@
+Disease: Osteoarthristis
+================================================================================
+
+Symptoms (6):
+1.  joint_pain
+2.  neck_pain
+3.  knee_pain
+4.  hip_joint_pain
+5.  swelling_joints
+6.  painful_walking
+
+Precautions (4):
+1. acetaminophen
+2. consult nearest hospital
+3. follow up
+4. salt baths

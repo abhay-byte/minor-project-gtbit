@@ -38,7 +38,7 @@ if ! command -v docker &> /dev/null; then
     exit 1
 fi
 # Also check if the Docker daemon is running
-if ! docker info &> /dev/null; then
+if ! sudo docker info &> /dev/null; then
     echo "[ERROR] Docker is installed, but the Docker daemon is not running."
     echo "Please start Docker Desktop and try again."
     exit 1
@@ -46,6 +46,13 @@ fi
 echo "Docker is installed and running."
 echo "Version: $(docker -v)"
 echo ""
+
+# Check for Docker-compose
+if ! command -v docker-compose &> /dev/null; then
+    echo "[ERROR] Docker-Compose is not installed."
+    echo "Please install Docker-compose Desktop before continuing."
+    exit 1
+fi
 
 print_header "Check complete."
 

@@ -1,0 +1,18 @@
+vetalog injection
+
+Therapeutic Class: DERMA
+Action Class: Glucocorticoids
+Chemical Class: Glucocorticoids
+Habit Forming: No
+
+USES
+Treatment of Rheumatoid arthritis
+Treatment of Osteoarthritis
+
+SIDE EFFECTS
+Infection
+Increased risk of infection
+Headache
+Joint pain
+Injection site reactions (pain, swelling, redness)
+

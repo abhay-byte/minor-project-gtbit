@@ -1,0 +1,16 @@
+oncovac vaccine
+
+Therapeutic Class: VACCINES
+Action Class: Live attenuated vaccines
+Chemical Class: Vaccines
+Habit Forming: No
+
+USES
+Treatment of Early-stage bladder cancer
+
+SIDE EFFECTS
+Urinary tract infection
+
+SUBSTITUTES
+SII-Onco-BCG Injection
+Onco Bcg 40mg Injection

@@ -1,0 +1,25 @@
+zpm 0.5 tablet dt
+
+Therapeutic Class: NEURO CNS
+Action Class: Benzodiazepines
+Chemical Class: Benzodiazepines Derivative
+Habit Forming: Yes
+
+USES
+Treatment of Anxiety disorder
+Treatment of Epilepsy/Seizures
+
+SIDE EFFECTS
+Depression
+Dizziness
+Drowsiness
+Fatigue
+Impaired coordination
+Memory impairment
+
+SUBSTITUTES
+Zeptril 0.5mg Tablet DT
+Zolpidox 0.5 Tablet DT
+Clonsyc 0.5 DT Tablet
+Almac 0.5mg Tablet DT
+Zicam 0.5 Tablet DT

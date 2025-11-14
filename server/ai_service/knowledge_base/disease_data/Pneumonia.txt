@@ -1,0 +1,21 @@
+Disease: Pneumonia
+================================================================================
+
+Symptoms (11):
+1.  chills
+2.  fatigue
+3.  cough
+4.  high_fever
+5.  breathlessness
+6.  sweating
+7.  malaise
+8.  phlegm
+9.  chest_pain
+10.  fast_heart_rate
+11.  rusty_sputum
+
+Precautions (4):
+1. consult doctor
+2. medication
+3. rest
+4. follow up

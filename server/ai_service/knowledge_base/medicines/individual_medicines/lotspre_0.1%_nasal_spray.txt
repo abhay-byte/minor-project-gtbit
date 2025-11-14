@@ -1,0 +1,14 @@
+lotspre 0.1% nasal spray
+
+Therapeutic Class: OPHTHAL
+Action Class: Glucocorticoids
+Chemical Class: Glucocorticoids
+Habit Forming: No
+
+USES
+Nasal allergy symptoms
+
+SIDE EFFECTS
+Nasal irritation
+Sneezing
+

@@ -1,0 +1,23 @@
+biohib vaccine
+
+Therapeutic Class: VACCINES
+Action Class: Subunit (Purified antigen)
+Chemical Class: Vaccines
+Habit Forming: No
+
+USES
+Prevention of Haemophilus influenzae Type b disease
+
+SIDE EFFECTS
+Injection site reactions (pain, swelling, redness)
+Diarrhea
+Injection site swelling
+Loss of appetite
+Fever
+Injection site pain
+Irritability
+Drowsiness
+Restlessness
+
+SUBSTITUTES
+Hibe Vaccine Combipack (Each 0.5ml)

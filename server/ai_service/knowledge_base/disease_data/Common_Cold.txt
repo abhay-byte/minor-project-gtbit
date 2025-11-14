@@ -1,0 +1,27 @@
+Disease: Common Cold
+================================================================================
+
+Symptoms (17):
+1.  continuous_sneezing
+2.  chills
+3.  fatigue
+4.  cough
+5.  high_fever
+6.  headache
+7.  swelled_lymph_nodes
+8.  malaise
+9.  phlegm
+10.  throat_irritation
+11.  redness_of_eyes
+12.  sinus_pressure
+13.  runny_nose
+14.  congestion
+15.  chest_pain
+16.  loss_of_smell
+17.  muscle_pain
+
+Precautions (4):
+1. drink vitamin c rich drinks
+2. take vapour
+3. avoid cold food
+4. keep fever in check

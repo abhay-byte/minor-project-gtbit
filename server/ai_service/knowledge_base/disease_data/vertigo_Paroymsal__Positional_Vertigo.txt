@@ -1,0 +1,16 @@
+Disease: (vertigo) Paroymsal  Positional Vertigo
+================================================================================
+
+Symptoms (6):
+1.  vomiting
+2.  headache
+3.  nausea
+4.  spinning_movements
+5.  loss_of_balance
+6.  unsteadiness
+
+Precautions (4):
+1. lie down
+2. avoid sudden change in body
+3. avoid abrupt head movment
+4. relax
