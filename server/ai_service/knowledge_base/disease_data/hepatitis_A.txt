@@ -1,0 +1,21 @@
+Disease: hepatitis A
+================================================================================
+
+Symptoms (11):
+1.  joint_pain
+2.  vomiting
+3.  yellowish_skin
+4.  dark_urine
+5.  nausea
+6.  loss_of_appetite
+7.  abdominal_pain
+8.  diarrhoea
+9.  mild_fever
+10.  yellowing_of_eyes
+11.  muscle_pain
+
+Precautions (4):
+1. Consult nearest hospital
+2. wash hands through
+3. avoid fatty spicy food
+4. medication

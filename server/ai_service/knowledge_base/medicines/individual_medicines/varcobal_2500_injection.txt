@@ -1,0 +1,22 @@
+varcobal 2500 injection
+
+Therapeutic Class: VITAMINS MINERALS NUTRIENTS
+Action Class: Vitamins
+Chemical Class: Cobalamin Derivative
+Habit Forming: No
+
+USES
+Vitamin B12 deficiency
+
+SIDE EFFECTS
+Decreased appetite
+Diarrhea
+Nausea
+Rash
+
+SUBSTITUTES
+Zitvit 2500mcg Injection
+Hoscob 2500mcg Injection
+X-Mine Injection
+Neuroryl 2500mcg Injection
+Mn-Forte 2500mcg Injection

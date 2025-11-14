@@ -1,0 +1,74 @@
+Therapeutic Class: VACCINES
+
+OVERVIEW
+Total medicines: 329
+Percentage of database: 0.13%
+
+HABIT FORMING STATUS
+No: 329 medicines
+
+COMMON USES
+Prevention of Hepatitis B infection: 57 medicines
+Prevention of Tetanus: 37 medicines
+Prevention of Influenza (flu): 34 medicines
+Immunoglobulins deficiency: 33 medicines
+Prevention of Rabies: 29 medicines
+Prevention of Infections: 21 medicines
+Tetanus: 19 medicines
+Diphtheria: 19 medicines
+Pertussis: 15 medicines
+Prevention of Diphtheria: 15 medicines
+Prevention of Pertussis: 15 medicines
+Prevention of Haemophilus influenzae Type b disease: 14 medicines
+Prevention of Typhoid fever: 13 medicines
+Prevention of Polio: 13 medicines
+Prevention of Meningococcal disease: 10 medicines
+
+COMMON SIDE EFFECTS
+Headache: 51 occurrences
+Injection site reactions (pain, swelling, redness): 41 occurrences
+Fever: 35 occurrences
+Nausea: 32 occurrences
+Flushing (sense of warmth in the face, ears, neck and trunk): 26 occurrences
+Loss of appetite: 21 occurrences
+Diarrhea: 20 occurrences
+Chills: 20 occurrences
+Muscle pain: 20 occurrences
+Fatigue: 20 occurrences
+Back pain: 19 occurrences
+Dizziness: 19 occurrences
+Weakness: 16 occurrences
+Decreased blood pressure: 15 occurrences
+Slow heart rate: 15 occurrences
+
+EXAMPLE MEDICINES
+1. antid 300mcg/ml injection
+2. antisnake venom injection
+3. abhayrab-pf vaccine
+4. adacel vaccine
+5. avaxim 80u pediatric vaccine
+6. abhay-tox vaccine
+7. asvs injection
+8. asvs injection
+9. acthib vaccine
+10. abhayrig 300iu injection
+11. avaxim 160iu injection
+12. abhay tag injection
+13. abhay m injection
+14. boostrix vaccine
+15. bharglob 16.5% injection
+16. biovac a vaccine
+17. bett vaccine (each 0.5ml)
+18. biovac typhoid 25mcg injection
+19. berirab p injection
+20. bevac vaccine
+21. berab vaccine
+22. bevac adult vaccine
+23. biovac v vaccine
+24. bharglob 16.5% injection
+25. biopolio b1/3 oral vaccine
+26. bharglob 10% injection
+27. be td vaccine
+28. bett vaccine
+29. bevac vaccine
+30. bett vaccine (each 0.5ml)

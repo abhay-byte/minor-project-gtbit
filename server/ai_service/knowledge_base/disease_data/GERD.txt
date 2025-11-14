@@ -1,0 +1,16 @@
+Disease: GERD
+================================================================================
+
+Symptoms (6):
+1.  stomach_pain
+2.  acidity
+3.  ulcers_on_tongue
+4.  vomiting
+5.  cough
+6.  chest_pain
+
+Precautions (4):
+1. avoid fatty spicy food
+2. avoid lying down after eating
+3. maintain healthy weight
+4. exercise

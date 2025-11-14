@@ -1,0 +1,45 @@
+Medicine Database Guide
+
+OVERVIEW
+Total medicines: 248218
+Therapeutic classes: 22
+Action classes: 431
+
+HOW TO USE THIS DATABASE
+1. Search by medicine name in individual_medicines/
+2. Browse by therapeutic class (e.g., Respiratory, Cardiac)
+3. Browse by action class (e.g., H2 Receptor Blocker)
+4. Check side effects and substitutes for each medicine
+
+THERAPEUTIC CLASSES DISTRIBUTION
+ANTI INFECTIVES: 57503 medicines
+GASTRO INTESTINAL: 33630 medicines
+PAIN ANALGESICS: 32267 medicines
+NEURO CNS: 23319 medicines
+RESPIRATORY: 23052 medicines
+CARDIAC: 18381 medicines
+ANTI DIABETIC: 11679 medicines
+OPHTHAL: 10573 medicines
+DERMA: 9883 medicines
+HORMONES: 5629 medicines
+GYNAECOLOGICAL: 4406 medicines
+VITAMINS MINERALS NUTRIENTS: 4216 medicines
+ANTI NEOPLASTICS: 3513 medicines
+BLOOD RELATED: 2659 medicines
+UROLOGY: 1844 medicines
+OPHTHAL OTOLOGICALS: 1725 medicines
+ANTI MALARIALS: 1679 medicines
+SEX STIMULANTS REJUVENATORS: 723 medicines
+OTOLOGICALS: 485 medicines
+OTHERS: 481 medicines
+
+HABIT FORMING MEDICINES
+No: 242215 medicines (97.6%)
+Yes: 6003 medicines (2.4%)
+
+IMPORTANT NOTES
+Always consult a healthcare professional before taking any medicine
+Check for drug interactions with current medications
+Be aware of side effects and report serious reactions
+Follow prescribed dosage instructions
+Store medicines as directed

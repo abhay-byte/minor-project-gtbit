@@ -1,0 +1,17 @@
+Disease: Alcoholic hepatitis
+================================================================================
+
+Symptoms (7):
+1.  vomiting
+2.  yellowish_skin
+3.  abdominal_pain
+4.  swelling_of_stomach
+5.  distention_of_abdomen
+6.  history_of_alcohol_consumption
+7.  fluid_overload
+
+Precautions (4):
+1. stop alcohol consumption
+2. consult doctor
+3. medication
+4. follow up

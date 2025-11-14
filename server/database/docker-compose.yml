@@ -28,16 +28,16 @@ services:
 
     # Volumes for data persistence and initialization scripts.
     volumes:
-      # Named volume to persist the database data on the host machine.
-      # This ensures your data is not lost when the container is stopped or removed.
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - clinico-net
 
-      # Mounts the local `sql` directory into the container's initialization directory.
-      # Any .sql or .sh files in this directory are run automatically when the container
-      # is first created, in alphabetical order.
-      - ./sql:/docker-entrypoint-initdb.d
 
 # Define the named volume for data persistence.
 volumes:
   postgres_data:
     driver: local
+
+networks:
+  clinico-net:
+    external: true

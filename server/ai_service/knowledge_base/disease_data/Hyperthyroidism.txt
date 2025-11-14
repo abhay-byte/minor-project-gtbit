@@ -1,0 +1,21 @@
+Disease: Hyperthyroidism
+================================================================================
+
+Symptoms (11):
+1.  fatigue
+2.  mood_swings
+3.  weight_loss
+4.  restlessness
+5.  sweating
+6.  diarrhoea
+7.  fast_heart_rate
+8.  excessive_hunger
+9.  muscle_weakness
+10.  irritability
+11.  abnormal_menstruation
+
+Precautions (4):
+1. eat healthy
+2. massage
+3. use lemon balm
+4. take radioactive iodine treatment

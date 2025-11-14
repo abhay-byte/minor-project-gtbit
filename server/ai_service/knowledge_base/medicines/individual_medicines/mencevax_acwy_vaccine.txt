@@ -1,0 +1,23 @@
+mencevax acwy vaccine
+
+Therapeutic Class: VACCINES
+Action Class: Subunit (Purified antigen)
+Chemical Class: Vaccines
+Habit Forming: No
+
+USES
+Prevention of Meningococcal disease
+
+SIDE EFFECTS
+Injection site reaction
+Nausea
+Headache
+Sleepiness
+Irritation
+Muscle pain
+
+SUBSTITUTES
+Meningitis Act Injection
+Meningo A&C Injection
+Menomune Injection
+Quadri Meningo Vaccine

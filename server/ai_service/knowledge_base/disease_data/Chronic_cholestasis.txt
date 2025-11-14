@@ -1,0 +1,17 @@
+Disease: Chronic cholestasis
+================================================================================
+
+Symptoms (7):
+1. itching
+2.  vomiting
+3.  yellowish_skin
+4.  nausea
+5.  loss_of_appetite
+6.  abdominal_pain
+7.  yellowing_of_eyes
+
+Precautions (4):
+1. cold baths
+2. anti itch medicine
+3. consult doctor
+4. eat healthy

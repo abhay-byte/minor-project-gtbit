@@ -1,0 +1,75 @@
+Therapeutic Class: GASTRO INTESTINAL
+
+OVERVIEW
+Total medicines: 33630
+Percentage of database: 13.55%
+
+HABIT FORMING STATUS
+No: 33394 medicines
+Yes: 236 medicines
+
+COMMON USES
+Treatment of Gastroesophageal reflux disease (Acid reflux): 13788 medicines
+Treatment of Peptic ulcer disease: 13522 medicines
+Treatment of Heartburn: 4920 medicines
+Treatment of Nausea: 3211 medicines
+Treatment of Bacterial & parasitic infections: 3208 medicines
+Treatment of Vomiting: 2214 medicines
+Gastroesophageal reflux disease (Acid reflux): 1990 medicines
+Treatment of Bacterial infections: 1539 medicines
+Treatment of Abdominal pain: 1372 medicines
+Treatment of Irritable bowel syndrome: 1224 medicines
+Treatment of Intestinal ulcers: 1027 medicines
+Vomiting: 1001 medicines
+Treatment of Stomach ulcers: 904 medicines
+Treatment of Primary biliary cirrhosis: 835 medicines
+Treatment of Gallbladder stones: 790 medicines
+
+COMMON SIDE EFFECTS
+Diarrhea: 71 occurrences
+Headache: 56 occurrences
+Nausea: 35 occurrences
+Flatulence: 31 occurrences
+Constipation: 31 occurrences
+Dizziness: 30 occurrences
+Stomach pain: 26 occurrences
+Vomiting: 26 occurrences
+Dryness in mouth: 23 occurrences
+Weakness: 13 occurrences
+Abdominal pain: 12 occurrences
+Indigestion: 11 occurrences
+Flu-like symptoms: 9 occurrences
+Itching: 8 occurrences
+Insomnia (difficulty in sleeping): 7 occurrences
+
+EXAMPLE MEDICINES
+1. aciloc 150 tablet
+2. avomine tablet
+3. aciloc rd 20 tablet
+4. anafortan 25 mg/300 mg tablet
+5. acogut tablet
+6. aciloc 300 tablet
+7. acogut 300 er tablet
+8. andial 2mg tablet
+9. actapro tablet
+10. ancool  oral suspension sugar free
+11. aciloc injection
+12. actibile 300 tablet
+13. anaspas tablet
+14. anafortan syrup
+15. acera-d capsule sr
+16. acuvert tablet
+17. alciflox 500mg tablet
+18. aceclo spas tablet
+19. alcipro 500mg tablet
+20. antacid tablet
+21. avomine 25mg tablet md
+22. acotrust  tablet
+23. aprecap 125/80 capsule
+24. amicline tablet
+25. anafortan-mf 50mg/250mg tablet
+26. anaspas 25mg injection
+27. acidose 500mg tablet
+28. actapro tablet
+29. actibile 150 tablet
+30. analiv 500 tablet

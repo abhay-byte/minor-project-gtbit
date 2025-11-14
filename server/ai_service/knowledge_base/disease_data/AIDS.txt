@@ -1,0 +1,14 @@
+Disease: AIDS
+================================================================================
+
+Symptoms (4):
+1.  muscle_wasting
+2.  patches_in_throat
+3.  high_fever
+4.  extra_marital_contacts
+
+Precautions (4):
+1. avoid open cuts
+2. wear ppe if possible
+3. consult doctor
+4. follow up

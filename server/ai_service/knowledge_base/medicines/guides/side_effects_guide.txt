@@ -1,0 +1,62 @@
+Side Effects Reference Guide
+
+MOST COMMON SIDE EFFECTS
+Analyzed from 10000 medicines
+
+Nausea: 6350 occurrences
+Diarrhea: 5681 occurrences
+Vomiting: 4105 occurrences
+Headache: 3934 occurrences
+Dizziness: 2863 occurrences
+Stomach pain: 2075 occurrences
+Rash: 1413 occurrences
+Dryness in mouth: 1375 occurrences
+Sleepiness: 1355 occurrences
+Indigestion: 1343 occurrences
+Abdominal pain: 1297 occurrences
+Flatulence: 1290 occurrences
+Constipation: 1095 occurrences
+Fatigue: 1082 occurrences
+Loss of appetite: 1018 occurrences
+Heartburn: 758 occurrences
+Allergic reaction: 728 occurrences
+Increased liver enzymes: 707 occurrences
+Weakness: 643 occurrences
+Insomnia (difficulty in sleeping): 624 occurrences
+Weight gain: 557 occurrences
+Itching: 549 occurrences
+Skin rash: 491 occurrences
+Blurred vision: 488 occurrences
+Tremors: 486 occurrences
+Tiredness: 416 occurrences
+Drowsiness: 381 occurrences
+Hypoglycemia (low blood glucose level): 363 occurrences
+Palpitations: 343 occurrences
+Upset stomach: 336 occurrences
+Joint pain: 334 occurrences
+Cough: 325 occurrences
+Edema (swelling): 323 occurrences
+Injection site reactions (pain, swelling, redness): 317 occurrences
+Abnormal liver function tests: 296 occurrences
+Flu-like symptoms: 296 occurrences
+Nasopharyngitis (inflammation of the throat and nasal passages): 292 occurrences
+Application site reactions (burning, irritation, itching and redness): 292 occurrences
+Upper respiratory tract infection: 280 occurrences
+Bloating: 273 occurrences
+Orthostatic hypotension (sudden lowering of blood pressure on standing): 239 occurrences
+Stomach pain/epigastric pain: 232 occurrences
+Restlessness: 230 occurrences
+Increased heart rate: 224 occurrences
+Allergy: 223 occurrences
+Sweating: 222 occurrences
+Anemia (low number of red blood cells): 217 occurrences
+Uncoordinated body movements: 205 occurrences
+Depression: 202 occurrences
+Decreased blood pressure: 200 occurrences
+
+SIDE EFFECT SEVERITY CATEGORIES
+Mild: Nausea, Headache, Dizziness, Fatigue
+Moderate: Vomiting, Rash, Sleep disturbances
+Severe: Allergic reactions, Chest pain, Difficulty breathing
+
+Seek immediate medical attention for severe side effects

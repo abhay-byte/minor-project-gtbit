@@ -1,0 +1,74 @@
+Therapeutic Class: DERMA
+
+OVERVIEW
+Total medicines: 9883
+Percentage of database: 3.98%
+
+HABIT FORMING STATUS
+No: 9883 medicines
+
+COMMON USES
+Treatment of Fungal skin infections: 1990 medicines
+Treatment of Skin infections: 1110 medicines
+Treatment of Acne: 956 medicines
+Fungal skin infections: 592 medicines
+Scabies: 505 medicines
+Treatment of Bacterial skin infections: 470 medicines
+Treatment of Skin conditions with inflammation & itching: 414 medicines
+Psoriasis: 395 medicines
+Skin infections: 354 medicines
+Treatment of Hair loss: 339 medicines
+Treatment of Dandruff: 299 medicines
+Treatment of Psoriasis: 269 medicines
+Treatment of Eczema: 266 medicines
+Treatment of Allergic skin conditions: 235 medicines
+Treatment of Melasma: 234 medicines
+
+COMMON SIDE EFFECTS
+Erythema (skin redness): 48 occurrences
+Dry skin: 42 occurrences
+Skin peeling: 35 occurrences
+Itching: 30 occurrences
+Skin irritation: 26 occurrences
+Application site reactions (burning, irritation, itching and redness): 23 occurrences
+Blisters on skin: 23 occurrences
+Skin rash: 22 occurrences
+Nail disorder: 21 occurrences
+Burning sensation at the site of application: 15 occurrences
+Rash: 10 occurrences
+Dryness in mouth: 8 occurrences
+Hair loss: 8 occurrences
+Lip inflammation: 8 occurrences
+Dry eye: 8 occurrences
+
+EXAMPLE MEDICINES
+1. anovate cream
+2. adaferin gel
+3. acivir cream
+4. aziderm 20% cream
+5. acnesol a nano gel
+6. amrolstar cream
+7. adalene nanogel gel
+8. atonide gel
+9. af-k lotion
+10. acivir cream
+11. ascabiol emulsion
+12. ascabiol emulsion
+13. ascabiol emulsion
+14. acrotac 25mg capsule
+15. amrolstar nail lacquer
+16. acutret 10 capsule
+17. arcolane 2% scalp solution
+18. aclind bp 2.5% gel
+19. a-ret 0.05% gel
+20. aziderm 10% gel
+21. adaple-c gel
+22. alight plus gel
+23. atharv healthcare minrav 5 minoxidil 5% topical solution
+24. acnovate gel
+25. ab-next gel
+26. adapen gel
+27. atonide cream
+28. aziderm 15% gel
+29. aziderm 20% gel
+30. acnetor ad gel

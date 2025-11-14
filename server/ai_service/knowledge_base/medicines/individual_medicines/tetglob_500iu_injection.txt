@@ -1,0 +1,14 @@
+tetglob 500iu injection
+
+Therapeutic Class: VACCINES
+Action Class: Immunoglobulin
+Chemical Class: Vaccines
+Habit Forming: No
+
+USES
+Prevention of Tetanus
+
+SIDE EFFECTS
+Tiredness
+Drowsiness
+

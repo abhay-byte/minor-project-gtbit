@@ -1,0 +1,13 @@
+Disease: Heart attack
+================================================================================
+
+Symptoms (4):
+1.  vomiting
+2.  breathlessness
+3.  sweating
+4.  chest_pain
+
+Precautions (3):
+1. call ambulance
+2. chew or swallow asprin
+3. keep calm

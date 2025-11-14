@@ -1,0 +1,21 @@
+saltum -ds tablet
+
+Therapeutic Class: ANTI INFECTIVES
+Action Class: Ampicillin & Sulbactam ester compound
+Chemical Class: Penicillin
+Habit Forming: No
+
+USES
+Bacterial infections
+
+SIDE EFFECTS
+Vomiting
+Nausea
+Diarrhea
+
+SUBSTITUTES
+Sultapro-Duo Tablet
+Zulta 750mg Tablet
+Sultafix 750mg Tablet
+Tami 750mg Tablet
+Ecosyn 750mg Tablet

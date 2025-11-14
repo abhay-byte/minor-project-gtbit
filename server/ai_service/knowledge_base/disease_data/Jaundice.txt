@@ -1,0 +1,18 @@
+Disease: Jaundice
+================================================================================
+
+Symptoms (8):
+1. itching
+2.  vomiting
+3.  fatigue
+4.  weight_loss
+5.  high_fever
+6.  yellowish_skin
+7.  dark_urine
+8.  abdominal_pain
+
+Precautions (4):
+1. drink plenty of water
+2. consume milk thistle
+3. eat fruits and high fiberous food
+4. medication

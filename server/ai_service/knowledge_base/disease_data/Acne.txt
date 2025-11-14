@@ -1,0 +1,14 @@
+Disease: Acne
+================================================================================
+
+Symptoms (4):
+1.  skin_rash
+2.  pus_filled_pimples
+3.  blackheads
+4.  scurring
+
+Precautions (4):
+1. bath twice
+2. avoid fatty spicy food
+3. drink plenty of water
+4. avoid too many products

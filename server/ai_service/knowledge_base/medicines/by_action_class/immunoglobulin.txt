@@ -1,0 +1,29 @@
+Action Class: Immunoglobulin
+
+OVERVIEW
+Total medicines: 68
+
+MECHANISM OF ACTION
+These medicines work by: Immunoglobulin
+
+EXAMPLE MEDICINES
+1. antid 300mcg/ml injection
+2. bharglob 16.5% injection
+3. bharglob 16.5% injection
+4. bharglob 10% injection
+5. cytotect 10% injection
+6. cytotect 10% injection
+7. emglobulin 5% solution
+8. el-hep 100iu injection
+9. fovepta 200iu solution for injection
+10. globucel solution for infusion
+11. globucel 1000mg injection
+12. gamaglobin 16.5% injection
+13. gamma i.v. 5gm infusion
+14. gamma i.v. 500mg injection
+15. gammaren solution for infusion
+16. genexglob infusion
+17. gammarp 2.5gm injection
+18. globuprime infusion
+19. gammaven 5gm infusion
+20. gamunex 10% infusion

@@ -1,0 +1,14 @@
+Disease: Urinary tract infection
+================================================================================
+
+Symptoms (4):
+1.  burning_micturition
+2.  bladder_discomfort
+3.  foul_smell_of urine
+4.  continuous_feel_of_urine
+
+Precautions (4):
+1. drink plenty of water
+2. increase vitamin c intake
+3. drink cranberry juice
+4. take probiotics

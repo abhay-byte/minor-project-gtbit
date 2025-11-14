@@ -1,0 +1,40 @@
+Mental Health Status Recognition Guide
+
+OVERVIEW
+Total statements analyzed: 53043
+
+STATUS DISTRIBUTION
+Normal: 16351 statements (30.8%)
+Depression: 15404 statements (29.0%)
+Suicidal: 10653 statements (20.1%)
+Anxiety: 3888 statements (7.3%)
+Bipolar: 2877 statements (5.4%)
+Stress: 2669 statements (5.0%)
+Personality_Disorder: 1201 statements (2.3%)
+
+HOW TO USE THIS KNOWLEDGE BASE
+1. Analyze the user's statement for emotional keywords
+2. Match patterns with the mental health status categories
+3. Identify the severity and urgency level
+4. Provide appropriate support and resources
+5. For suicidal indicators, prioritize immediate intervention
+
+SEVERITY LEVELS
+CRITICAL (Suicidal): Immediate crisis intervention required
+HIGH (Depression, Severe Anxiety): Professional help recommended
+MODERATE (Stress, Anxiety, Bipolar): Support and monitoring needed
+LOW (Normal): General wellness support
+
+RESPONSE GUIDELINES
+Normal: Engage in positive conversation, maintain wellness
+Stress: Offer coping strategies, stress management techniques
+Anxiety: Provide calming techniques, grounding exercises
+Depression: Show empathy, encourage professional help
+Bipolar: Encourage mood tracking, professional consultation
+Personality Disorder: Long-term therapy support
+Suicidal: IMMEDIATE crisis hotline, emergency services
+
+CRISIS RESOURCES
+iCALL Lifeline: 9152987821 (US)
+Crisis Text Line: Text HOME to 741741
+International Association for Suicide Prevention: https://www.iasp.info/resources/Crisis_Centres/

@@ -1,0 +1,74 @@
+Therapeutic Class: OTOLOGICALS
+
+OVERVIEW
+Total medicines: 485
+Percentage of database: 0.20%
+
+HABIT FORMING STATUS
+No: 485 medicines
+
+COMMON USES
+Treatment of Ear infection: 168 medicines
+Bacterial infections: 148 medicines
+Treatment of Softening of earwax: 65 medicines
+Bacterial eye infections: 33 medicines
+Treatment of Fungal infections: 22 medicines
+Treatment of Ear pain: 17 medicines
+Treatment of Severe bacterial infections: 15 medicines
+Treatment of Bacterial infections: 6 medicines
+Softening of earwax: 4 medicines
+Ear infection: 3 medicines
+Treatment of Skin infections: 2 medicines
+Treatment of Fungal skin infections: 2 medicines
+Treatment of Bacterial eye / ear infections: 1 medicines
+Treatment of Ear Infections: 1 medicines
+Skin infections: 1 medicines
+
+COMMON SIDE EFFECTS
+Vomiting: 29 occurrences
+Nausea: 29 occurrences
+Diarrhea: 29 occurrences
+Taste change: 29 occurrences
+Application site reactions (burning, irritation, itching and redness): 24 occurrences
+Irritation of ear: 20 occurrences
+Insomnia (difficulty in sleeping): 10 occurrences
+Anaphylactic reaction: 10 occurrences
+Headache: 10 occurrences
+Stinging in the eyes: 10 occurrences
+Blurred vision: 10 occurrences
+Ear discomfort: 5 occurrences
+Application site irritation: 5 occurrences
+Burning of ear: 5 occurrences
+Stinging sensation: 5 occurrences
+
+EXAMPLE MEDICINES
+1. aqua ear drop
+2. acetik-hc ear drop
+3. anna ear drop
+4. audotic ear drop
+5. alwax ear drop
+6. audisol ear drop
+7. alwax ear drop
+8. audisol ear drop
+9. auricle ear drop
+10. auribact ear drop
+11. afqure ear drop
+12. anbcl ear drop
+13. arniwax ear drop
+14. andrecin eye drop
+15. acebiotic ear drop
+16. amphen 125mg/5ml syrup
+17. agclo-nc ear drop
+18. agclo-ac ear drop
+19. albiotic ear drop
+20. aceclean ear wax drop
+21. antikind ear drop
+22. abotic ac ear drop
+23. armycetin 500mg capsule
+24. andrecin eye ointment
+25. albumycetin 0.4% eye/ear drops
+26. aurotic ear drop
+27. armycetin capsule
+28. armycetin capsule
+29. acronicol 500mg capsule
+30. axobiotic ear drop

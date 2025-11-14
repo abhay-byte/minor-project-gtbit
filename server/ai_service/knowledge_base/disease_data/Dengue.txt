@@ -1,0 +1,24 @@
+Disease: Dengue
+================================================================================
+
+Symptoms (14):
+1.  skin_rash
+2.  chills
+3.  joint_pain
+4.  vomiting
+5.  fatigue
+6.  high_fever
+7.  headache
+8.  nausea
+9.  loss_of_appetite
+10.  pain_behind_the_eyes
+11.  back_pain
+12.  malaise
+13.  muscle_pain
+14.  red_spots_over_body
+
+Precautions (4):
+1. drink papaya leaf juice
+2. avoid fatty spicy food
+3. keep mosquitos away
+4. keep hydrated

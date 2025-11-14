@@ -1,0 +1,82 @@
+Mental Health Status: Normal
+
+OVERVIEW
+Total statements: 16351
+Percentage of dataset: 30.8%
+
+COMMON KEYWORDS
+end: 1098 occurrences
+good: 698 occurrences
+well: 378 occurrences
+sad: 248 occurrences
+great: 244 occurrences
+tired: 212 occurrences
+happy: 190 occurrences
+okay: 161 occurrences
+die: 150 occurrences
+hurt: 136 occurrences
+kill: 89 occurrences
+numb: 77 occurrences
+rage: 68 occurrences
+alone: 58 occurrences
+fine: 56 occurrences
+
+EXAMPLE STATEMENTS
+1. Why do racers after the race immediately wear a hat??
+2. Nugas together from time to time...SD-SMP: at a friend's house, at an internet cafe. High school: in a friend's room/room, in the lobby, in the outdoor area. Face-to-face lectures: on campus, boarding house, at a coffee shop. Distance learning era lecture: "Tell me, let's go on assignment, let me have a friend" then videocall.
+3. Indihouse why the hell
+4. @JonathanRKnight
+5. [HELP RT] WE FANBASE SHAKE RP! JOIN? FOLLOW FIRST. FOLLOW BACK MENTIONS. THEN PROMOTE US :)
+6. Oops, I'm still so tired
+7. rained out?
+8. Longing to float in the strains of my breath
+9. Ever since I left school, I’ve felt much more in control of my fears and my emotions, I’ve had a happier outlook on life and I’ve been happier overall. But now, it just seems like every time I’m sick, if I’m nauseous or dizzy, it has to be my anxiety. And if I don’t try to plough through that kind of problem, I’m letting anxiety ruin me, according to my family. I know they don’t get how real it feels when you’re sick from anxiety but I know the difference in myself. I know the difference between anxiety-sick and having an illness caused by something else.
+10. The shortest way to improve sustenance is to increase love in the family
+11. All I want is the truth.
+12. the kids love the house, too.
+13. Okay then buddy
+14. Good morning.
+15. you're driving too fast.
+16. Hey everyone, throwaway for personal reasons. Tonight my girlfriend met her lady friend she didn't see for a year. I bought them wine, paid for dinner and was happy to give them the entire night if they wanted to so they could spend time together. Later on in the night I received a call at 1am requesting me to take her home. I get there and there's a person I've literally never seen before, a guy.
+17. My dick sucks, I want to be with you
+18. north carolina baby aint nothin stopping them but the nba draft
+19. i don t want to wake up early tomorrow damn you work
+20. Oh my god, I'm so stupid, I'm taking the exam, even where my voice is leaking into zoom IHHHHH I'm not afraid of being scolded by the lecturer BUT SHOULD BE SO SHAME
+21. whoisariston no problem tongue in cheek remark lot of acronym but no nz
+22. just finished ucl
+23. It's been silenced for days, how come it's not green, it's sb :(
+24. Early in the morning, after the duck ride, I want to share this CPO chart, it looks interesting #chart #mbahnasip
+25. He laughed a loudly with a couple of people, but to my surprise, many of the others stayed silent. “I have faith young fool, I’m going to heaven, John 3:16 for God so loved the worl-” “I know, but Jesus said what is our faith without good works?” More awkward silence, while he still stood close to my face, so I turned away. I found out much later that he was kicked out of the food place for being disrespectful to a pastor that came to preach.
+26. #cflsc1 enough of the shameless book plug
+27. I thought I was the one you were looking for but it turns out I'm just an option
+28. WHAT TO SAY TO DREAMIES???
+29. finally got THR
+30. Hang me like this. I'm doc mamai again, I've had to face a basic question. If you hang asking the question, you can't do it because you can't do it, and you can't even settle it when you ask someone else. Okay, I'm accepted. Siye laaaa
+31. passed out last night while mum wa puttin cream on my tattoo
+32. while im fuckin at it, http://is.gd/q86o buy a shirt please
+33. different thingsÂ—not the same thing all the time.
+34. it was the best game ever.
+35. a great burger and great service.
+36. especially the metal ones.
+37. i bought some new shoes.
+39. como que fly high jyp ?
+40. nooooo i wa doing so good im not allowed to cry ughhh staying up late make me think about stuff
+41. have an invite for quot healthy dining quot session at ashok hotel today with exec chef r chopra but damn workload will have to skip it
+42. It's so cold I swear
+43. i don't know, but was there a certain movie you wanted to see?
+44. that was mean to say.
+45. jamsandwich i wa sniffling for the first time this year at am today crappy isn t it
+46. babyvtec yeah hw
+47. finally my acc is reduced by one
+48. so the cop will stop those cars?
+49. Thank God even though it's just a ride through
+50. awillert im so jealous i want salsa but the cooky were amazing
+
+RECOGNITION PATTERNS FOR Normal
+- Statements express general contentment or neutral feelings
+- No significant distress or crisis indicators
+- Balanced emotional expression
+- May discuss everyday activities and routine matters
+- Positive or neutral outlook on situations
+
+Top indicator words: end, good, well, sad, great

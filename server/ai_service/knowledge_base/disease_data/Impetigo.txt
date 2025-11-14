@@ -1,0 +1,15 @@
+Disease: Impetigo
+================================================================================
+
+Symptoms (5):
+1.  skin_rash
+2.  high_fever
+3.  blister
+4.  red_sore_around_nose
+5.  yellow_crust_ooze
+
+Precautions (4):
+1. soak affected area in warm water
+2. use antibiotics
+3. remove scabs with wet compressed cloth
+4. consult doctor

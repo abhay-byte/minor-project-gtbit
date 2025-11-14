@@ -1,0 +1,15 @@
+Disease: Arthritis
+================================================================================
+
+Symptoms (5):
+1.  muscle_weakness
+2.  stiff_neck
+3.  swelling_joints
+4.  movement_stiffness
+5.  painful_walking
+
+Precautions (4):
+1. exercise
+2. use hot and cold therapy
+3. try acupuncture
+4. massage

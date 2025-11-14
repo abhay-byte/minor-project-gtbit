@@ -1,0 +1,22 @@
+codox-l capsule
+
+Therapeutic Class: ANTI INFECTIVES
+Action Class: Tetracyclines
+Chemical Class: Tetracyclines
+Habit Forming: No
+
+USES
+Treatment of Bacterial infections
+Treatment of Acne
+
+SIDE EFFECTS
+Vomiting
+Nausea
+Diarrhea
+
+SUBSTITUTES
+Cadoxy 100mg Capsule
+Ultracycline 100mg Capsule
+Nicodoxy 100mg Capsule
+Ceedox 100mg Capsule
+Lenteclin 100mg Capsule

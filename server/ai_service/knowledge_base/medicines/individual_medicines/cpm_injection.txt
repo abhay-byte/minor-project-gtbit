@@ -1,0 +1,19 @@
+cpm injection
+
+Therapeutic Class: RESPIRATORY
+Action Class: H1 Antihistaminics (First Generation)
+Chemical Class: Synthetic Alkylamine Derivative
+Habit Forming: No
+
+USES
+Treatment of Allergic conditions
+
+SIDE EFFECTS
+Drowsiness
+Inability to concentrate
+Lethargy
+Blurred vision
+Nausea
+Vomiting
+Diarrhea
+

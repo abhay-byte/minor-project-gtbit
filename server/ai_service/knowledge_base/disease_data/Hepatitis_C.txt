@@ -1,0 +1,16 @@
+Disease: Hepatitis C
+================================================================================
+
+Symptoms (6):
+1.  fatigue
+2.  yellowish_skin
+3.  nausea
+4.  loss_of_appetite
+5.  yellowing_of_eyes
+6.  family_history
+
+Precautions (4):
+1. Consult nearest hospital
+2. vaccination
+3. eat healthy
+4. medication

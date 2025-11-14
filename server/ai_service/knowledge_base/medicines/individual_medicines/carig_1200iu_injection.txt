@@ -1,0 +1,16 @@
+carig 1200iu injection
+
+Therapeutic Class: VACCINES
+Action Class: Killed vaccine
+Chemical Class: Vaccines
+Habit Forming: No
+
+USES
+Prevention of Rabies
+
+SIDE EFFECTS
+Nausea
+Acute toxicity
+Rash
+Upset stomach
+

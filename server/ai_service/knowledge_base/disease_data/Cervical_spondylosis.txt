@@ -1,0 +1,15 @@
+Disease: Cervical spondylosis
+================================================================================
+
+Symptoms (5):
+1.  back_pain
+2.  weakness_in_limbs
+3.  neck_pain
+4.  dizziness
+5.  loss_of_balance
+
+Precautions (4):
+1. use heating pad or cold pack
+2. exercise
+3. take otc pain reliver
+4. consult doctor

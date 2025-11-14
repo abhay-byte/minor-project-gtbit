@@ -1,0 +1,15 @@
+Disease: Hypertension 
+================================================================================
+
+Symptoms (5):
+1.  headache
+2.  chest_pain
+3.  dizziness
+4.  loss_of_balance
+5.  lack_of_concentration
+
+Precautions (4):
+1. meditation
+2. salt baths
+3. reduce stress
+4. get proper sleep

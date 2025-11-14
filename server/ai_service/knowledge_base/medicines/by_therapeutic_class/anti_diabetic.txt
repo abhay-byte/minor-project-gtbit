@@ -1,0 +1,68 @@
+Therapeutic Class: ANTI DIABETIC
+
+OVERVIEW
+Total medicines: 11679
+Percentage of database: 4.71%
+
+HABIT FORMING STATUS
+No: 11679 medicines
+
+COMMON USES
+Treatment of Type 2 diabetes mellitus: 11350 medicines
+Diabetes: 179 medicines
+Treatment of Diabetic kidney disease: 67 medicines
+Treatment of Polycystic ovarian syndrome (PCOS): 36 medicines
+Diabetic nerve pain: 26 medicines
+Diabetes with high cholesterol: 8 medicines
+Type 2 diabetes mellitus: 6 medicines
+Neuropathic pain: 5 medicines
+Managing Hypoglycemia (low blood sugar): 2 medicines
+
+COMMON SIDE EFFECTS
+Nausea: 83 occurrences
+Diarrhea: 81 occurrences
+Hypoglycemia (low blood glucose level): 78 occurrences
+Headache: 60 occurrences
+Flatulence: 55 occurrences
+Vomiting: 40 occurrences
+Dizziness: 23 occurrences
+Abdominal pain: 20 occurrences
+Upper respiratory tract infection: 17 occurrences
+Edema (swelling): 12 occurrences
+Nasopharyngitis (inflammation of the throat and nasal passages): 11 occurrences
+Weight gain: 10 occurrences
+Decreased appetite: 10 occurrences
+Bronchitis (inflammation of the airways): 9 occurrences
+Anemia (low number of red blood cells): 9 occurrences
+
+EXAMPLE MEDICINES
+1. ajaduo 25mg/5mg tablet
+2. amaryl m  1mg tablet pr
+3. amaryl m  2mg tablet pr
+4. actrapid hm 100iu/ml penfill
+5. apidra 100iu cartridge
+6. alsita m 50mg/500mg tablet
+7. azulix 2 mf tablet pr
+8. amaryl mv 2mg tablet sr
+9. azulix 1 mf tablet pr
+10. amaryl mv 1mg tablet sr
+11. amaryl m forte 2mg tablet pr
+12. alsita 100mg tablet
+13. actrapid 100 iu/ml flexpen
+14. amaryl m forte 1mg tablet pr
+15. apidra solostar 100iu/ml injection
+16. afoglip m  500 tablet er
+17. alsita-m 100 tablet er
+18. aldonil tablet
+19. azulix 2 mf forte tablet pr
+20. aplevant 1.5mg pre-filled pen (0.5ml each)
+21. alsita 50mg tablet
+22. azulix 1 mf forte tablet pr
+23. aloja 25 tablet
+24. afoglip tablet
+25. apidra 100iu/ml solution for injection
+26. alsita-m 100 forte tablet er
+27. alsita-m 100 forte tablet er
+28. afoglip m  1000 tablet er
+29. azulix mv 2mg/500mg/0.3mg tablet sr
+30. alrista plus tablet sr
