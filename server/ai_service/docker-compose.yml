@@ -1,0 +1,102 @@
+# =================================================================
+# Docker Compose for Clinico Platform - AI Service (Python/Flask)
+# =================================================================
+#
+# This service provides AI capabilities including:
+# - RAG (Retrieval Augmented Generation)
+# - Vector database (ChromaDB)
+# - LLM integration
+#
+
+services:
+  ai_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clinico_ai_service
+    restart: unless-stopped
+    
+    # Expose the AI service port
+    ports:
+      - "${AI_SERVICE_PORT:-5001}:5001"
+    
+    # Environment variables from .env file
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - NODE_SERVER_URL=${NODE_SERVER_URL}
+      - AI_SERVICE_API_KEY=${AI_SERVICE_API_KEY}
+      - AI_SERVICE_AUTH_TOKEN=${AI_SERVICE_AUTH_TOKEN}
+      - AI_SERVICE_PORT=${AI_SERVICE_PORT:-5001}
+      - RATE_LIMIT_ENABLED=${RATE_LIMIT_ENABLED:-true}
+      - ADMIN_RESET_TOKEN=${ADMIN_RESET_TOKEN}
+      - REDIS_URL=${REDIS_URL}
+      - MONITORING_ENABLED=${MONITORING_ENABLED:-true}
+      - METRICS_RETENTION_HOURS=${METRICS_RETENTION_HOURS:-24}
+      - FLASK_APP=main
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    
+    # Volume mounts for development and data persistence
+    volumes:
+      # Mount entire project for development (read-only to avoid permission issues)
+      - .:/app:ro
+      
+      # Persist ChromaDB data with proper permissions
+      - chroma_data:/app/db
+      
+      # Mount writeable directories
+      - ./db:/app/db:rw
+      - ./__pycache__:/app/__pycache__:rw
+    
+    # Health check to ensure service is running
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Depends on Redis for rate limiting and caching
+    depends_on:
+      - redis
+    
+    networks:
+      - clinico-net
+  
+  # Redis service for rate limiting and caching
+  redis:
+    image: redis:7-alpine
+    container_name: clinico_redis
+    restart: unless-stopped
+    
+    ports:
+      - "6379:6379"
+    
+    # Persist Redis data
+    volumes:
+      - redis_data:/data
+    
+    # Redis configuration
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    
+    networks:
+      - clinico-net
+
+# Named volumes for data persistence
+volumes:
+  chroma_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# External network shared with other Clinico services
+networks:
+  clinico-net:
+    external: true

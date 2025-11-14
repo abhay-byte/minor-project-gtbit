@@ -29,9 +29,15 @@ services:
     # Volumes for data persistence and initialization scripts.
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - clinico-net
 
 
 # Define the named volume for data persistence.
 volumes:
   postgres_data:
     driver: local
+
+networks:
+  clinico-net:
+    external: true
