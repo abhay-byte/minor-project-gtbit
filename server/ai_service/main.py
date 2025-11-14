@@ -974,7 +974,6 @@ def extract_specialization_from_query(user_query: str) -> str:
     
     return get_specialization(prompt)
 
-
 def handle_care_coordination(user_query: str, conversation_state: dict = None):
     """
     The Care Coordinator Agent with multi-step workflow.
