@@ -1,0 +1,2745 @@
+{
+	"info": {
+		"_postman_id": "745b8654-8d6e-4b90-9589-c7297509fe6c",
+		"name": "Clinico AI Service - Complete Test Suite",
+		"description": "Comprehensive testing of all AI service endpoints including authentication, rate limiting, monitoring, and all agent variations",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43134617"
+	},
+	"item": [
+		{
+			"name": "0. Setup - Get JWT Token",
+			"item": [
+				{
+					"name": "Register Patient User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    console.log('✅ User registered successfully');",
+									"} else if (pm.response.code === 400) {",
+									"    console.log('⚠️ User already exists, proceeding to login');",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"priya.sharma@gmail.com\",\n    \"password\": \"password123\",\n    \"fullName\": \"Priya Sharma\",\n    \"phoneNumber\": \"9876543211\",\n    \"role\": \"Patient\",\n    \"dateOfBirth\": \"1995-05-22\",\n    \"gender\": \"Female\",\n    \"address\": \"456 Wellness Ave, New Delhi\"\n}"
+						},
+						"url": {
+							"raw": "{{node_url}}/api/auth/register",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login and Get JWT Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('jwt_token', jsonData.token);",
+									"    pm.collectionVariables.set('user_id', jsonData.user.user_id);",
+									"    console.log('✅ JWT Token saved:', jsonData.token.substring(0, 20) + '...');",
+									"    console.log('✅ User ID saved:', jsonData.user.user_id);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"priya.sharma@gmail.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{node_url}}/api/auth/login",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "1. Health & Status Checks",
+			"item": [
+				{
+					"name": "Simple Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200', function() {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has status field', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('status');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detailed Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200 or 503', function() {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 503]);",
+									"});",
+									"pm.test('Has components check', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('components');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/health/detailed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"health",
+								"detailed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Collections",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200', function() {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Has collections object', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('collections');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/collections",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Metrics Summary",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200 or 503', function() {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 503]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/metrics",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"metrics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recent Errors (Default Limit)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/metrics/errors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"metrics",
+								"errors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recent Errors (Custom Limit 5)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/metrics/errors?limit=5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"metrics",
+								"errors"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recent Errors (Large Limit 50)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/metrics/errors?limit=50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"metrics",
+								"errors"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Rate Limit Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Has rate limit info', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('requests_used');",
+									"    pm.expect(jsonData).to.have.property('requests_remaining');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/v1/rate-limit/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"rate-limit",
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Authentication Tests",
+			"item": [
+				{
+					"name": "Orchestrate - No Token (Should Fail 403)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 403', function() {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"pm.test('Has error message', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('error');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What is diabetes?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Stress and Anxiety - Work Related",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Work stress is overwhelming me, I can't sleep properly\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Depression Symptoms - Mild",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I feel sad and empty all the time, nothing brings me joy\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Depression Symptoms - Loss of Interest",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I've lost interest in everything I used to enjoy\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CRISIS - Suicidal Ideation 1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I feel hopeless and don't want to live anymore\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CRISIS - Suicidal Ideation 2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I want to kill myself, I can't take this anymore\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CRISIS - Self Harm",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I keep thinking about hurting myself\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Coping Strategies - Anxiety",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What are some coping strategies for anxiety?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Panic Attacks",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I have panic attacks frequently, what should I do?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sleep Issues",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I can't sleep at night due to racing thoughts\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mindfulness Techniques",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Can you suggest some mindfulness exercises?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Health Inquiry Agent",
+			"item": [
+				{
+					"name": "Simple Disease Query - Diabetes",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What are the symptoms of diabetes?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Simple Disease Query - Hypertension",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What causes high blood pressure?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complex Disease Comparison",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What is the difference between Type 1 and Type 2 diabetes?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Hearing Wellness Query",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What are the risks of prolonged headphone use?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Needing Appointment - Chest Pain",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I have chest pain for 2 days and feeling dizzy\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Preventive Care Query",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"How can I prevent heart disease?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Nutrition Question",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What foods should diabetics avoid?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Exercise and Fitness",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"How much exercise should I do daily?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Medicine Inquiry Agent",
+			"item": [
+				{
+					"name": "Medicine Side Effects - Aspirin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What are the side effects of aspirin?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Medicine Side Effects - Paracetamol",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Is paracetamol safe for long term use?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Medicine Substitutes - Paracetamol",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What are substitutes for paracetamol?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Medicine Substitutes - Ibuprofen",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Can I use something instead of ibuprofen?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Medicines for Condition - Blood Pressure",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What medicines treat high blood pressure?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Medicines for Condition - Fever",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Which medicine should I take for fever?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Habit Forming Check",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Is this medicine habit forming and what precautions should I take?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Drug Interactions Query",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Can I take aspirin and ibuprofen together?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dosage Question",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What is the correct dosage of paracetamol for adults?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pregnancy Safety",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Is this medicine safe during pregnancy?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Mental Wellness Agent",
+			"item": [
+				{
+					"name": "Stress and Anxiety - General",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I feel very stressed and anxious lately\"\n}"
+						},
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Query Field (Should Fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 400', function() {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"other_field\": \"value\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Very Long Query",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I have been experiencing multiple symptoms for the past few weeks including headaches, fatigue, occasional dizziness, some chest discomfort, difficulty sleeping, loss of appetite, and general weakness. I'm also worried about my blood pressure and whether these symptoms could be related to stress or something more serious. What should I do and which specialist should I consult?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Special Characters in Query",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What are the side effects of medicine @#$%? Can I take it with food & drinks?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid JSON Body (Should Fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 400', function() {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ invalid json here }"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Malformed Image Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 400', function() {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Analyze this image\",\n  \"image\": \"not_valid_base64_!@#$%\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Care Coordination - Full Flow",
+			"item": [
+				{
+					"name": "Flow 1: Step 1 - Initial Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I need to book an appointment with a doctor\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Flow 1: Step 2 - Select Virtual",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"virtual\",\n  \"conversation_state\": {\n    \"step\": \"select_type\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Flow 1: Step 3 - Confirm Specialization",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"confirm_General Physician\",\n  \"conversation_state\": {\n    \"step\": \"confirm_specialization\",\n    \"appointment_type\": \"virtual\",\n    \"predicted_specialization\": \"General Physician\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Flow 2: Step 2 - Select In-Person",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"in_person\",\n  \"conversation_state\": {\n    \"step\": \"select_type\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Flow 3: Choose Different Specialty",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"choose_different\",\n  \"conversation_state\": {\n    \"step\": \"confirm_specialization\",\n    \"appointment_type\": \"virtual\",\n    \"predicted_specialization\": \"General Physician\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Flow 4: Direct Specialization - Cardiologist",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I need to see a cardiologist for heart issues\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Flow 5: Direct Specialization - Psychiatrist",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I need to see a psychiatrist\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Flow 6: Direct Specialization - Dermatologist",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Book appointment with skin specialist\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Flow 7: Select Specific Specialty",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Orthopedic\",\n  \"conversation_state\": {\n    \"step\": \"specialization_selected\",\n    \"appointment_type\": \"virtual\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "7. Emergency Scenarios",
+			"item": [
+				{
+					"name": "Medical Emergency - Severe Chest Pain",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"EMERGENCY! Severe chest pain and can't breathe properly\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Medical Emergency - Heart Attack Symptoms",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I think I'm having a heart attack, need urgent help\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Medical Emergency - Difficulty Breathing",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Can't breathe, gasping for air, help!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Medical Emergency - Heavy Bleeding",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Bleeding heavily from a wound, won't stop\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Medical Emergency - Stroke Symptoms",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Sudden numbness on left side, can't speak clearly\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mental Health Crisis - Suicidal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I want to end my life right now\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Medical Emergency - Seizure",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Someone is having a seizure, what do I do?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Medical Emergency - Overdose",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I think I took too many pills, feeling dizzy\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "8. Image Analysis",
+			"item": [
+				{
+					"name": "Orchestrate - Analyze Skin Condition (with query)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What is this rash on my arm?\",\n  \"image\": \"data:image/png;base64,{{sample_base64_image}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						},
+						"description": "Test with sample base64 image. Replace with actual medical image for real testing."
+					},
+					"response": []
+				},
+				{
+					"name": "Orchestrate - Skin Spot Analysis",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I have red spots on my skin, should I be worried?\",\n  \"image\": \"data:image/png;base64,{{sample_base64_image}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Direct Image Analysis - General",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"image\": \"data:image/png;base64,{{sample_base64_image}}\",\n  \"type\": \"general\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/analyze-image",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"analyze-image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Direct Image Analysis - Prescription",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"image\": \"data:image/png;base64,{{sample_base64_image}}\",\n  \"type\": \"prescription\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/analyze-image",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"analyze-image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Direct Image Analysis - Skin Condition",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"image\": \"data:image/png;base64,{{sample_base64_image}}\",\n  \"type\": \"skin\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/analyze-image",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"analyze-image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Direct Image Analysis - Lab Report",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"image\": \"data:image/png;base64,{{sample_base64_image}}\",\n  \"type\": \"lab_report\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/analyze-image",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"analyze-image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Direct Image Analysis - X-Ray",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"image\": \"data:image/png;base64,{{sample_base64_image}}\",\n  \"type\": \"xray\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/analyze-image",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"analyze-image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Image Analysis - No Image (Should Fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 400', function() {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"general\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/analyze-image",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"analyze-image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Image Analysis - Invalid Base64 (Should Fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 400', function() {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"image\": \"invalid_base64_data_here\",\n  \"type\": \"general\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "9. Edge Cases & Error Handling",
+			"item": [
+				{
+					"name": "Empty Query (Should Fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 400', function() {",
+									"    pm.response.to/orchestrate"
+								],
+								"host": [
+									"{{base_url}}"
+								],
+								"path": [
+									"v1",
+									"agent",
+									"orchestrate"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Orchestrate - Invalid Token (Should Fail 401)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 401', function() {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer invalid_token_12345"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What is diabetes?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Orchestrate - Malformed Auth Header (Should Fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 401', function() {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "InvalidFormat {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What is diabetes?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Orchestrate - Valid Token (Should Work)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200', function() {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Has agent response', function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('agent');",
+									"    pm.expect(jsonData).to.have.property('answer');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What is diabetes?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Image Analysis - No Token (Should Fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 403', function() {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"image\": \"{{sample_base64_image}}\",\n  \"type\": \"general\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/analyze-image",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"analyze-image"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "10. Rate Limiting Tests",
+			"item": [
+				{
+					"name": "Rate Limit - Request 1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What is diabetes?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/agent/orchestrate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"orchestrate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rate Limit - Check Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/v1/rate-limit/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"rate-limit",
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5001"
+		},
+		{
+			"key": "node_url",
+			"value": "http://localhost:5000"
+		},
+		{
+			"key": "jwt_token",
+			"value": ""
+		},
+		{
+			"key": "user_id",
+			"value": ""
+		},
+		{
+			"key": "sample_base64_image",
+			"value": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+		}
+	]
+}

@@ -1,6 +1,9 @@
 # Node modules
 node_modules/
 
+#instructions
+.kilocode/
+
 # Environment variables
 .env
 

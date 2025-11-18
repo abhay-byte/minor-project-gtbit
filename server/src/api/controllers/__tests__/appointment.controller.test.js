@@ -33,7 +33,7 @@ describe('Appointment Controller', () => {
     // --- createAppointment TESTS ---
     describe('createAppointment', () => {
         it('should successfully book an appointment for a patient', async () => {
-            mockReq.user = { userId: 1, role: 'Patient' };
+            mockReq.user = { userId: 1, userUUID: 'some-uuid', role: 'Patient' };
             mockReq.body = { slotId: 101 };
 
             // FIX: Mock the DB responses in the exact sequence the controller calls them
@@ -58,7 +58,7 @@ describe('Appointment Controller', () => {
         });
 
         it('should return 403 if user is not a patient', async () => {
-            mockReq.user = { userId: 4, role: 'Professional' };
+            mockReq.user = { userId: 4, userUUID: 'some-uuid', role: 'Professional' };
             mockReq.body = { slotId: 101 };
             await createAppointment(mockReq, mockRes);
             expect(mockRes.status).toHaveBeenCalledWith(403);
@@ -66,7 +66,7 @@ describe('Appointment Controller', () => {
         });
 
         it('should return 409 if slot is already booked', async () => {
-            mockReq.user = { userId: 1, role: 'Patient' };
+            mockReq.user = { userId: 1, userUUID: 'some-uuid', role: 'Patient' };
             mockReq.body = { slotId: 101 };
             
             // Silence the expected error log for this test
@@ -91,8 +91,8 @@ describe('Appointment Controller', () => {
 
     // --- getMyAppointments TESTS ---
     describe('getMyAppointments', () => {
-        it('should fetch appointments for a patient', async () => {
-            mockReq.user = { userId: 1, role: 'Patient' };
+        it('should fetch appointments for a patient using serial ID', async () => {
+            mockReq.user = { userId: 1, userUUID: null, role: 'Patient' };
             const mockAppointments = [{ appointment_id: 301, professional_name: 'Dr. Amit Patel' }];
             // Use db.query directly since this controller function doesn't use a transaction
             db.query.mockResolvedValue({ rows: mockAppointments });
@@ -103,16 +103,44 @@ describe('Appointment Controller', () => {
             expect(mockRes.status).toHaveBeenCalledWith(200);
             expect(mockRes.json).toHaveBeenCalledWith(mockAppointments);
         });
-
-        it('should fetch upcoming appointments for a professional', async () => {
-            mockReq.user = { userId: 4, role: 'Professional' };
-            mockReq.query = { status: 'upcoming' };
-            db.query.mockResolvedValue({ rows: [] });
-
+        
+        it('should fetch appointments for a patient using UUID', async () => {
+            mockReq.user = { userId: 1, userUUID: 'test-uuid', role: 'Patient' };
+            const mockAppointments = [{ appointment_id: 301, professional_name: 'Dr. Amit Patel' }];
+            // Use db.query directly since this controller function doesn't use a transaction
+            db.query.mockResolvedValue({ rows: mockAppointments });
+            
             await getMyAppointments(mockReq, mockRes);
-
-            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('WHERE prof.user_id = $1 AND a.appointment_time >= NOW()'), [4]);
+            
+            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('WHERE p.user_id_uuid = $1'), ['test-uuid']);
             expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.json).toHaveBeenCalledWith(mockAppointments);
+        });
+        
+        it('should fetch appointments for a professional using serial ID', async () => {
+            mockReq.user = { userId: 4, userUUID: null, role: 'Professional' };
+            mockReq.query = { status: 'upcoming' };
+            const mockAppointments = [{ appointment_id: 301, patient_name: 'John Doe' }];
+            db.query.mockResolvedValue({ rows: mockAppointments });
+            
+            await getMyAppointments(mockReq, mockRes);
+            
+            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('WHERE prof.user_id = $1'), [4]);
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.json).toHaveBeenCalledWith(mockAppointments);
+        });
+        
+        it('should fetch appointments for a professional using UUID', async () => {
+            mockReq.user = { userId: 4, userUUID: 'test-uuid-prof', role: 'Professional' };
+            mockReq.query = { status: 'upcoming' };
+            const mockAppointments = [{ appointment_id: 301, patient_name: 'John Doe' }];
+            db.query.mockResolvedValue({ rows: mockAppointments });
+            
+            await getMyAppointments(mockReq, mockRes);
+            
+            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('WHERE prof.user_id_uuid = $1'), ['test-uuid-prof']);
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.json).toHaveBeenCalledWith(mockAppointments);
         });
     });
 });

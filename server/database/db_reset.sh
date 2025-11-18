@@ -28,7 +28,7 @@ docker-compose up -d
 
 echo
 echo "--- Waiting for PostgreSQL to become available (10 seconds)... ---"
-sleep 10
+sleep 3
 
 echo
 echo "--- Running Database Migrations... ---"
@@ -36,6 +36,10 @@ for f in migrations/*.sql; do
     echo "Executing $f..."
     docker exec -i clinico_postgres_db psql -U clinico_user -d clinico_db < "$f"
 done
+
+echo
+echo "--- Running Database Seed Script... ---"
+docker exec -i clinico_postgres_db psql -U clinico_user -d clinico_db < "seeds/seed.sql"
 
 echo
 echo "--- Checking container status: ---"

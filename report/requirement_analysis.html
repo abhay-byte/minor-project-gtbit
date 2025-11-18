@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requirement Analysis (SRS) - Clinico: The Healing Hand Initiative</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 84pt 101pt 84pt 101pt; /* 1 inch bottom and top, 3.5 cm left, 3 cm right */
+            background-color: white;
+            text-align: justify;
+        }
+        
+        .title {
+            font-size: 24pt;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20pt;
+        }
+        
+        .heading {
+            font-size: 14pt;
+            font-weight: bold;
+            text-align: justify;
+            margin-top: 15pt;
+            margin-bottom: 10pt;
+        }
+        
+        .content {
+            margin-bottom: 15pt;
+        }
+        
+        .subheading {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 10pt;
+            margin-bottom: 5pt;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10pt 0;
+        }
+        
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        ul {
+            margin: 10pt 0;
+            padding-left: 20pt;
+        }
+        
+        li {
+            margin-bottom: 5pt;
+        }
+        
+        .page-number {
+            position: fixed;
+            bottom: 20pt;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12pt;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">CLINICO: THE HEALING HAND INITIATIVE</div>
+    
+    <div class="heading">2 REQUIREMENT ANALYSIS (SRS)</div>
+    
+    <div class="content">
+        <div class="heading">2.1 Purpose</div>
+        <p>This Software Requirements Specification (SRS) document serves as the authoritative reference for all functional and non-functional requirements for Clinico: The Healing Hand Initiative. It defines the comprehensive healthcare platform that addresses the critical gap between physical and mental healthcare accessibility through innovative technology and structured volunteer expertise.</p>
+        
+        <p>The purpose of this document is to establish a clear understanding of what the Clinico system must do, how it will behave, and what constraints will govern its development. This SRS serves as a contract between stakeholders and development teams, ensuring that all parties have a shared understanding of the system requirements.</p>
+    </div>
+    
+    <div class="content">
+        <div class="heading">2.2 Scope</div>
+        <p>The Clinico platform operates as a comprehensive healthcare ecosystem with four primary components: User Interface Layer, Application Layer, Data Layer, and External Integrations. The system addresses the fragmented healthcare landscape by creating a unified platform that bridges the accessibility gap between urban and rural healthcare, combines scalable AI technology with empathetic human expertise, reduces healthcare costs through a volunteer-driven professional network, eliminates stigma barriers in mental health support, and provides a structured framework for community health initiatives.</p>
+        
+        <p>The scope encompasses:</p>
+        <ul>
+            <li>Unified healthcare ecosystem connecting patients with volunteer professionals</li>
+            <li>Multi-agent AI system providing 24/7 health assistance and mental wellness support</li>
+            <li>Hyperlocal discovery engine for physical healthcare providers</li>
+            <li>Comprehensive health record management with e-prescription capabilities</li>
+            <li>Community health facilitation through structured NGO partnerships</li>
+        </ul>
+        
+        <p>Scope boundaries include:</p>
+        <ul>
+            <li><strong>Included:</strong> Telemedicine platform, AI health assistance, appointment management, secure messaging</li>
+            <li><strong>Excluded:</strong> Direct medical device integration, payment processing (third-party), physical infrastructure management</li>
+            <li><strong>Future Considerations:</strong> IoT health device integration, advanced analytics dashboard, international expansion</li>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="heading">2.3 Functional Requirements</div>
+        
+        <div class="subheading">2.3.1 Identity, Registration & Consent Management</div>
+        <p><strong>Priority:</strong> High | <strong>Risk:</strong> Medium | <strong>Complexity:</strong> Medium</p>
+        
+        <p><strong>FR-1.1 Multi-Channel User Registration:</strong></p>
+        <ul>
+            <li>System shall support OTP-based registration via mobile number</li>
+            <li>OTP delivery within 30 seconds</li>
+            <li>Support for 10+ regional languages during registration</li>
+            <li>Role selection options: Patient, Professional, NGO, Admin</li>
+            <li>Profile completion wizard with progress tracking</li>
+        </ul>
+        
+        <p><strong>FR-1.2 Secure Authentication System:</strong></p>
+        <ul>
+            <li>System shall implement multi-layered authentication</li>
+            <li>OTP-based login for all user types</li>
+            <li>Role-Based Access Control (RBAC) implementation</li>
+            <li>Session management with configurable timeout</li>
+            <li>Failed attempt lockout mechanism</li>
+        </ul>
+        
+        <p><strong>FR-1.3 Dynamic Consent Management:</strong></p>
+        <ul>
+            <li>System shall provide granular consent controls</li>
+            <li>Consent collection for data processing, sharing, and analytics</li>
+            <li>Consent withdrawal capability with immediate effect</li>
+            <li>Audit trail for all consent actions with timestamps</li>
+            <li>Regular consent renewal prompts</li>
+        </ul>
+        
+        <div class="subheading">2.3.2 AI Care Companion System</div>
+        <p><strong>Priority:</strong> High | <strong>Risk:</strong> High | <strong>Complexity:</strong> High</p>
+        
+        <p><strong>FR-2.1 Multi-Agent Architecture:</strong></p>
+        <ul>
+            <li>System shall implement a specialized AI agent framework</li>
+            <li>AI Orchestrator & Personalization Engine: Central coordination with MCP framework</li>
+            <li>Mental Wellness Agent: 24/7 empathetic support with crisis intervention</li>
+            <li>Health Inquiry Agent: RAG-powered medical information with source citations</li>
+            <li>Care Coordinator Agent: Professional matching and pre-consultation briefings</li>
+            <li>Resource & Knowledge Agent: Vector database search and retrieval</li>
+            <li>User Profile & Personalization Agent: Dynamic user profiling and memory</li>
+            <li>Analytics & Insight Agent: Trend analysis and platform insights</li>
+        </ul>
+        
+        <p><strong>FR-2.2 Retrieval-Augmented Generation Engine:</strong></p>
+        <ul>
+            <li>System shall generate responses using a trusted knowledge base</li>
+            <li>Response generation based on verified medical content</li>
+            <li>Source citation for all medical information</li>
+            <li>Confidence scoring for response quality</li>
+            <li>Regular knowledge base updates and validation</li>
+        </ul>
+        
+        <p><strong>FR-2.3 Mental Wellness Support System:</strong></p>
+        <ul>
+            <li>System shall provide comprehensive mental health assistance</li>
+            <li>24/7 conversational support with empathetic responses</li>
+            <li>Guided self-help exercises (e.g., mindfulness, CBT techniques)</li>
+            <li>Mood and activity journaling with trend analysis</li>
+            <li>Crisis intervention protocol with immediate resource provision</li>
+            <li>Professional referral triggers based on conversation analysis</li>
+        </ul>
+        
+        <p><strong>FR-2.4 Personalization Engine:</strong></p>
+        <ul>
+            <li>System shall deliver personalized health experiences</li>
+            <li>Multi-criteria personalization (MCP) framework implementation</li>
+            <li>Dynamic user profile updates based on interactions</li>
+            <li>Proactive health nudges and customized content recommendations</li>
+            <li>Learning algorithm for preference optimization</li>
+        </ul>
+        
+        <div class="subheading">2.3.3 Appointment & Teleconsultation Management</div>
+        <p><strong>Priority:</strong> High | <strong>Risk:</strong> Medium | <strong>Complexity:</strong> High</p>
+        
+        <p><strong>FR-3.1 Intelligent Appointment Booking:</strong></p>
+        <ul>
+            <li>System shall provide streamlined appointment management</li>
+            <li>Calendar-based booking interface with availability display</li>
+            <li>Multi-timezone support for professional scheduling</li>
+            <li>Appointment modification (reschedule/cancel) with notification system</li>
+            <li>Automated reminders via SMS, email, and in-app notifications</li>
+            <li>Group appointment scheduling for community health sessions</li>
+        </ul>
+        
+        <p><strong>FR-3.2 Multi-Modal Consultation Platform:</strong></p>
+        <ul>
+            <li>System shall support diverse consultation methods</li>
+            <li>High-quality video calling with bandwidth adaptation</li>
+            <li>Audio-only consultation option</li>
+            <li>Text-based chat for asynchronous communication</li>
+            <li>IVR fallback system for low-connectivity areas</li>
+            <li>Screen sharing for document review</li>
+            <li>Consultation recording (with consent) for quality assurance</li>
+        </ul>
+        
+        <p><strong>FR-3.3 Professional Availability Management:</strong></p>
+        <ul>
+            <li>System shall optimize professional schedule coordination</li>
+            <li>Flexible availability slot configuration and recurring schedule templates</li>
+            <li>Multi-device synchronization</li>
+            <li>Overbooking prevention mechanisms</li>
+            <li>Emergency slot allocation for urgent cases</li>
+        </ul>
+        
+        <div class="subheading">2.3.4 Electronic Prescription & Care Management</div>
+        <p><strong>Priority:</strong> High | <strong>Risk:</strong> Medium | <strong>Complexity:</strong> Medium</p>
+        
+        <p><strong>FR-4.1 Digital Prescription System:</strong></p>
+        <ul>
+            <li>System shall provide secure e-prescription capabilities</li>
+            <li>Streamlined prescription creation with drug interaction checking</li>
+            <li>Digital signature integration for legal compliance</li>
+            <li>Multi-format prescription export (PDF, print-ready)</li>
+            <li>Pharmacy integration for direct medication ordering</li>
+            <li>Prescription history tracking and renewal management</li>
+        </ul>
+        
+        <p><strong>FR-4.2 Medication Adherence System:</strong></p>
+        <ul>
+            <li>System shall support medication compliance monitoring</li>
+            <li>Customizable medication reminder schedules</li>
+            <li>Adherence tracking with visual progress indicators</li>
+            <li>Side effect reporting and monitoring</li>
+            <li>Drug interaction alerts and warnings</li>
+            <li>Family member notification options for critical medications</li>
+        </ul>
+        
+        <div class="subheading">2.3.5 Health Records & Communication Management</div>
+        <p><strong>Priority:</strong> High | <strong>Risk:</strong> Medium | <strong>Complexity:</strong> Medium</p>
+        
+        <p><strong>FR-5.1 EHR-Lite System:</strong></p>
+        <ul>
+            <li>System shall maintain comprehensive health records</li>
+            <li>Timeline view of medical interactions and consultations</li>
+            <li>Secure document upload with format support (PDF, images, lab reports)</li>
+            <li>Medical history categorization and search functionality</li>
+            <li>Data export capabilities for external healthcare providers</li>
+            <li>Version control for document updates and modifications</li>
+        </ul>
+        
+        <p><strong>FR-5.2 Secure Communication Platform:</strong></p>
+        <ul>
+            <li>System shall provide encrypted messaging capabilities</li>
+            <li>End-to-end encrypted chat functionality</li>
+            <li>File sharing with size and format restrictions</li>
+            <li>Message status tracking (sent, delivered, read)</li>
+            <li>Professional–patient communication threads</li>
+            <li>Automated message archival and retention policies</li>
+        </ul>
+        
+        <div class="subheading">2.3.6 Hyperlocal Discovery System</div>
+        <p><strong>Priority:</strong> Medium | <strong>Risk:</strong> Low | <strong>Complexity:</strong> Medium</p>
+        
+        <p><strong>FR-6.1 Interactive Map Interface:</strong></p>
+        <ul>
+            <li>System shall provide location-based provider search</li>
+            <li>Real-time location-based healthcare provider mapping</li>
+            <li>Color-coded categorization (clinics, hospitals, specialists)</li>
+            <li>Intelligent clustering for high-density areas</li>
+            <li>Quick-view information cards with essential details</li>
+            <li>Driving directions integration with popular navigation apps</li>
+        </ul>
+        
+        <p><strong>FR-6.2 Advanced Filtering System:</strong></p>
+        <ul>
+            <li>System shall enable precise provider search</li>
+            <li>Multi-criteria filtering (specialty, distance, rating, price, availability)</li>
+            <li>Insurance acceptance verification</li>
+            <li>Language preference matching</li>
+            <li>Accessibility feature indicators</li>
+            <li>Real-time availability status</li>
+        </ul>
+        
+        <div class="subheading">2.3.7 Volunteer & Workforce Management</div>
+        <p><strong>Priority:</strong> High | <strong>Risk:</strong> Medium | <strong>Complexity:</strong> Medium</p>
+        
+        <p><strong>FR-7.1 Professional Onboarding System:</strong></p>
+        <ul>
+            <li>System shall verify and onboard healthcare professionals</li>
+            <li>Multi-step credential verification process</li>
+            <li>License validation with regulatory body integration</li>
+            <li>Background check coordination and tracking</li>
+            <li>Professional profile creation with specialty certification</li>
+            <li>Ongoing credential monitoring and renewal alerts</li>
+        </ul>
+        
+        <p><strong>FR-7.2 Quality Management System:</strong></p>
+        <ul>
+            <li>System shall monitor and improve service quality</li>
+            <li>Consultation quality scoring and feedback collection</li>
+            <li>Peer review system for complex cases</li>
+            <li>Professional development tracking and recommendations</li>
+            <li>Escalation procedures for quality concerns</li>
+            <li>Impact measurement and volunteer recognition programs</li>
+        </ul>
+        
+        <div class="subheading">2.3.8 Administrative & Analytics Management</div>
+        <p><strong>Priority:</strong> Medium | <strong>Risk:</strong> Low | <strong>Complexity:</strong> Medium</p>
+        
+        <p><strong>FR-8.1 Administrative Control Panel:</strong></p>
+        <ul>
+            <li>System shall provide comprehensive platform management</li>
+            <li>User management with role-based permissions</li>
+            <li>Content management system for health resources</li>
+            <li>System configuration and feature flag management</li>
+            <li>Audit log review and compliance reporting</li>
+            <li>Bulk operations for user and data management</li>
+        </ul>
+        
+        <p><strong>FR-8.2 Advanced Analytics Dashboard:</strong></p>
+        <ul>
+            <li>System shall provide actionable insights and reporting</li>
+            <li>Real-time usage metrics and performance indicators</li>
+            <li>Health outcome tracking and trend analysis</li>
+            <li>Volunteer engagement and impact measurement</li>
+            <li>Community health reporting for NGO partners</li>
+            <li>Predictive analytics for resource allocation</li>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="heading">2.4 Non-Functional Requirements</div>
+        
+        <div class="subheading">2.4.1 Performance Requirements</div>
+        
+        <p><strong>Response Time Requirements:</strong></p>
+        <table>
+            <tr>
+                <th>User Action</th>
+                <th>Target Response Time</th>
+                <th>Measurement Method</th>
+            </tr>
+            <tr>
+                <td>Page/Screen Loading</td>
+                <td>< 2 seconds</td>
+                <td>95th percentile</td>
+            </tr>
+            <tr>
+                <td>AI Response Generation</td>
+                <td>< 5 seconds</td>
+                <td>Average response time</td>
+            </tr>
+            <tr>
+                <td>Video Call Establishment</td>
+                <td>< 10 seconds</td>
+                <td>Connection success rate</td>
+            </tr>
+            <tr>
+                <td>Search Results</td>
+                <td>< 1 second</td>
+                <td>Query completion time</td>
+            </tr>
+            <tr>
+                <td>File Upload (10MB file)</td>
+                <td>< 30 seconds</td>
+                <td>Upload completion time</td>
+            </tr>
+        </table>
+        
+        <p><strong>Throughput Requirements:</strong></p>
+        <ul>
+            <li>Concurrent Users: 10,000 simultaneous active users</li>
+            <li>Video Consultations: 1,000 simultaneous calls</li>
+            <li>AI Query Processing: 50,000 queries per hour</li>
+            <li>Database Transactions: 10,000 TPS during peak hours</li>
+            <li>File Storage Operations: 1,000 uploads per minute</li>
+        </ul>
+        
+        <p><strong>Scalability Requirements:</strong></p>
+        <ul>
+            <li>Horizontal Scaling: Auto-scaling based on CPU/memory utilization</li>
+            <li>Database Scaling: Read replica support with eventual consistency</li>
+            <li>CDN Integration: Global content delivery for multimedia assets</li>
+            <li>Load Balancing: Geographic and intelligent routing</li>
+            <li>Resource Optimization: Containerized microservices architecture</li>
+        </ul>
+        
+        <div class="subheading">2.4.2 Security & Privacy Requirements</div>
+        
+        <p><strong>Data Protection Standards:</strong></p>
+        <ul>
+            <li>Encryption: AES-256 encryption for data at rest, TLS 1.3 for data in transit</li>
+            <li>Key Management: Hardware security module (HSM) for encryption key storage</li>
+            <li>Data Classification: Sensitive health data identification and protection</li>
+            <li>Data Retention: Automated data lifecycle management and purging</li>
+            <li>Backup Security: Encrypted backups with geo-distributed storage</li>
+        </ul>
+        
+        <p><strong>Access Control & Authentication:</strong></p>
+        <ul>
+            <li>Multi-Factor Authentication: Mandatory for healthcare professionals</li>
+            <li>Role-Based Access Control (RBAC): Granular permissions based on user roles</li>
+            <li>Session Management: Secure token-based authentication with refresh mechanisms</li>
+            <li>API Security: OAuth 2.0 with JWT tokens for API access</li>
+            <li>Audit Logging: Comprehensive logging of all security-relevant events</li>
+        </ul>
+        
+        <p><strong>Privacy & Compliance:</strong></p>
+        <ul>
+            <li>Data Minimization: Collection of only necessary personal information</li>
+            <li>Consent Management: Granular consent with easy withdrawal mechanisms</li>
+            <li>Right to be Forgotten: Complete data deletion capabilities</li>
+            <li>Cross-Border Transfer: Privacy shield compliance for international operations</li>
+            <li>Regular Audits: Quarterly security assessments and penetration testing</li>
+        </ul>
+        
+        <div class="subheading">2.4.3 Usability & Accessibility Requirements</div>
+        
+        <p><strong>User Experience Standards:</strong></p>
+        <ul>
+            <li>Intuitive Navigation: Maximum 3-click access to primary functions</li>
+            <li>Responsive Design: Consistent experience across devices and screen sizes</li>
+            <li>Loading Indicators: Clear feedback for all system operations</li>
+            <li>Error Handling: User-friendly error messages with suggested actions</li>
+            <li>Help System: Contextual help and guided tutorials</li>
+        </ul>
+        
+        <p><strong>Accessibility Compliance:</strong></p>
+        <ul>
+            <li>WCAG 2.1 AA Compliance: Full accessibility standard adherence</li>
+            <li>Screen Reader Support: Compatible with popular assistive technologies</li>
+            <li>Keyboard Navigation: Complete functionality without mouse/touch</li>
+            <li>High Contrast Mode: Visual accessibility for users with vision impairments</li>
+            <li>Font Scaling: Support for browser-based text size adjustments</li>
+        </ul>
+        
+        <p><strong>Multilingual Support:</strong></p>
+        <ul>
+            <li>Language Coverage: Support for 10+ regional languages</li>
+            <li>RTL Support: Right-to-left language compatibility</li>
+            <li>Cultural Adaptation: Region-specific content and imagery</li>
+            <li>Translation Quality: Professional translation and regular updates</li>
+            <li>Language Switching: Seamless language change without data loss</li>
+        </ul>
+        
+        <div class="subheading">2.4.4 Reliability & Availability Requirements</div>
+        
+        <p><strong>System Availability:</strong></p>
+        <ul>
+            <li>Uptime Target: 99.9% availability (8.77 hours downtime per year)</li>
+            <li>Maintenance Windows: Maximum 2-hour monthly scheduled maintenance</li>
+            <li>Geographic Distribution: Multi-region deployment for disaster recovery</li>
+            <li>Failover Time: Automatic failover within 60 seconds</li>
+            <li>Health Monitoring: Continuous system health checks and alerting</li>
+        </ul>
+        
+        <p><strong>Data Integrity & Backup:</strong></p>
+        <ul>
+            <li>Data Consistency: ACID compliance for critical transactions</li>
+            <li>Backup Frequency: Continuous incremental backups with daily full backups</li>
+            <li>Recovery Time Objective (RTO): 4 hours maximum system restoration time</li>
+            <li>Recovery Point Objective (RPO): Maximum 15 minutes of data loss</li>
+            <li>Disaster Recovery: Automated disaster recovery with regular testing</li>
+        </ul>
+        
+        <p><strong>Error Handling & Recovery:</strong></p>
+        <ul>
+            <li>Graceful Degradation: Partial functionality maintenance during outages</li>
+            <li>Error Logging: Comprehensive error tracking and analysis</li>
+            <li>Automatic Recovery: Self-healing capabilities for common failure scenarios</li>
+            <li>User Communication: Transparent status communication during incidents</li>
+            <li>Post-Incident Analysis: Root cause analysis and improvement implementation</li>
+        </ul>
+        
+        <div class="subheading">2.4.5 Compatibility & Integration Requirements</div>
+        
+        <p><strong>Platform Compatibility:</strong></p>
+        <ul>
+            <li>Mobile Platforms: iOS 13+ and Android 8+ with backward compatibility</li>
+            <li>Web Browsers: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+</li>
+            <li>Operating Systems: Windows 10+, macOS 10.15+, major Linux distributions</li>
+            <li>Device Requirements: Minimum 2GB RAM, 100MB storage space</li>
+            <li>Network Compatibility: 2G/3G/4G/Wi-Fi with adaptive quality</li>
+        </ul>
+        
+        <p><strong>Third-Party Integration Standards:</strong></p>
+        <ul>
+            <li>API Standards: RESTful APIs with OpenAPI 3.0 specification</li>
+            <li>Authentication: OAuth 2.0 and API key authentication</li>
+            <li>Data Formats: JSON for API communications, standardized healthcare data formats</li>
+            <li>Webhooks: Real-time event notifications for external systems</li>
+            <li>Rate Limiting: Fair usage policies with configurable limits</li>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="heading">2.5 System Design Constraints</div>
+        
+        <p><strong>Technical Constraints:</strong></p>
+        <ul>
+            <li>Performance: Sub-3-second response times on low-bandwidth networks</li>
+            <li>Security: End-to-end encryption for all health data</li>
+            <li>Scalability: Support for 100K+ concurrent users</li>
+            <li>Reliability: 99.9% uptime with disaster recovery capabilities</li>
+        </ul>
+        
+        <p><strong>Business Constraints:</strong></p>
+        <ul>
+            <li>Budget: Development within allocated resource constraints</li>
+            <li>Timeline: Phased deployment over an 18-month development cycle</li>
+            <li>Regulatory: Compliance with healthcare and data protection regulations</li>
+            <li>Partnership: Dependency on volunteer recruitment and NGO collaborations</li>
+        </ul>
+        
+        <p><strong>Regulatory Constraints:</strong></p>
+        <ul>
+            <li>Healthcare Compliance: Regional telemedicine regulations</li>
+            <li>Data Protection: GDPR-equivalent privacy standards</li>
+            <li>Professional Standards: Medical licensing verification requirements</li>
+            <li>Quality Assurance: Clinical supervision and audit protocols</li>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="heading">2.6 Assumptions and Dependencies</div>
+        
+        <p><strong>Critical Assumptions:</strong></p>
+        <ul>
+            <li>Healthcare professionals maintain consistent volunteer participation</li>
+            <li>Target user populations have basic smartphone access and connectivity</li>
+            <li>Regulatory frameworks remain stable during the development period</li>
+            <li>AI technology capabilities continue advancing for health applications</li>
+        </ul>
+        
+        <p><strong>External Dependencies:</strong></p>
+        <ul>
+            <li>Third-party Services: Video calling, payment processing, and mapping services</li>
+            <li>Infrastructure: Cloud platform availability and performance</li>
+            <li>Content: Medical knowledge base accuracy and currency</li>
+            <li>Partnerships: NGO collaboration and community access facilitation</li>
+        </ul>
+    </div>
+    
+    <div class="page-number">8</div>
+</body>
+</html>

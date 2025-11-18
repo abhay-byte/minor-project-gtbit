@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Design - Clinico: The Healing Hand Initiative</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 84pt 101pt 84pt 101pt; /* 1 inch bottom and top, 3.5 cm left, 3 cm right */
+            background-color: white;
+            text-align: justify;
+        }
+        
+        .title {
+            font-size: 24pt;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20pt;
+        }
+        
+        .heading {
+            font-size: 14pt;
+            font-weight: bold;
+            text-align: justify;
+            margin-top: 15pt;
+            margin-bottom: 10pt;
+        }
+        
+        .content {
+            margin-bottom: 15pt;
+        }
+        
+        .subheading {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 10pt;
+            margin-bottom: 5pt;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10pt 0;
+        }
+        
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2;
+        }
+        
+        ul {
+            margin: 10pt 0;
+            padding-left: 20pt;
+        }
+        
+        li {
+            margin-bottom: 5pt;
+        }
+        
+        .page-number {
+            position: fixed;
+            bottom: 20pt;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12pt;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">CLINICO: THE HEALING HAND INITIATIVE</div>
+    
+    <div class="heading">3 SYSTEM DESIGN</div>
+    
+    <div class="content">
+        <div class="heading">3.1 Client-Server Architecture</div>
+        <p>The Clinico platform employs a cloud-native microservices architecture designed for scalability, maintainability, and resilience. The system follows a three-tier architecture pattern with clear separation of concerns between the presentation, application, and data layers.</p>
+        
+        <div class="subheading">3.1.1 Architecture Overview</div>
+        <p>The architecture consists of multiple components that work together to provide a comprehensive healthcare platform:</p>
+        
+        <ul>
+            <li><strong>Client Layer:</strong> Includes mobile applications (Flutter for iOS and Android) and web dashboards (React for healthcare professionals and administrators).</li>
+            <li><strong>API Gateway Layer:</strong> Google Cloud Endpoints providing a single, secure entry point for all system traffic with authentication, rate limiting, and protection against common web threats.</li>
+            <li><strong>Service Layer:</strong> Microservices handling specific business domains including User Service, Appointment Service, AI Engine Service, Communication Service, Health Records Service, and NGO Partner Service.</li>
+            <li><strong>Data Layer:</strong> PostgreSQL for transactional data, Pinecone for vector database needs, Redis for caching, and Google Cloud Storage for file storage.</li>
+        </ul>
+        
+        <div class="subheading">3.1.2 Service Architecture</div>
+        <p>The system implements a microservices architecture with the following core services:</p>
+        
+        <table>
+            <tr>
+                <th>Service</th>
+                <th>Responsibility</th>
+                <th>Technology Stack</th>
+                <th>Scaling Strategy</th>
+            </tr>
+            <tr>
+                <td>User Service</td>
+                <td>Authentication, OTP management, user profiles</td>
+                <td>Node.js, Express, JWT</td>
+                <td>Horizontal, stateless</td>
+            </tr>
+            <tr>
+                <td>Appointment Service</td>
+                <td>Booking, calendar, notifications</td>
+                <td>Node.js, Firebase, PostgreSQL</td>
+                <td>Event-driven scaling</td>
+            </tr>
+            <tr>
+                <td>AI Engine Service</td>
+                <td>Multi-agent coordination, personalization</td>
+                <td>Python, Google Gemini API, Vertex AI</td>
+                <td>GPU-based horizontal scaling</td>
+            </tr>
+            <tr>
+                <td>Communication Service</td>
+                <td>Video calls, messaging, real-time chat</td>
+                <td>Node.js, WebRTC, Socket.io</td>
+                <td>Connection-based scaling</td>
+            </tr>
+            <tr>
+                <td>Health Records Service</td>
+                <td>EHR, document management, FHIR compliance</td>
+                <td>Node.js, PostgreSQL, file storage</td>
+                <td>Data-partitioned scaling</td>
+            </tr>
+            <tr>
+                <td>NGO Partner Service</td>
+                <td>Community management, impact tracking</td>
+                <td>Node.js, PostgreSQL</td>
+                <td>Tenant-based scaling</td>
+            </tr>
+        </table>
+        
+        <div class="subheading">3.1.3 Infrastructure Architecture</div>
+        <p>The platform is built on Google Cloud Platform (GCP) using a serverless foundation:</p>
+        
+        <ul>
+            <li><strong>Compute Platform:</strong> Google App Engine with Flexible Environment using Docker containers for microservices</li>
+            <li><strong>Service Communication:</strong> App Engine Services Discovery for secure internal communication</li>
+            <li><strong>Monitoring & Logging:</strong> Google Cloud's Operations Suite for centralized logging and error reporting</li>
+            <li><strong>CI/CD Pipeline:</strong> Google Cloud Build with automated deployment triggered by GitHub webhooks</li>
+        </ul>
+        
+        <div class="subheading">3.1.4 Security Architecture</div>
+        <p>Security is implemented at multiple layers:</p>
+        
+        <ul>
+            <li><strong>Network Security:</strong> Google Cloud VPC with firewall rules and network segmentation</li>
+            <li><strong>Identity & Access Management:</strong> Custom JWT implementation with Role-Based Access Control (RBAC)</li>
+            <li><strong>Secrets Management:</strong> Google Secret Manager for secure credential storage</li>
+            <li><strong>Compliance Monitoring:</strong> Automated security scanning in CI/CD pipeline</li>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="heading">3.2 Entity-Relationship (ER) Diagram</div>
+        <p>The Clinico database schema is designed as a robust, scalable foundation for the telehealth platform. It supports patient care, professional collaboration, and AI-assisted health management with a focus on flexibility and normalization.</p>
+        
+        <div class="subheading">3.2.1 Core Design Principles</div>
+        <ul>
+            <li><strong>Centralized User Identity:</strong> A single `users` table handles authentication, with role-specific tables (`patients`, `professionals`, `ngo_users`) storing profile data.</li>
+            <li><strong>Transactional Core:</strong> The `appointments`, `consultations`, and `prescriptions` tables form the heart of the system, tracking every step of the care journey.</li>
+            <li><strong>Patient-Centric Data:</strong> Health records, medication reminders, and wellness tracking all link directly to each patient.</li>
+            <li><strong>Detailed Logging & Auditing:</strong> Logs such as `reminder_logs`, `ai_chat_logs`, and `notifications` provide full visibility into user activity and system events.</li>
+        </ul>
+        
+        <div class="subheading">3.2.2 Core User & Authentication Tables</div>
+        <p><strong>users</strong> table serves as the master table for all user accounts and authentication:</p>
+        <ul>
+            <li>Attributes: `user_id`, `email`, `password_hash`, `full_name`, `phone_number`, `role`, `last_sync`, `verified_user`</li>
+            <li>Relationships: One-to-one with `patients`, `professionals`, or `ngo_users`</li>
+        </ul>
+        
+        <p><strong>patients</strong> table stores personal and medical data for patient users:</p>
+        <ul>
+            <li>Attributes: `patient_id`, `user_id`, `date_of_birth`, `gender`, `address`, `blood_group`, `known_allergies`, `chronic_conditions`, `current_medications`, `lifestyle_notes`, `patient_code`, `member_since`</li>
+            <li>Relationships: One-to-one with `users`, central hub for appointments, records, and reminders</li>
+        </ul>
+        
+        <p><strong>professionals</strong> table contains verified information about healthcare providers:</p>
+        <ul>
+            <li>Attributes: `professional_id`, `user_id`, `specialty`, `credentials`, `years_of_experience`, `verification_status`, `rating`, `total_reviews`, `patients_treated`, `languages_spoken`, `working_hours`, `is_volunteer`</li>
+        </ul>
+        
+        <p><strong>ngo_users</strong> table stores data for NGO representatives and partner organizations.</p>
+        
+        <div class="subheading">3.2.3 Appointments & Scheduling Tables</div>
+        <p><strong>appointments</strong> serves as the central record for all scheduled sessions:</p>
+        <ul>
+            <li>Attributes: `appointment_id`, `patient_id`, `professional_id`/`clinic_doctor_id`, `appointment_time`, `status`, `appointment_type`, `consultation_link`, `appointment_code`, `patient_notes`, `scheduled_at`, `completed_at`, `duration_minutes`</li>
+        </ul>
+        
+        <p><strong>availability_slots</strong> defines professional availability for virtual consultations:</p>
+        <ul>
+            <li>Attributes: `slot_id`, `professional_id`, `start_time`, `end_time`, `is_booked`, `slot_date`</li>
+        </ul>
+        
+        <div class="subheading">3.2.4 Consultations, Prescriptions & Care Tables</div>
+        <p><strong>consultations</strong> stores medical details from completed appointments:</p>
+        <ul>
+            <li>Attributes: `consultation_id`, `appointment_id`, `clinical_notes`, `diagnosis`, `ai_briefing`, `doctor_recommendations`, `follow_up_instructions`, `prescription_attached`</li>
+        </ul>
+        
+        <p><strong>prescriptions</strong> provides structured records of prescribed medications:</p>
+        <ul>
+            <li>Attributes: `prescription_id`, `consultation_id`, `medication_name`, `dosage`, `frequency`, `duration`, `instructions`, `medication_category`, `doctor_notes`, `prescribed_date`, `is_active`, `prescribed_by_doctor_id`, `doctor_name`, `doctor_specialty`, `clinic_name`, `important_notes`</li>
+        </ul>
+        
+        <p><strong>prescription_list</strong> serves as a header or grouping record for prescription events:</p>
+        <ul>
+            <li>Attributes: `list_id`, `patient_id`, `prescription_id`, `condition_treated`, `medicines_count`, `next_followup`, `prescription_status`, `last_viewed`</li>
+        </ul>
+        
+        <div class="subheading">3.2.5 Medicine Reminders & Adherence Tables</div>
+        <p><strong>medicine_reminders</strong> defines patient medicine intake schedules:</p>
+        <ul>
+            <li>Attributes: `reminder_id`, `patient_id`, `prescription_id`, `medication_name`, `dosage_form`, `timing_schedule`, `how_to_take`, `duration`, `doctor_note`, `start_date`, `end_date`, `is_active`, `next_reminder_time`</li>
+        </ul>
+        
+        <p><strong>reminder_logs</strong> logs reminder notifications and adherence tracking:</p>
+        <ul>
+            <li>Attributes: `log_id`, `reminder_id`, `scheduled_time`, `taken_time`, `status`, `notes`</li>
+        </ul>
+        
+        <div class="subheading">3.2.6 Health Records, Documents & Requests Tables</div>
+        <p><strong>medical_records</strong> serves as the central repository for uploaded medical documents:</p>
+        <ul>
+            <li>Attributes: `record_id`, `patient_id`, `document_name`, `document_url`, `document_type`, `comments_notes`, `linked_appointment_id`, `uploaded_by_user_id`, `uploaded_by_role`, `report_date`, `uploaded_at`, `file_format`, `file_size_mb`</li>
+        </ul>
+        
+        <p><strong>Medical Vault Tables</strong> (`prescription_vault`, `lab_report_vault`, etc.) provide optimized summary tables for quick document category counts.</p>
+        
+        <p><strong>upload_report_requests</strong> and <strong>uploaded_test_reports</strong> manage the workflow for requesting and submitting test reports.</p>
+        
+        <div class="subheading">3.2.7 Hyperlocal Discovery & Search Tables</div>
+        <p><strong>clinics</strong> and <strong>clinic_doctors</strong> tables store external clinic and doctor directory information:</p>
+        <ul>
+            <li>Attributes: Location data (`latitude`, `longitude`, `city`, `area`, `pincode`), `consultation_fee`, `available_days`, `rating`, `facilities`</li>
+        </ul>
+        
+        <p><strong>search_history</strong> and <strong>saved_locations</strong> store past searches and favorite patient locations.</p>
+        
+        <div class="subheading">3.2.8 Communication & Messaging Tables</div>
+        <p><strong>patient_doctor_conversations</strong> and <strong>messages</strong> implement the core chat system between patients and doctors:</p>
+        <ul>
+            <li>Attributes: `sender_type`, `message_type`, `message_content`, `attachment_url`, `sent_at`, `is_read`, `read_at`</li>
+        </ul>
+        
+        <div class="subheading">3.2.9 AI Chat & Assistance Tables</div>
+        <p><strong>ai_chat_sessions</strong> and <strong>ai_chat_logs</strong> store interactions with the AI health assistant:</p>
+        <ul>
+            <li>Attributes: `session_type`, `session_summary`, `escalated_to_professional`, `crisis_detected`, `message_content`, `sender`, `ai_agent_type`, `ai_metadata`, `media_attachments`, `media_type`</li>
+        </ul>
+        
+        <p><strong>crisis_interventions</strong> logs critical mental health detection events with attributes like `crisis_keywords`, `helpline_provided`, and `acknowledged_by_user`.</p>
+        
+        <div class="subheading">3.2.10 Reviews, Notifications & Settings Tables</div>
+        <p><strong>reviews</strong> captures patient feedback with polymorphic relationships to support reviews for different entities (appointments, clinic doctors, etc.).</p>
+        
+        <p><strong>notifications</strong> and <strong>notification_settings</strong> manage alerts and user preferences.</p>
+        
+        <p><strong>account_settings</strong> stores UI and general preferences.</p>
+        
+        <div class="subheading">3.2.11 Wellness & Health Education Tables</div>
+        <p><strong>health_articles</strong> serves as a CMS for educational and awareness content.</p>
+        
+        <p><strong>article_reads</strong>, <strong>wellness_library</strong>, and <strong>wellness_thoughts</strong> track engagement and user activity.</p>
+    </div>
+    
+    <div class="content">
+        <div class="heading">3.3 Data Flow Diagram (DFD)</div>
+        <p>The Data Flow Diagrams (DFDs) illustrate how information flows through the Clinico system. The system follows a layered approach with Level 0 providing an overview and Level 1 showing detailed processes.</p>
+        
+        <div class="subheading">3.3.1 Level 0 DFD (Context Diagram)</div>
+        <p>The Level 0 diagram provides a bird's-eye view of the entire Clinico system, treating the application as a single process. It shows external entities and data flows to define the system's boundary:</p>
+        
+        <ul>
+            <li><strong>Central Process:</strong> Clinico Healthcare Software receives all incoming data, processes it using business logic, and generates outgoing information.</li>
+            <li><strong>Input Entities:</strong> Patient (end-users providing personal and health data), Doctor (verified healthcare professionals using the web dashboard)</li>
+            <li><strong>Input Data Flows:</strong> Submit patient data, submit health request, submit professional data, submit consultation data</li>
+            <li><strong>Output Entities:</strong> Personal Information (user profile display), Doctor Directory (map/search result of local doctors), Appointment Schedule (view of upcoming appointments), Consultation Result (digital prescription or summary delivered to the patient)</li>
+        </ul>
+        
+        <div class="subheading">3.3.2 Level 1 DFD</div>
+        <p>The Level 1 DFD expands the Level 0 diagram into major sub-processes, data stores, and flows:</p>
+        
+        <p><strong>External Entities:</strong> Patient/User, Healthcare Professional, NGO/Community Partner, Platform Administrator</p>
+        
+        <p><strong>Main Processes (Functional Cores):</strong></p>
+        <ul>
+            <li><strong>User & Profile Management:</strong> Handles registration, login, and profile updates for all user types</li>
+            <li><strong>AI Care Companion:</strong> Processes health queries, interacts with the knowledge base, and provides guidance</li>
+            <li><strong>Appointment & Scheduling:</strong> Manages booking, viewing, and managing appointments, including doctor availability</li>
+            <li><strong>Telehealth Service:</strong> Manages live video consultations and generates post-consultation documents like notes and prescriptions</li>
+            <li><strong>Hyperlocal Discovery:</strong> Handles searches for local clinics and doctors</li>
+            <li><strong>Analytics & Reporting:</strong> Collects and analyzes data for admin and NGO insights</li>
+        </ul>
+        
+        <p><strong>Data Stores (System Memory):</strong></p>
+        <ul>
+            <li><strong>User Profiles:</strong> Stores all user account information</li>
+            <li><strong>Health Records:</strong> Holds patient-specific data like chat history, uploaded documents, and consultation summaries</li>
+            <li><strong>Appointments:</strong> Tracks scheduled, completed, and cancelled appointments</li>
+            <li><strong>Knowledge Base:</strong> Vetted medical information for the AI Companion (RAG model)</li>
+            <li><strong>Local Provider Directory:</strong> Database of physical clinics and doctors for in-person booking</li>
+        </ul>
+        
+        <div class="subheading">3.3.3 Data Flow Architecture</div>
+        <p>The system follows an event-driven communication pattern:</p>
+        
+        <ul>
+            <li><strong>Request Processing Flow:</strong> Client Request → API Gateway (authentication, rate limiting) → Load balancer → Target microservice → Business Logic (with database interaction) → Event Publishing (asynchronous event notification to relevant services) → Response (formatted response returned through API gateway)</li>
+            <li><strong>Event-Driven Communication:</strong> Google Cloud Pub/Sub for asynchronous messaging and event streaming between microservices, with Redis/RabbitMQ for task queuing and processing</li>
+            <li><strong>Event Sourcing:</strong> Audit trail and state reconstruction capabilities</li>
+            <li><strong>CQRS Pattern:</strong> Command and Query Responsibility Segregation for performance optimization</li>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="heading">3.4 Database Schema</div>
+        <p>The database schema implementation follows the ER diagram design with PostgreSQL as the primary database. The schema includes multiple migration scripts to create and evolve the database structure over time.</p>
+        
+        <div class="subheading">3.4.1 Database Components</div>
+        <ul>
+            <li><strong>Primary Database:</strong> PostgreSQL 13+ with HIPAA-compliant configuration for transactional data</li>
+            <li><strong>Vector Database:</strong> Pinecone for AI knowledge base and semantic search</li>
+            <li><strong>Cache Layer:</strong> Redis 6+ for session management and performance optimization</li>
+            <li><strong>File Storage:</strong> Google Cloud Storage for multimedia content</li>
+            <li><strong>Time-Series Database:</strong> InfluxDB for metrics and monitoring data</li>
+        </ul>
+        
+        <div class="subheading">3.4.2 Migration Strategy</div>
+        <p>The database schema is managed through a series of numbered migration scripts:</p>
+        
+        <ul>
+            <li><strong>001_create_users_tables.sql:</strong> Creates core user and role-specific tables with custom ENUM types for user roles and verification status</li>
+            <li><strong>002_create_appointments_tables.sql:</strong> Creates appointment and consultation workflow tables with custom ENUM types for appointment status and type</li>
+            <li><strong>003_create_discovery_and_records_tables.sql:</strong> Creates tables for hyperlocal discovery (clinics, clinic_doctors) and patient-specific data (medical_records)</li>
+            <li><strong>004_create_interaction_tables.sql:</strong> Creates tables for user feedback and interaction including reviews and AI chat logs</li>
+            <li><strong>05_add_missing_tables.sql:</strong> Adds missing tables according to the ER diagram including medicine reminders, vault tables, and wellness features</li>
+            <li><strong>06_update_id_columns_to_uuid.sql:</strong> Updates ID columns to UUID according to the ER diagram</li>
+        </ul>
+        
+        <div class="subheading">3.4.3 Key Database Features</div>
+        <p>The schema implements several important features:</p>
+        
+        <ul>
+            <li><strong>Referential Integrity:</strong> Foreign key constraints with appropriate CASCADE rules to maintain data consistency</li>
+            <li><strong>Business Logic Constraints:</strong> Check constraints for valid data ranges and combinations, such as the hybrid appointment logic that ensures an appointment must be either virtual or in-person but not both</li>
+            <li><strong>Unique Constraints:</strong> Email, phone numbers, and codes must be unique to prevent duplicates</li>
+            <li><strong>Audit Trail:</strong> Created/updated timestamps on all major entities for tracking changes</li>
+            <li><strong>Indexing Strategy:</strong> B-tree indexes on primary and foreign keys, composite indexes for frequent query patterns, and spatial indexes for location-based queries</li>
+            <li><strong>Partitioning Strategy:</strong> Time-based partitioning for appointment and consultation data, hash partitioning for user data distribution</li>
+        </ul>
+        
+        <div class="subheading">3.4.4 Data Relationships and Constraints</div>
+        <p>The schema implements several key relationship patterns:</p>
+        
+        <ul>
+            <li><strong>One-to-One:</strong> `users` ↔ `patients` / `professionals` / `ngo_users`</li>
+            <li><strong>One-to-Many:</strong> `patients` → `appointments`, `professionals` → `availability_slots`</li>
+            <li><strong>Many-to-Many:</strong> `professionals` ↔ `specialties` (via junction table)</li>
+            <li><strong>Polymorphic:</strong> `reviews` → `appointments` / `clinic_doctors` (via `target_type` / `target_id`)</li>
+        </ul>
+    </div>
+    
+    <div class="page-number">15</div>
+</body>
+</html>

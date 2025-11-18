@@ -1,6 +1,9 @@
 # Use an official Node.js runtime as a parent image
 FROM node:18-alpine
 
+# Install build dependencies required for bcrypt
+RUN apk add --no-cache python3 make g++ python3-dev
+
 # Set the working directory
 WORKDIR /usr/src/app
 
@@ -16,7 +19,7 @@ USER node
 COPY --chown=node:node package*.json ./
 
 # Install app dependencies
-RUN npm install
+RUN npm install --build-from-source
 
 # Bundle app source, ensuring the 'node' user owns the files
 COPY --chown=node:node . .
