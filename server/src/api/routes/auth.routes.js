@@ -7,7 +7,7 @@ const { loginLimiter,registerLimiter } = require('../middleware/rateLimiter.midd
 // @route   POST /api/auth/register
 // @desc    Register a new user
 // @access  Public
-router.post('/register', registerLimiter, register);
+router.post('/register', register);
 
 
 // @route   POST /api/auth/login

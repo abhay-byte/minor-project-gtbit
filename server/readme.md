@@ -71,6 +71,16 @@ chmod +x run_server.sh
 ./run_server.sh
 ```
 
+**Alternative: Run with Node.js directly**
+
+If you prefer to run the server directly with Node.js:
+
+```bash
+cd src
+npm install
+npm start
+```
+
 The server will start automatically, and you can access the API at:
 👉 [http://localhost:5000](http://localhost:5000)
 
@@ -127,9 +137,10 @@ which you can use for testing.
 | **GET**    | `/api/clinics/doctors/:id/reviews`    | Get all reviews for a clinic doctor.       | ❌             |
 
 
-
 ## 📘 Related Documentation
 
 * [Database Setup Guide](#)
-* [API Source Code Guide](#)
+* [API Documentation](./src/api.md)
+* [Backend API Postman Collection](./backend_api_postman.json)
+
 

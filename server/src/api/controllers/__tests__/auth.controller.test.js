@@ -1,146 +1,279 @@
 // src/api/controllers/__tests__/auth.controller.test.js
-
 const { register, login } = require('../auth.controller');
 const db = require('../../../config/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// Mock the external dependencies
-jest.mock('../../../config/db', () => ({
-  query: jest.fn(),
-  connect: jest.fn(), // Mock the connect method for transactions
-}));
-jest.mock('bcrypt');
+// Mock the database module
+jest.mock('../../../config/db');
+
+// Mock JWT
 jest.mock('jsonwebtoken');
 
+// Mock UUID
+jest.mock('uuid', () => ({
+  v4: jest.fn(() => 'mocked-uuid-123')
+}));
+
 describe('Auth Controller', () => {
-  let mockReq, mockRes;
-
   beforeEach(() => {
-    // Reset mocks before each test to ensure isolation
     jest.clearAllMocks();
-    mockReq = { body: {} };
-    mockRes = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
   });
 
-  // --- REGISTRATION TESTS ---
   describe('register', () => {
-    it('should successfully register a new patient', async () => {
-      mockReq.body = {
-        email: 'test@example.com',
-        password: 'password123',
-        fullName: 'Test User',
-        role: 'Patient',
-        dateOfBirth: '2000-01-01',
-        gender: 'Other',
-        address: '123 Test St',
+    it('should register a new user successfully', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'password123',
+          full_name: 'Test User',
+          phone_number: '1234567890',
+          role: 'Patient'
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
       };
 
-      const mockClient = {
-        query: jest.fn(),
-        release: jest.fn(),
+      // Mock database responses
+      db.query.mockResolvedValueOnce({ rows: [] }); // No existing user
+      db.query.mockResolvedValueOnce({
+        rows: [{
+          user_id: 1,
+          email: 'test@example.com',
+          full_name: 'Test User',
+          role: 'Patient',
+          created_at: new Date(),
+          user_id_uuid: 'uuid-123'
+        }]
+      }); // User creation
+      db.query.mockResolvedValueOnce({ rows: [] }); // Patient profile creation
+
+      // Mock bcrypt
+      bcrypt.hash = jest.fn().mockResolvedValue('hashed_password');
+
+      // Mock JWT
+      jwt.sign = jest.fn().mockReturnValue('mocked_jwt_token');
+
+      await register(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        message: 'User registered successfully',
+        token: 'mocked_jwt_token',
+        user: {
+          user_id: 1,
+          email: 'test@example.com',
+          full_name: 'Test User',
+          role: 'Patient',
+          created_at: expect.any(Date)
+        }
+      });
+    });
+
+    it('should return error if required fields are missing', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com'
+          // Missing other required fields
+        }
       };
-      // Mock the db.connect() call to return our mock client
-      db.connect.mockResolvedValue(mockClient);
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
 
-      // Set up a sequence of resolutions for each step of the transaction
-      mockClient.query
-        .mockResolvedValueOnce({}) // For BEGIN
-        .mockResolvedValueOnce({ rows: [{ user_id: 1 }] }) // For INSERT into users
-        .mockResolvedValueOnce({}); // For INSERT into patients
+      await register(req, res);
 
-      bcrypt.hash.mockResolvedValue('hashedpassword');
-      jwt.sign.mockReturnValue('testtoken');
-
-      await register(mockReq, mockRes);
-
-      // Assert the sequence of calls
-      expect(db.connect).toHaveBeenCalledTimes(1);
-      expect(mockClient.query).toHaveBeenNthCalledWith(1, 'BEGIN');
-      expect(mockClient.query).toHaveBeenNthCalledWith(2, expect.stringContaining('INSERT INTO users'), expect.any(Array));
-      expect(mockClient.query).toHaveBeenNthCalledWith(3, expect.stringContaining('INSERT INTO patients'), expect.any(Array));
-      expect(mockClient.query).toHaveBeenNthCalledWith(4, 'COMMIT');
-      expect(mockClient.release).toHaveBeenCalledTimes(1);
-
-      expect(mockRes.status).toHaveBeenCalledWith(201);
-      expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ token: 'testtoken' }));
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        error: 'Email, password, full name, and role are required'
+      });
     });
 
-    it('should return 409 if email already exists', async () => {
-        mockReq.body = { email: 'test@example.com', password: 'password123', fullName: 'Test User', role: 'Patient' };
+    it('should return error if user already exists', async () => {
+      const req = {
+        body: {
+          email: 'existing@example.com',
+          password: 'password123',
+          full_name: 'Existing User',
+          phone_number: '1234567890',
+          role: 'Patient'
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
 
-        const mockClient = {
-            query: jest.fn(),
-            release: jest.fn()
-        };
-        db.connect.mockResolvedValue(mockClient);
-        
-        // Mock the sequence for a failed transaction
-        mockClient.query
-          .mockResolvedValueOnce({}) // For BEGIN
-          .mockRejectedValueOnce({ code: '23505' }); // INSERT into users fails
+      // Mock database response - user already exists
+      db.query.mockResolvedValueOnce({
+        rows: [{ user_id: 1, email: 'existing@example.com' }]
+      });
 
-        bcrypt.hash.mockResolvedValue('hashedpassword');
+      await register(req, res);
 
-        await register(mockReq, mockRes);
-        
-        // Assert the sequence of calls for the rollback path
-        expect(db.connect).toHaveBeenCalledTimes(1);
-        expect(mockClient.query).toHaveBeenNthCalledWith(1, 'BEGIN');
-        expect(mockClient.query).toHaveBeenNthCalledWith(2, expect.stringContaining('INSERT INTO users'), expect.any(Array));
-        expect(mockClient.query).toHaveBeenNthCalledWith(3, 'ROLLBACK');
-        expect(mockClient.release).toHaveBeenCalledTimes(1);
-
-        expect(mockRes.status).toHaveBeenCalledWith(409);
-        expect(mockRes.json).toHaveBeenCalledWith({ message: 'An account with this email already exists.' });
+      expect(res.status).toHaveBeenCalledWith(409);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        error: 'User with this email already exists'
+      });
     });
 
+    it('should return error for invalid role', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'password123',
+          full_name: 'Test User',
+          phone_number: '1234567890',
+          role: 'InvalidRole'
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
 
-    it('should return 400 for missing required fields', async () => {
-      mockReq.body = { email: 'test@example.com' };
-      await register(mockReq, mockRes);
-      expect(mockRes.status).toHaveBeenCalledWith(400);
-      expect(mockRes.json).toHaveBeenCalledWith({ message: 'Email, password, full name, and role are required.' });
+      await register(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        error: 'Invalid role. Must be one of: Patient, Professional, NGO, Admin'
+      });
     });
   });
 
-  // --- LOGIN TESTS (no changes needed) ---
   describe('login', () => {
-    it('should successfully log in a user with correct credentials', async () => {
-      mockReq.body = { email: 'test@example.com', password: 'password123' };
-      const mockUser = { user_id: 1, email: 'test@example.com', password_hash: 'hashedpassword', full_name: 'Test User', role: 'Patient' };
-      db.query.mockResolvedValue({ rows: [mockUser] });
-      bcrypt.compare.mockResolvedValue(true);
-      jwt.sign.mockReturnValue('testtoken');
+    it('should login user successfully with correct credentials', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'password123'
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
 
-      await login(mockReq, mockRes);
+      // Mock database response - user exists
+      db.query.mockResolvedValueOnce({
+        rows: [{
+          user_id: 1,
+          email: 'test@example.com',
+          password_hash: 'hashed_password',
+          full_name: 'Test User',
+          role: 'Patient',
+          user_id_uuid: 'uuid-123'
+        }]
+      });
 
-      expect(db.query).toHaveBeenCalledWith('SELECT * FROM users WHERE email = $1', ['test@example.com']);
-      expect(bcrypt.compare).toHaveBeenCalledWith('password123', 'hashedpassword');
-      expect(mockRes.status).toHaveBeenCalledWith(200);
-      expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ token: 'testtoken' }));
+      // Mock bcrypt
+      bcrypt.compare = jest.fn().mockResolvedValue(true);
+
+      // Mock JWT
+      jwt.sign = jest.fn().mockReturnValue('mocked_jwt_token');
+
+      await login(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        message: 'Login successful',
+        token: 'mocked_jwt_token',
+        user: {
+          user_id: 1,
+          email: 'test@example.com',
+          full_name: 'Test User',
+          role: 'Patient'
+        }
+      });
     });
 
-    it('should return 401 for a non-existent user', async () => {
-      mockReq.body = { email: 'nouser@example.com', password: 'password123' };
-      db.query.mockResolvedValue({ rows: [] });
-      await login(mockReq, mockRes);
-      expect(mockRes.status).toHaveBeenCalledWith(401);
-      expect(mockRes.json).toHaveBeenCalledWith({ message: 'Invalid credentials.' });
+    it('should return error if required fields are missing', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com'
+          // Missing password
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
+
+      await login(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        error: 'Email and password are required'
+      });
     });
 
-    it('should return 401 for incorrect password', async () => {
-      mockReq.body = { email: 'test@example.com', password: 'wrongpassword' };
-      const mockUser = { user_id: 1, password_hash: 'hashedpassword' };
-      db.query.mockResolvedValue({ rows: [mockUser] });
-      bcrypt.compare.mockResolvedValue(false);
-      await login(mockReq, mockRes);
-      expect(mockRes.status).toHaveBeenCalledWith(401);
-      expect(mockRes.json).toHaveBeenCalledWith({ message: 'Invalid credentials.' });
+    it('should return error if user does not exist', async () => {
+      const req = {
+        body: {
+          email: 'nonexistent@example.com',
+          password: 'password123'
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
+
+      // Mock database response - no user found
+      db.query.mockResolvedValueOnce({ rows: [] });
+
+      await login(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        error: 'Invalid email or password'
+      });
+    });
+
+    it('should return error if password is incorrect', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'wrong_password'
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
+
+      // Mock database response - user exists
+      db.query.mockResolvedValueOnce({
+        rows: [{
+          user_id: 1,
+          email: 'test@example.com',
+          password_hash: 'hashed_password',
+          full_name: 'Test User',
+          role: 'Patient',
+          user_id_uuid: 'uuid-123'
+        }]
+      });
+
+      // Mock bcrypt - password comparison fails
+      bcrypt.compare = jest.fn().mockResolvedValue(false);
+
+      await login(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        error: 'Invalid email or password'
+      });
     });
   });
 });
-

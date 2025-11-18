@@ -26,7 +26,7 @@ describe('Professional Controller', () => {
     // --- getAllProfessionals TESTS ---
     describe('getAllProfessionals', () => {
         it('should fetch all verified professionals without a filter', async () => {
-            const mockProfessionals = [{ id: 1, fullName: 'Dr. Amit Patel', specialty: 'Psychiatrist' }];
+            const mockProfessionals = [{ professional_id: 1, full_name: 'Dr. Amit Patel', specialty: 'Psychiatrist' }];
             db.query.mockResolvedValue({ rows: mockProfessionals });
 
             await getAllProfessionals(mockReq, mockRes);
@@ -38,7 +38,7 @@ describe('Professional Controller', () => {
 
         it('should fetch verified professionals filtered by specialty', async () => {
             mockReq.query.specialty = 'Cardiologist';
-            const mockProfessionals = [{ id: 3, fullName: 'Dr. Vikram Verma', specialty: 'Cardiologist' }];
+            const mockProfessionals = [{ professional_id: 3, full_name: 'Dr. Vikram Verma', specialty: 'Cardiologist' }];
             db.query.mockResolvedValue({ rows: mockProfessionals });
 
             await getAllProfessionals(mockReq, mockRes);

@@ -18,7 +18,7 @@ describe('User Controller', () => {
 
         // Mock Express request and response objects
         mockReq = {
-            user: { userId: 1, role: 'Patient' }, // Simulate middleware attachment
+            user: { userId: 1, userUUID: 'some-uuid', role: 'Patient' }, // Simulate middleware attachment
             body: {},
         };
         mockRes = {
@@ -43,16 +43,16 @@ describe('User Controller', () => {
             // Setup mock query responses in order of execution
             mockClient.query
                 .mockResolvedValueOnce({}) // For BEGIN
-                .mockResolvedValueOnce({ rows: [mockUser] }) // For fetching from 'users'
-                .mockResolvedValueOnce({ rows: [mockPatientDetails] }) // For fetching from 'patients'
+                .mockResolvedValueOnce({ rows: [mockUser] }) // For fetching from 'users' using UUID
+                .mockResolvedValueOnce({ rows: [mockPatientDetails] }) // For fetching from 'patients' using UUID
                 .mockResolvedValueOnce({}); // For COMMIT
 
             await getMe(mockReq, mockRes);
 
             // Verify transaction flow and queries
             expect(mockClient.query).toHaveBeenNthCalledWith(1, 'BEGIN');
-            expect(mockClient.query).toHaveBeenNthCalledWith(2, expect.stringContaining('FROM users u'), [1]);
-            expect(mockClient.query).toHaveBeenNthCalledWith(3, expect.stringContaining('FROM patients'), [1]);
+            expect(mockClient.query).toHaveBeenNthCalledWith(2, expect.stringContaining('FROM users u'), ['some-uuid']);
+            expect(mockClient.query).toHaveBeenNthCalledWith(3, expect.stringContaining('FROM patients'), ['some-uuid']);
             expect(mockClient.query).toHaveBeenNthCalledWith(4, 'COMMIT');
             expect(mockClient.release).toHaveBeenCalled();
 
@@ -101,8 +101,24 @@ describe('User Controller', () => {
             expect(mockClient.query).toHaveBeenNthCalledWith(1, 'BEGIN');
             // Verify update on 'users' table
             expect(mockClient.query).toHaveBeenNthCalledWith(2, expect.stringContaining('UPDATE users'), ['Test User Updated', '1234567890', 1]);
-            // Verify update on 'patients' table
-            expect(mockClient.query).toHaveBeenNthCalledWith(3, expect.stringContaining('UPDATE patients'), ['456 New Address St', undefined, 1]);
+            // Verify update on 'patients' table using UUID - with all 11 parameters
+            expect(mockClient.query).toHaveBeenNthCalledWith(
+                3, 
+                expect.stringContaining('UPDATE patients SET address = COALESCE($1, address)'), 
+                [
+                    '456 New Address St',  // address
+                    undefined,             // gender
+                    undefined,             // blood_group
+                    undefined,             // marital_status
+                    undefined,             // known_allergies
+                    undefined,             // chronic_conditions
+                    undefined,             // current_medications
+                    undefined,             // lifestyle_notes
+                    undefined,             // current_location
+                    undefined,             // current_full_address
+                    'some-uuid'            // user_id_uuid
+                ]
+            );
             expect(mockClient.query).toHaveBeenNthCalledWith(4, 'COMMIT');
             expect(mockClient.release).toHaveBeenCalled();
 
@@ -142,7 +158,7 @@ describe('User Controller', () => {
     // --- Medical Record Tests ---
     describe('Medical Records', () => {
         it('should upload a medical record successfully', async () => {
-            mockReq.user = { userId: 1, role: 'Patient' };
+            mockReq.user = { userId: 1, userUUID: 'some-uuid', role: 'Patient' };
             mockReq.body = { documentName: 'Blood Test', documentType: 'Report' };
             mockReq.file = { originalname: 'test.pdf', buffer: Buffer.from('test') };
 
@@ -153,45 +169,57 @@ describe('User Controller', () => {
 
             await uploadMedicalRecord(mockReq, mockRes);
 
-            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('SELECT patient_id'), [1]);
-            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO medical_records'), [101, 'Blood Test', 'Report', expect.any(String)]);
+            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('SELECT patient_id, patient_id_uuid FROM patients WHERE user_id_uuid = $1'), ['some-uuid']);
+            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO medical_records'), [101, 'Blood Test', 'Report', expect.any(String), null, null, 1, 'Patient', null, null, null]);
             expect(mockRes.status).toHaveBeenCalledWith(201);
             expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ message: 'Medical record uploaded successfully.' }));
         });
 
         it('should not allow a professional to upload a record', async () => {
-            mockReq.user = { userId: 4, role: 'Professional' };
+            mockReq.user = { userId: 4, userUUID: 'some-uuid', role: 'Professional' };
             mockReq.body = { documentName: 'Test', documentType: 'Test' };
+            
+            // Mock empty patient lookup
+            db.query.mockResolvedValueOnce({ rows: [] });
+            
             await uploadMedicalRecord(mockReq, mockRes);
             expect(mockRes.status).toHaveBeenCalledWith(403);
         });
 
         it('should fetch all medical records for a patient', async () => {
-            mockReq.user = { userId: 1, role: 'Patient' };
+            mockReq.user = { userId: 1, userUUID: 'some-uuid', role: 'Patient' };
             const mockRecords = [{ record_id: 501, document_name: 'Blood Test' }];
             db.query.mockResolvedValue({ rows: mockRecords });
 
             await getMyMedicalRecords(mockReq, mockRes);
 
-            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('FROM medical_records'), [1]);
+            // Match the actual query structure (with multiline whitespace)
+            expect(db.query).toHaveBeenCalledWith(
+                expect.stringMatching(/FROM medical_records r[\s\n]+JOIN patients p ON r\.patient_id = p\.patient_id[\s\n]+WHERE p\.user_id_uuid = \$1[\s\n]+ORDER BY r\.uploaded_at DESC/),
+                ['some-uuid']
+            );
             expect(mockRes.status).toHaveBeenCalledWith(200);
             expect(mockRes.json).toHaveBeenCalledWith(mockRecords);
         });
 
         it('should delete a medical record for a patient', async () => {
-            mockReq.user = { userId: 1, role: 'Patient' };
+            mockReq.user = { userId: 1, userUUID: 'some-uuid', role: 'Patient' };
             mockReq.params = { recordId: 501 };
             db.query.mockResolvedValue({ rowCount: 1 }); // Simulate successful deletion
 
             await deleteMedicalRecord(mockReq, mockRes);
 
-            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('DELETE FROM medical_records'), [501, 1]);
+            // Match the actual query structure (with multiline whitespace)
+            expect(db.query).toHaveBeenCalledWith(
+                expect.stringMatching(/DELETE FROM medical_records[\s\n]+WHERE record_id = \$1 AND patient_id = \(SELECT patient_id FROM patients WHERE user_id_uuid = \$2\)[\s\n]+RETURNING record_id/),
+                [501, 'some-uuid']
+            );
             expect(mockRes.status).toHaveBeenCalledWith(200);
             expect(mockRes.json).toHaveBeenCalledWith({ message: 'Medical record deleted successfully.' });
         });
 
         it('should return 404 if trying to delete a non-existent record', async () => {
-            mockReq.user = { userId: 1, role: 'Patient' };
+            mockReq.user = { userId: 1, userUUID: 'some-uuid', role: 'Patient' };
             mockReq.params = { recordId: 999 };
             db.query.mockResolvedValue({ rowCount: 0 }); // Simulate record not found
 
