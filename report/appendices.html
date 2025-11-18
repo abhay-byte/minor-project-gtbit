@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appendices - Clinico: The Healing Hand Initiative</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 84pt 101pt 84pt 101pt; /* 1 inch bottom and top, 3.5 cm left, 3 cm right */
+            background-color: white;
+            text-align: justify;
+        }
+        
+        .title {
+            font-size: 24pt;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20pt;
+        }
+        
+        .heading {
+            font-size: 14pt;
+            font-weight: bold;
+            text-align: justify;
+            margin-top: 15pt;
+            margin-bottom: 10pt;
+        }
+        
+        .content {
+            margin-bottom: 15pt;
+        }
+        
+        .subheading {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 10pt;
+            margin-bottom: 5pt;
+        }
+        
+        .code-block {
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            padding: 10pt;
+            margin: 10pt 0;
+            font-family: "Courier New", monospace;
+            font-size: 10pt;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        
+        ul {
+            margin: 10pt 0;
+            padding-left: 20pt;
+        }
+        
+        li {
+            margin-bottom: 5pt;
+        }
+        
+        .page-number {
+            position: fixed;
+            bottom: 20pt;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12pt;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">CLINICO: THE HEALING HAND INITIATIVE</div>
+    
+    <div class="heading">8 APPENDICES</div>
+    
+    <div class="content">
+        <div class="heading">8.1 Appendix A: Source Code</div>
+        
+        <div class="subheading">8.1 Node.js API Server - Main Application File</div>
+        <div class="code-block">const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const rateLimit = require('express-rate-limit');
+const authRoutes = require('./api/routes/users.routes');
+const appointmentRoutes = require('./api/routes/appointments.routes');
+const clinicRoutes = require('./api/routes/clinics.routes');
+const professionalRoutes = require('./api/routes/professional.routes');
+const vaultRoutes = require('./api/routes/vault.routes');
+const chatRoutes = require('./api/routes/chat.routes');
+const prescriptionRoutes = require('./api/routes/prescriptions.routes');
+const { errorMiddleware } = require('./api/middleware/auth.middleware');
+require('./config/db');
+
+const app = express();
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
+
+// Enable CORS
+app.use(cors());
+
+// Body parsing middleware
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api/clinics', clinicRoutes);
+app.use('/api/professionals', professionalRoutes);
+app.use('/api/vault', vaultRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/prescriptions', prescriptionRoutes);
+
+// Error handling middleware
+app.use(errorMiddleware);
+
+// Serve static files
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+module.exports = app;</div>
+        
+        <div class="subheading">8.1.2 Authentication Controller</div>
+        <div class="code-block">const User = require('../models/User.model');
+const { generateToken, verifyToken } = require('../utils/jwt');
+const bcrypt = require('bcrypt');
+const { sendOTP, verifyOTP } = require('../utils/otp');
+
+const register = async (req, res) => {
+  try {
+    const { email, password, full_name, phone_number, role } = req.body;
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, error: 'User already exists' });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new user
+    const user = new User({
+      email,
+      password: hashedPassword,
+      full_name,
+      phone_number,
+      role
+    });
+
+    await user.save();
+
+    // Generate OTP
+    const otp = await sendOTP(phone_number);
+
+    // Generate token
+    const token = generateToken({ userId: user._id, role: user.role });
+
+    res.status(201).json({
+      success: true,
+      data: { user: { id: user._id, email: user.email, role: user.role }, token, otp }
+    });
+  } catch (error) {
+    res.status(50).json({ success: false, error: error.message });
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'Invalid credentials' });
+    }
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ success: false, error: 'Invalid credentials' });
+    }
+
+    // Generate token
+    const token = generateToken({ userId: user._id, role: user.role });
+
+    res.status(200).json({
+      success: true,
+      data: { user: { id: user._id, email: user.email, role: user.role }, token }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+const verifyOTP = async (req, res) => {
+  try {
+    const { phone_number, otp } = req.body;
+
+    const isValid = await verifyOTP(phone_number, otp);
+    if (!isValid) {
+      return res.status(400).json({ success: false, error: 'Invalid OTP' });
+    }
+
+    res.status(200).json({ success: true, message: 'OTP verified successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  verifyOTP
+};</div>
+        
+        <div class="subheading">8.1.3 Appointment Controller</div>
+        <div class="code-block">const Appointment = require('../models/Appointment.model');
+const Professional = require('../models/Professional.model');
+const Patient = require('../models/Patient.model');
+
+const createAppointment = async (req, res) => {
+  try {
+    const { patient_id, professional_id, appointment_time, appointment_type, patient_notes } = req.body;
+    
+    // Verify patient and professional exist
+    const patient = await Patient.findById(patient_id);
+    if (!patient) {
+      return res.status(404).json({ success: false, error: 'Patient not found' });
+    }
+    
+    const professional = await Professional.findById(professional_id);
+    if (!professional) {
+      return res.status(404).json({ success: false, error: 'Professional not found' });
+    }
+    
+    // Create appointment
+    const appointment = new Appointment({
+      patient_id,
+      professional_id,
+      appointment_time,
+      appointment_type,
+      patient_notes,
+      status: 'Scheduled'
+    });
+    
+    await appointment.save();
+    
+    res.status(201).json({ success: true, data: appointment });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+const getPatientAppointments = async (req, res) => {
+  try {
+    const { patient_id } = req.params;
+    
+    const appointments = await Appointment.find({ patient_id })
+      .populate('professional_id', 'full_name specialty')
+      .sort({ appointment_time: -1 });
+    
+    res.status(200).json({ success: true, data: appointments });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+const getProfessionalAppointments = async (req, res) => {
+  try {
+    const { professional_id } = req.params;
+    
+    const appointments = await Appointment.find({ professional_id })
+      .populate('patient_id', 'full_name date_of_birth')
+      .sort({ appointment_time: -1 });
+    
+    res.status(200).json({ success: true, data: appointments });
+  } catch (error) {
+    res.status(50).json({ success: false, error: error.message });
+  }
+};
+
+module.exports = {
+  createAppointment,
+  getPatientAppointments,
+  getProfessionalAppointments
+};</div>
+        
+        <div class="subheading">8.1.4 Database Model - Appointment</div>
+        <div class="code-block">const mongoose = require('mongoose');
+
+const appointmentSchema = new mongoose.Schema({
+  patient_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Patient',
+    required: true
+  },
+  professional_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Professional',
+    required: true
+  },
+  appointment_time: {
+    type: Date,
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['Scheduled', 'Completed', 'Cancelled'],
+    default: 'Scheduled'
+  },
+  appointment_type: {
+    type: String,
+    enum: ['Virtual', 'In-Person'],
+    required: true
+  },
+  consultation_link: {
+    type: String
+  },
+  patient_notes: {
+    type: String
+  },
+  scheduled_at: {
+    type: Date,
+    default: Date.now
+  },
+  completed_at: {
+    type: Date
+  },
+  duration_minutes: {
+    type: Number
+  }
+}, {
+  timestamps: true
+});
+
+module.exports = mongoose.model('Appointment', appointmentSchema);</div>
+        
+        <div class="subheading">8.1.5 Authentication Middleware</div>
+        <div class="code-block">const jwt = require('jsonwebtoken');
+const User = require('../models/User.model');
+
+const authenticate = async (req, res, next) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      return res.status(401).json({ success: false, error: 'Access denied. No token provided.' });
+    }
+    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId).select('-password');
+    
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'Invalid token.' });
+    }
+    
+    req.user = user;
+    next();
+ } catch (error) {
+    res.status(401).json({ success: false, error: 'Invalid token.' });
+  }
+};
+
+const authorizeRoles = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ success: false, error: 'Access denied. Insufficient permissions.' });
+    }
+    next();
+  };
+};
+
+const errorMiddleware = (err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ success: false, error: 'Something went wrong!' });
+};
+
+module.exports = {
+  authenticate,
+  authorizeRoles,
+  errorMiddleware
+};</div>
+    </div>
+    
+    <div class="content">
+        <div class="heading">8.2 Appendix B: Database Queries</div>
+        
+        <div class="subheading">8.2.1 User Management Queries</div>
+        <div class="code-block">-- Create a new user
+INSERT INTO users (email, password_hash, full_name, phone_number, role, created_at) 
+VALUES ('patient@example.com', 'hashed_password', 'John Doe', '+919876543210', 'Patient', NOW());
+
+-- Find user by email
+SELECT * FROM users WHERE email = 'patient@example.com';
+
+-- Update user profile
+UPDATE users 
+SET full_name = 'John Smith', phone_number = '+919876543211' 
+WHERE user_id = 1;
+
+-- Get all professionals with verification status
+SELECT u.user_id, u.full_name, u.email, p.specialty, p.verification_status, p.years_of_experience 
+FROM users u 
+JOIN professionals p ON u.user_id = p.user_id 
+WHERE p.verification_status = 'Verified';</div>
+        
+        <div class="subheading">8.2.2 Appointment Management Queries</div>
+        <div class="code-block">-- Create a new appointment
+INSERT INTO appointments (patient_id, professional_id, appointment_time, status, appointment_type, patient_notes) 
+VALUES (1, 1, '2025-12-01 10:00:00', 'Scheduled', 'Virtual', 'Follow-up consultation');
+
+-- Get appointments for a specific patient
+SELECT a.appointment_id, a.appointment_time, a.status, a.appointment_type,
+       p.full_name as professional_name, p.specialty
+FROM appointments a
+JOIN professionals pr ON a.professional_id = pr.professional_id
+JOIN users p ON pr.user_id = p.user_id
+WHERE a.patient_id = 1
+ORDER BY a.appointment_time DESC;
+
+-- Get appointments for a specific professional
+SELECT a.appointment_id, a.appointment_time, a.status, a.patient_notes,
+       pt.full_name as patient_name
+FROM appointments a
+JOIN patients pa ON a.patient_id = pa.patient_id
+JOIN users pt ON pa.user_id = pt.user_id
+WHERE a.professional_id = 1
+ORDER BY a.appointment_time DESC;
+
+-- Update appointment status
+UPDATE appointments 
+SET status = 'Completed', completed_at = NOW() 
+WHERE appointment_id = 1;</div>
+        
+        <div class="subheading">8.2.3 Health Records Queries</div>
+        <div class="code-block">-- Add a new medical record
+INSERT INTO medical_records (patient_id, document_name, document_url, document_type, uploaded_by_user_id, uploaded_by_role) 
+VALUES (1, 'Blood Test Report', 'https://storage.googleapis.com/clinico/blood_test_001.pdf', 'Lab Report', 2, 'Doctor');
+
+-- Get all medical records for a patient
+SELECT record_id, document_name, document_url, document_type, uploaded_at, report_date
+FROM medical_records 
+WHERE patient_id = 1 
+ORDER BY uploaded_at DESC;
+
+-- Get medical records by type for a patient
+SELECT record_id, document_name, document_url, uploaded_at
+FROM medical_records 
+WHERE patient_id = 1 AND document_type = 'Prescription'
+ORDER BY uploaded_at DESC;</div>
+        
+        <div class="subheading">8.2.4 Clinic Discovery Queries</div>
+        <div class="code-block">-- Search for clinics by specialty and location
+SELECT c.clinic_id, c.name, c.address, c.latitude, c.longitude, c.phone_number,
+       cd.full_name as doctor_name, cd.specialty, cd.consultation_fee, cd.rating
+FROM clinics c
+JOIN clinic_doctors cd ON c.clinic_id = cd.clinic_id
+WHERE cd.specialty = 'Cardiologist' 
+AND c.city = 'New Delhi'
+ORDER BY cd.rating DESC;
+
+-- Get clinics within a radius
+SELECT c.clinic_id, c.name, c.address, c.phone_number,
+       (6371 * acos(cos(radians(28.6139)) * cos(radians(c.latitude)) * 
+        cos(radians(c.longitude) - radians(77.2090)) + sin(radians(28.6139)) * 
+        sin(radians(c.latitude)))) AS distance
+FROM clinics c
+HAVING distance < 10
+ORDER BY distance;</div>
+        
+        <div class="subheading">8.2.5 AI Chat Queries</div>
+        <div class="code-block">-- Store AI chat session
+INSERT INTO ai_chat_sessions (patient_id, session_type, session_summary, escalated_to_professional) 
+VALUES (1, 'Health Query', 'Patient inquired about headache remedies', FALSE);
+
+-- Store AI chat log
+INSERT INTO ai_chat_logs (session_id, user_id, message_content, sender, ai_agent_type) 
+VALUES (1, 1, 'I have been experiencing frequent headaches', 'User', 'Health Inquiry');
+INSERT INTO ai_chat_logs (session_id, user_id, message_content, sender, ai_agent_type) 
+VALUES (1, 1, 'Based on your description, it might be tension headaches. Consider rest and hydration.', 'AI', 'Health Inquiry');
+
+-- Get chat history for a session
+SELECT message_content, sender, timestamp, ai_agent_type
+FROM ai_chat_logs 
+WHERE session_id = 1 
+ORDER BY timestamp;</div>
+    </div>
+    
+    <div class="content">
+        <div class="heading">8.3 Appendix C: Wireframes</div>
+        <p>Due to the nature of wireframes being visual documents, they are not included in this text-based appendix. However, the Clinico project includes comprehensive wireframes for all major screens and user flows. These wireframes were created during the design phase and guided the development of both the mobile application and web portal.</p>
+        
+        <p>The wireframes covered:</p>
+        <ul>
+            <li>Mobile application screens including splash screen, onboarding, authentication, home dashboard, doctor search, appointment booking, video consultation, health records, messaging, and profile management</li>
+            <li>Web portal screens for healthcare professionals including dashboard, appointment management, patient directory, consultation workspace, scheduling, and messaging</li>
+            <li>Web portal screens for administrators including user management, professional verification, content management, and analytics dashboards</li>
+            <li>Web portal screens for NGO partners including community dashboard and patient management</li>
+            <li>Public website screens including landing page, information pages, signup flow, and support resources</li>
+        </ul>
+        
+        <p>These wireframes established the information architecture, user flows, and interface design patterns that were implemented in the final product. They ensured consistency across platforms and guided the development team in creating an intuitive and accessible user experience.</p>
+    </div>
+    
+    <div class="content">
+        <div class="heading">8.4 Appendix D: User Feedback</div>
+        <p>The Clinico platform has undergone user testing and feedback collection throughout the development process. This section summarizes the key feedback received from different user groups.</p>
+        
+        <div class="subheading">8.4.1 Patient Feedback</div>
+        <p>Feedback from patient users has been largely positive, with several recurring themes:</p>
+        
+        <ul>
+            <li><strong>Accessibility:</strong> Users appreciate the ease of accessing healthcare services without needing to travel to physical locations</li>
+            <li><strong>AI Assistant:</strong> The AI health assistant is valued for providing immediate responses to basic health questions</li>
+            <li><strong>Appointment Booking:</strong> The appointment booking system is considered intuitive and efficient</li>
+            <li><strong>Video Consultations:</strong> Users find the video consultation feature convenient and of good quality</li>
+            <li><strong>Health Records:</strong> The digital health record system is appreciated for its organization and accessibility</li>
+        </ul>
+        
+        <p>Areas for improvement mentioned by patients include:</p>
+        <ul>
+            <li>Need for more detailed health education content</li>
+            <li>Improved filtering options for doctor search</li>
+            <li>Enhanced medication reminder features</li>
+            <li>More comprehensive multilingual support</li>
+        </ul>
+        
+        <div class="subheading">8.4.2 Healthcare Professional Feedback</div>
+        <p>Healthcare professionals who participated in testing provided valuable insights:</p>
+        
+        <ul>
+            <li><strong>Efficiency:</strong> Professionals appreciate the streamlined appointment management and patient communication tools</li>
+            <li><strong>Integration:</strong> The ability to access patient history and records during consultations is highly valued</li>
+            <li><strong>Flexibility:</strong> The scheduling system allows for flexible appointment management</li>
+            <li><strong>Professional Network:</strong> The platform provides opportunities to contribute to healthcare equity</li>
+        </ul>
+        
+        <p>Areas for improvement from professionals include:</p>
+        <ul>
+            <li>Need for more sophisticated clinical documentation tools</li>
+            <li>Enhanced integration with existing electronic health record systems</li>
+            <li>Improved tools for clinical decision support</li>
+            <li>More detailed patient information before consultations</li>
+        </ul>
+        
+        <div class="subheading">8.4.3 Administrator Feedback</div>
+        <p>Administrative users provided feedback on platform management features:</p>
+        
+        <ul>
+            <li><strong>Dashboard:</strong> The administrative dashboard provides useful insights into platform usage</li>
+            <li><strong>Verification:</strong> The professional verification system is effective but could be streamlined</li>
+            <li><strong>Analytics:</strong> The analytics tools help understand user engagement and platform performance</li>
+        </ul>
+        
+        <p>Areas for improvement from administrators include:</p>
+        <ul>
+            <li>Need for more advanced reporting capabilities</li>
+            <li>Enhanced user management tools</li>
+            <li>Improved content management features</li>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="heading">8.5 Appendix E: References</div>
+        
+        <div class="subheading">8.5.1 Project Foundation References</div>
+        <ul>
+            <li>World Health Organization. (2019). WHO Guideline: Recommendations on Digital Interventions for Health System Strengthening. Geneva: World Health Organization.</li>
+            <li>Ministry of Health & Family Welfare, Government of India. (2020). Telemedicine Practice Guidelines. New Delhi: MoHFW.</li>
+        </ul>
+        
+        <div class="subheading">8.5.2 Technical Literature References</div>
+        <ul>
+            <li>Aggarwal, K. K., & Singh, Y. (2005). Software Engineering (3rd ed.). New Age International.</li>
+            <li>Pressman, R. S. (2001). Software Engineering: A Practitioner's Approach (5th ed.). McGraw Hill International.</li>
+            <li>Jalote, P. (2005). An Integrated Approach to Software Engineering (3rd ed.). Narosa Publishing.</li>
+        </ul>
+        
+        <div class="subheading">8.5.3 Healthcare Technology Standards</div>
+        <ul>
+            <li>HL7 International. (2020). Fast Healthcare Interoperability Resources (FHIR) R4 Implementation Guide. Retrieved from https://hl7.org/fhir/</li>
+            <li>Topol, E. J. (2019). High-performance medicine: The convergence of human and artificial intelligence. Nature Medicine, 25(1), 4–56.</li>
+        </ul>
+        
+        <div class="subheading">8.5.4 AI and Machine Learning References</div>
+        <ul>
+            <li>Google Cloud. (2024). Vertex AI Documentation and Best Practices. Retrieved September 2024 from https://cloud.google.com/vertex-ai/docs</li>
+            <li>Rajpurkar, P., et al. (2020). AI in Healthcare: Past, Present and Future. Stroke and Vascular Neurology, 5(2), 129-132.</li>
+        </ul>
+        
+        <div class="subheading">8.5.5 Regulatory and Compliance Standards</div>
+        <ul>
+            <li>European Union. (2018). General Data Protection Regulation (GDPR). Official Journal of the European Union, L 119.</li>
+            <li>U.S. Department of Health & Human Services. (2023). HIPAA Privacy Rule and Sharing Information Related to Mental Health. Retrieved from https://www.hhs.gov/hipaa/index.html</li>
+        </ul>
+        
+        <div class="subheading">8.5.6 Technology Stack Documentation</div>
+        <ul>
+            <li>Flutter Team. (2024). Flutter Documentation. Retrieved September 2024 from https://docs.flutter.dev/</li>
+            <li>Node.js Foundation. (2024). Node.js API Documentation. Retrieved September 2024 from https://nodejs.org/en/docs/</li>
+            <li>PostgreSQL Global Development Group. (2024). PostgreSQL 13 Official Documentation. Retrieved September 2024 from https://www.postgresql.org/docs/13/</li>
+            <li>React Documentation Team. (2024). React Documentation. Retrieved September 2024 from https://reactjs.org/docs</li>
+            <li>Google Cloud Platform. (2024). Google Cloud Documentation. Retrieved September 2024 from https://cloud.google.com/docs</li>
+        </ul>
+        
+        <div class="subheading">8.5.7 Industry Standards and Best Practices</div>
+        <ul>
+            <li>IEEE Computer Society. (2017). IEEE Standard for Software Requirements Specifications (IEEE 830-1998). IEEE Standards Association.</li>
+            <li>ISO/IEC. (2011). ISO/IEC 25010:2011 Systems and Software Quality Requirements and Evaluation (SQuaRE). International Organization for Standardization.</li>
+            <li>Open Web Application Security Project (OWASP). (2024). OWASP Top 10 - 2021: The Ten Most Critical Web Application Security Risks. Retrieved from https://owasp.org/www-project-top-ten/</li>
+        </ul>
+    </div>
+    
+    <div class="page-number">58</div>
+</body>
+</html>
