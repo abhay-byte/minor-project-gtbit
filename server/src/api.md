@@ -1,0 +1,927 @@
+# Clinico API Documentation
+
+This document provides a comprehensive overview of all available API endpoints in the Clinico backend server, including detailed information about request/response formats, authentication requirements, and usage examples.
+
+## Table of Contents
+1. [Authentication Endpoints](#authentication-endpoints)
+2. [User Endpoints](#user-endpoints)
+3. [Professional Endpoints](#professional-endpoints)
+4. [Appointment Endpoints](#appointment-endpoints)
+5. [Clinic Endpoints](#clinic-endpoints)
+6. [Prescription Endpoints](#prescription-endpoints)
+7. [Vault Endpoints](#vault-endpoints)
+8. [Chat Endpoints](#chat-endpoints)
+
+## Authentication Endpoints
+
+### POST /api/auth/register
+Register a new user account.
+
+**Request Body:**
+```json
+{
+  "email": "string (required)",
+  "password": "string (required, min 8 chars)",
+  "full_name": "string (required)",
+  "phone_number": "string (optional)",
+  "role": "enum: Patient | Professional | NGO | Admin (required)"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "User registered successfully",
+  "token": "JWT token string",
+  "user": {
+    "user_id": "integer",
+    "email": "string",
+    "full_name": "string",
+    "role": "string",
+    "created_at": "timestamp"
+  }
+}
+```
+
+### POST /api/auth/login
+Authenticate user and get JWT token.
+
+**Request Body:**
+```json
+{
+  "email": "string (required)",
+  "password": "string (required)"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "token": "JWT token string",
+  "user": {
+    "user_id": "integer",
+    "email": "string",
+    "full_name": "string",
+    "role": "string"
+  }
+}
+```
+
+## User Endpoints
+
+All user endpoints require authentication via JWT token in the Authorization header.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+### GET /api/users/me
+Get the logged-in user's profile.
+
+**Response:**
+```json
+{
+  "user_id": "integer",
+  "user_id_uuid": "UUID string (nullable)",
+  "email": "string",
+  "full_name": "string",
+  "phone_number": "string",
+  "role": "string",
+  "created_at": "timestamp",
+  "patient_id": "integer (if role is Patient)",
+  "patient_id_uuid": "UUID string (if role is Patient)",
+  "date_of_birth": "date (if role is Patient)",
+  "gender": "string (if role is Patient)",
+  "address": "string (if role is Patient)",
+  "blood_group": "string (if role is Patient)",
+  "marital_status": "string (if role is Patient)",
+  "known_allergies": "text (if role is Patient)",
+  "chronic_conditions": "text (if role is Patient)",
+  "current_medications": "text (if role is Patient)",
+  "lifestyle_notes": "text (if role is Patient)",
+  "member_since": "timestamp (if role is Patient)",
+  "patient_code": "string (if role is Patient)",
+  "current_location": "text (if role is Patient)",
+  "current_full_address": "text (if role is Patient)",
+  "professional_id": "integer (if role is Professional)",
+  "professional_id_uuid": "UUID string (if role is Professional)",
+  "specialty": "string (if role is Professional)",
+  "credentials": "string (if role is Professional)",
+  "years_of_experience": "integer (if role is Professional)",
+  "verification_status": "enum (if role is Professional)",
+  "rating": "decimal (if role is Professional)",
+  "total_reviews": "integer (if role is Professional)",
+  "patients_treated": "integer (if role is Professional)",
+  "languages_spoken": "text (if role is Professional)",
+  "working_hours": "text (if role is Professional)",
+  "is_volunteer": "boolean (if role is Professional)",
+  "ngo_user_id": "integer (if role is NGO)",
+  "ngo_user_id_uuid": "UUID string (if role is NGO)",
+  "ngo_name": "string (if role is NGO)"
+}
+```
+
+### PUT /api/users/me
+Update the logged-in user's profile.
+
+**Request Body:**
+```json
+{
+  "fullName": "string (optional)",
+  "phoneNumber": "string (optional)",
+  "address": "string (optional)",
+  "gender": "string (optional)",
+  "blood_group": "string (optional)",
+  "marital_status": "string (optional)",
+  "known_allergies": "text (optional)",
+  "chronic_conditions": "text (optional)",
+  "current_medications": "text (optional)",
+  "lifestyle_notes": "text (optional)",
+  "current_location": "text (optional)",
+  "current_full_address": "text (optional)",
+  "specialty": "string (optional)",
+  "credentials": "string (optional)",
+  "languages_spoken": "text (optional)",
+  "working_hours": "text (optional)",
+  "is_volunteer": "boolean (optional)"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Profile updated successfully."
+}
+```
+
+### POST /api/users/me/records
+Upload a medical record.
+
+**Headers:**
+```
+Content-Type: multipart/form-data
+Authorization: Bearer {jwt_token}
+```
+
+**Form Data:**
+- `documentFile`: file (required)
+- `documentName`: string (required)
+- `documentType`: string (required)
+- `commentsNotes`: string (optional)
+- `linkedAppointmentId`: integer (optional)
+- `reportDate`: date (optional)
+- `fileFormat`: string (optional)
+- `fileSizeMb`: integer (optional)
+
+**Response:**
+```json
+{
+  "message": "Medical record uploaded successfully.",
+  "record": {
+    "recordId": "integer",
+    "documentName": "string",
+    "documentType": "string",
+    "documentUrl": "string"
+  }
+}
+```
+
+### GET /api/users/me/records
+Get all medical records for the user.
+
+**Response:**
+```json
+{
+  "record_id": "integer",
+  "document_name": "string",
+  "document_type": "string",
+  "document_url": "string",
+  "uploaded_at": "timestamp",
+  "comments_notes": "text",
+  "report_date": "date",
+  "file_format": "string",
+  "file_size_mb": "integer"
+}
+```
+
+### DELETE /api/users/me/records/:recordId
+Delete a specific medical record.
+
+**Response:**
+```json
+{
+  "message": "Medical record deleted successfully."
+}
+```
+
+## Professional Endpoints
+
+All professional endpoints are public (no authentication required).
+
+### GET /api/professionals
+Get a list of verified professionals.
+
+**Query Parameters:**
+- `specialty`: string (optional) - Filter by specialty
+
+**Response:**
+```json
+[
+  {
+    "professional_id": "integer",
+    "professional_id_uuid": "UUID string (nullable)",
+    "full_name": "string",
+    "specialty": "string",
+    "credentials": "string",
+    "years_of_experience": "integer",
+    "rating": "decimal",
+    "total_reviews": "integer",
+    "patients_treated": "integer",
+    "languages_spoken": "text",
+    "working_hours": "text",
+    "is_volunteer": "boolean"
+  }
+]
+```
+
+### GET /api/professionals/:id/availability
+Get available slots for a professional.
+
+**Path Parameter:**
+- `id`: integer (required) - Professional ID
+
+**Response:**
+```json
+[
+  {
+    "slot_id": "integer",
+    "start_time": "timestamp",
+    "end_time": "timestamp"
+  }
+]
+```
+
+## Appointment Endpoints
+
+All appointment endpoints require authentication.
+
+### POST /api/appointments
+Book a new appointment.
+
+**Request Body:**
+```json
+{
+  "slotId": "integer (required)",
+  "appointmentCode": "string (optional)",
+  "patientNotes": "string (optional)",
+  "durationMinutes": "integer (optional)"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Appointment booked successfully!",
+  "appointmentId": "integer"
+}
+```
+
+### GET /api/appointments/me
+Get appointment history for the user.
+
+**Query Parameters:**
+- `status`: string (optional) - 'upcoming' or 'past'
+
+**Response:**
+```json
+[
+  {
+    "appointment_id": "integer",
+    "appointment_time": "timestamp",
+    "status": "enum",
+    "appointment_type": "enum",
+    "appointment_code": "string",
+    "patient_notes": "string",
+    "scheduled_at": "timestamp",
+    "completed_at": "timestamp",
+    "duration_minutes": "integer",
+    "professional_name": "string (for patient)",
+    "specialty": "string (for patient)",
+    "patient_name": "string (for professional)"
+  }
+]
+```
+
+## Clinic Endpoints
+
+Public clinic endpoints do not require authentication, while review endpoints require authentication.
+
+### GET /api/clinics/search
+Search for nearby clinics via geolocation.
+
+**Query Parameters:**
+- `lat`: float (required) - Latitude
+- `lon`: float (required) - Longitude
+- `radius`: float (optional, default: 5) - Search radius in km
+- `specialty`: string (optional) - Filter by specialty
+- `type`: string (optional) - Filter by clinic type (Clinic or Hospital)
+- `available_today`: boolean (optional) - Filter by availability today
+- `min_rating`: float (optional) - Minimum rating filter
+- `city`: string (optional) - Filter by city
+- `area`: string (optional) - Filter by area
+
+**Response:**
+```json
+{
+  "count": "integer",
+  "radius_km": "float",
+  "location": {
+    "lat": "float",
+    "lon": "float"
+  },
+  "clinics": [
+    {
+      "clinic_id": "integer",
+      "clinic_id_uuid": "UUID string (nullable)",
+      "name": "string",
+      "address": "string",
+      "latitude": "float",
+      "longitude": "float",
+      "phone_number": "string",
+      "type": "string",
+      "facilities": "text",
+      "operating_hours": "text",
+      "average_rating": "decimal",
+      "total_reviews": "integer",
+      "city": "string",
+      "area": "string",
+      "pincode": "string",
+      "distance": "float (km)",
+      "doctor_count": "integer"
+    }
+  ]
+}
+```
+
+### GET /api/clinics/:id
+Get details for a specific clinic.
+
+**Path Parameter:**
+- `id`: integer (required) - Clinic ID
+
+**Response:**
+```json
+{
+  "clinic_id": "integer",
+  "clinic_id_uuid": "UUID string (nullable)",
+  "name": "string",
+  "address": "string",
+  "latitude": "float",
+  "longitude": "float",
+  "phone_number": "string",
+  "type": "string",
+  "facilities": "text",
+  "operating_hours": "text",
+  "average_rating": "decimal",
+  "total_reviews": "integer",
+  "city": "string",
+  "area": "string",
+  "pincode": "string",
+  "doctors": [
+    {
+      "clinic_doctor_id": "integer",
+      "clinic_doctor_id_uuid": "UUID string (nullable)",
+      "full_name": "string",
+      "specialty": "string",
+      "consultation_fee": "integer",
+      "qualifications": "text",
+      "available_days": "text",
+      "available_hours": "text",
+      "rating": "decimal",
+      "review_count": "integer",
+      "languages": "text",
+      "distance_km": "string",
+      "hospital_affiliation": "string",
+      "is_volunteer": "boolean",
+      "available_today": "boolean",
+      "available_tomorrow": "boolean",
+      "available_this_week": "boolean"
+    }
+  ],
+  "doctor_count": "integer"
+}
+```
+
+### GET /api/clinics/:id/doctors
+Get doctors for a specific clinic.
+
+**Path Parameter:**
+- `id`: integer (required) - Clinic ID
+
+**Query Parameters:**
+- `specialty`: string (optional) - Filter by specialty
+- `available_today`: boolean (optional) - Filter by availability today
+- `min_rating`: float (optional) - Minimum rating filter
+
+**Response:**
+```json
+{
+  "clinic_id": "integer",
+  "count": "integer",
+  "doctors": [
+    {
+      "clinic_doctor_id": "integer",
+      "clinic_doctor_id_uuid": "UUID string (nullable)",
+      "full_name": "string",
+      "specialty": "string",
+      "consultation_fee": "integer",
+      "qualifications": "text",
+      "available_days": "text",
+      "available_hours": "text",
+      "rating": "decimal",
+      "review_count": "integer",
+      "languages": "text",
+      "distance_km": "string",
+      "hospital_affiliation": "string",
+      "is_volunteer": "boolean",
+      "available_today": "boolean",
+      "available_tomorrow": "boolean",
+      "available_this_week": "boolean"
+    }
+  ]
+}
+```
+
+### POST /api/clinics/doctors/:doctorId/reviews
+Submit a review for a clinic doctor.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Path Parameter:**
+- `doctorId`: integer (required) - Doctor ID
+
+**Request Body:**
+```json
+{
+  "rating": "integer (1-5, required)",
+  "comment": "string (optional)",
+  "appreciated_aspects": "text (optional)",
+  "feedback_suggestions": "text (optional)",
+  "is_verified_visit": "boolean (optional, default: false)"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Review submitted successfully.",
+  "review": {
+    "review_id": "integer",
+    "review_id_uuid": "UUID string (nullable)",
+    "created_at": "timestamp"
+  }
+}
+```
+
+### GET /api/clinics/doctors/:doctorId/reviews
+Get all reviews for a clinic doctor.
+
+**Path Parameter:**
+- `doctorId`: integer (required) - Doctor ID
+
+**Query Parameters:**
+- `limit`: integer (optional, default: 50)
+- `offset`: integer (optional, default: 0)
+- `min_rating`: float (optional) - Minimum rating filter
+
+**Response:**
+```json
+{
+  "total": "integer",
+  "average_rating": "float",
+  "limit": "integer",
+  "offset": "integer",
+  "reviews": [
+    {
+      "review_id": "integer",
+      "review_id_uuid": "UUID string (nullable)",
+      "patient_id": "integer",
+      "rating": "integer",
+      "comment": "string",
+      "appreciated_aspects": "text",
+      "feedback_suggestions": "text",
+      "is_verified_visit": "boolean",
+      "created_at": "timestamp",
+      "author": "string"
+    }
+  ]
+}
+```
+
+### GET /api/clinics/doctors/:doctorId/reviews/stats
+Get review statistics for a clinic doctor.
+
+**Path Parameter:**
+- `doctorId`: integer (required) - Doctor ID
+
+**Response:**
+```json
+{
+  "total_reviews": "integer",
+  "average_rating": "decimal",
+  "five_star": "integer",
+  "four_star": "integer",
+  "three_star": "integer",
+  "two_star": "integer",
+  "one_star": "integer",
+  "verified_reviews": "integer"
+}
+```
+
+### POST /api/clinics/search-history
+Save a search history entry.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Request Body:**
+```json
+{
+  "search_query": "string (optional)",
+  "search_filters": "json (optional)",
+  "location_searched": "string (optional)",
+  "results_count": "integer (optional)"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Search history saved.",
+  "search_id": "integer"
+}
+```
+
+### GET /api/clinics/search-history
+Get the patient's search history.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Query Parameters:**
+- `limit`: integer (optional, default: 20)
+
+**Response:**
+```json
+{
+  "count": "integer",
+  "searches": [
+    {
+      "search_id": "integer",
+      "search_query": "string",
+      "search_filters": "json",
+      "location_searched": "string",
+      "results_count": "integer",
+      "searched_at": "timestamp"
+    }
+  ]
+}
+```
+
+## Prescription Endpoints
+
+All prescription endpoints require authentication.
+
+### GET /api/prescriptions/me
+Get all prescriptions for the logged-in patient.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Response:**
+```json
+[
+  {
+    "prescription_id": "integer",
+    "prescription_code": "string",
+    "medication_name": "string",
+    "dosage": "string",
+    "frequency": "string",
+    "duration": "string",
+    "medication_category": "string",
+    "doctor_notes": "text",
+    "prescribed_date": "date",
+    "is_active": "boolean",
+    "prescribed_by_doctor_id": "integer",
+    "doctor_name": "string",
+    "doctor_specialty": "string",
+    "clinic_name": "string",
+    "important_notes": "text",
+    "created_at": "timestamp",
+    "updated_at": "timestamp"
+  }
+]
+```
+
+### GET /api/prescriptions/me/:prescriptionId
+Get a specific prescription by ID.
+
+**Path Parameter:**
+- `prescriptionId`: integer (required) - Prescription ID
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Response:**
+```json
+{
+  "prescription_id": "integer",
+  "prescription_code": "string",
+  "medication_name": "string",
+  "dosage": "string",
+  "frequency": "string",
+  "duration": "string",
+  "medication_category": "string",
+  "doctor_notes": "text",
+  "prescribed_date": "date",
+  "is_active": "boolean",
+  "prescribed_by_doctor_id": "integer",
+  "doctor_name": "string",
+  "doctor_specialty": "string",
+  "clinic_name": "string",
+  "important_notes": "text",
+  "created_at": "timestamp",
+  "updated_at": "timestamp"
+}
+```
+
+### GET /api/prescriptions/lists
+Get prescription lists for the logged-in patient.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Response:**
+```json
+{
+  "clinic_id": "integer",
+  "count": "integer",
+  "doctors": [
+    {
+      "clinic_doctor_id": "integer",
+      "clinic_doctor_id_uuid": "UUID string (nullable)",
+      "full_name": "string",
+      "specialty": "string",
+      "consultation_fee": "integer",
+      "qualifications": "text",
+      "available_days": "text",
+      "available_hours": "text",
+      "rating": "decimal",
+      "review_count": "integer",
+      "languages": "text",
+      "distance_km": "string",
+      "hospital_affiliation": "string",
+      "is_volunteer": "boolean",
+      "available_today": "boolean",
+      "available_tomorrow": "boolean",
+      "available_this_week": "boolean"
+    }
+  ]
+}
+```
+
+### GET /api/prescriptions/reminders
+Get medicine reminders for the logged-in patient.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Response:**
+```json
+[
+  {
+    "reminder_id": "UUID",
+    "prescription_id": "integer",
+    "medication_name": "string",
+    "dosage_form": "enum: 1 tablet | 1 capsule | Other",
+    "timing_schedule": "text",
+    "how_to_take": "enum: After food | Before food | After breakfast | Other",
+    "duration": "text",
+    "doctor_note": "text",
+    "start_date": "date",
+    "end_date": "date",
+    "is_active": "boolean",
+    "next_reminder_time": "timestamp"
+  }
+]
+```
+
+### GET /api/prescriptions/reminders/:reminderId/logs
+Get reminder logs for a specific medicine reminder.
+
+**Path Parameter:**
+- `reminderId`: UUID (required) - Reminder ID
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Response:**
+```json
+[
+  {
+    "log_id": "UUID",
+    "scheduled_time": "timestamp",
+    "taken_time": "timestamp",
+    "status": "enum: Pending | Taken | Missed | Snoozed",
+    "notes": "text"
+  }
+]
+```
+
+## Vault Endpoints
+
+All vault endpoints require authentication.
+
+### POST /api/vault/:vaultType/upload
+Upload a document to the medical vault.
+
+**Headers:**
+```
+Content-Type: multipart/form-data
+Authorization: Bearer {jwt_token}
+```
+
+**Path Parameter:**
+- `vaultType`: string (required) - One of: prescription, lab_report, radiology, discharge, vaccination, doctor_notes, other
+
+**Form Data:**
+- `documentFile`: file (required)
+- `metadata`: json string (optional)
+
+**Response:**
+```json
+{
+  "message": "Document uploaded to vault successfully.",
+  "vaultId": "integer",
+  "documentUrl": "string"
+}
+```
+
+### GET /api/vault/:vaultType
+Get all documents from a specific vault type.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Path Parameter:**
+- `vaultType`: string (required) - One of: prescription, lab_report, radiology, discharge, vaccination, doctor_notes, other
+
+**Response:**
+```json
+[
+  {
+    "vault_id": "integer",
+    "document_url": "string",
+    "metadata": "json",
+    "file_count": "integer",
+    "created_at": "timestamp"
+  }
+]
+```
+
+## Chat Endpoints
+
+All chat endpoints require authentication.
+
+### GET /api/chat/conversations
+Get the user's conversations.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Response:**
+```json
+[
+  {
+    "conversation_id": "UUID",
+    "last_message_at": "timestamp",
+    "is_active": "boolean",
+    "conversation_type": "enum: Appointment | Follow-up | Query",
+    "with_user": {
+      "user_id": "integer",
+      "full_name": "string",
+      "role": "string"
+    }
+  }
+]
+```
+
+### GET /api/chat/conversations/:conversationId/messages
+Get messages in a specific conversation.
+
+**Path Parameter:**
+- `conversationId`: UUID (required) - Conversation ID
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Query Parameters:**
+- `limit`: integer (optional, default: 50)
+- `offset`: integer (optional, default: 0)
+
+**Response:**
+```json
+{
+  "conversation_id": "UUID",
+  "messages": [
+    {
+      "message_id": "UUID",
+      "sender_user_id": "integer",
+      "sender_type": "enum: Patient | Doctor | System",
+      "message_content": "text",
+      "message_type": "enum: Text | Prescription | Report | JoinCall | Submitted",
+      "attachment_url": "string",
+      "sent_at": "timestamp",
+      "is_read": "boolean",
+      "read_at": "timestamp"
+    }
+  ]
+}
+```
+
+### POST /api/chat/conversations/:conversationId/messages
+Send a message in a conversation.
+
+**Path Parameter:**
+- `conversationId`: UUID (required) - Conversation ID
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Request Body:**
+```json
+{
+  "message_content": "string (required)",
+  "message_type": "enum: Text | Prescription | Report | JoinCall | Submitted (optional, default: Text)",
+  "attachment_url": "string (optional)"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Message sent successfully.",
+  "message_id": "UUID"
+}
+```
+
+## Rate Limiting
+
+Most authenticated endpoints are subject to rate limiting (typically 100 requests per hour per user). Exceeding the limit will result in a 429 status code.
+
+## Error Responses
+
+Standard error response format:
+```json
+{
+  "message": "Error description"
+}
+```
+
+Common status codes:
+- 400: Bad Request (validation error)
+- 401: Unauthorized (invalid/expired token)
+- 403: Forbidden (insufficient permissions)
+- 404: Not Found (resource doesn't exist)
+- 409: Conflict (duplicate email during registration)
+- 429: Too Many Requests (rate limit exceeded)
+- 500: Internal Server Error

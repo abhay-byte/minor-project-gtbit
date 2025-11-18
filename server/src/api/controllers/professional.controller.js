@@ -11,7 +11,13 @@ const getAllProfessionals = async (req, res) => {
             u.full_name,
             p.specialty,
             p.credentials,
-            p.years_of_experience
+            p.years_of_experience,
+            p.rating,
+            p.total_reviews,
+            p.patients_treated,
+            p.languages_spoken,
+            p.working_hours,
+            p.is_volunteer
         FROM professionals p
         JOIN users u ON p.user_id = u.user_id
         WHERE p.verification_status = 'Verified'::verification_status_enum

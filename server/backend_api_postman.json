@@ -1,0 +1,1162 @@
+{
+	"info": {
+		"_postman_id": "f2e8c4a5-3b6d-4e8f-9a7c-1b2d3e4f5a6b",
+		"name": "Clinico Backend API - Complete Test Suite",
+		"description": "Comprehensive testing of all Clinico backend API endpoints including authentication, user management, appointments, clinics, prescriptions, vault, and chat functionality. Note: Registration endpoint has rate limiting (max 5 per hour per IP).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43134617"
+	},
+	"item": [
+	{
+			"name": "0. Setup - Get JWT Token",
+			"item": [
+				{
+					"name": "Register Patient User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    console.log('✅ Patient user registered successfully');",
+									"    pm.environment.set('jwt_token', pm.response.json().token);",
+									"} else if (pm.response.code === 409) {",
+									"    console.log('⚠️ User already exists, proceeding to login');",
+									"} else if (pm.response.code === 429) {",
+									"    console.log('⚠️ Rate limit reached for registration, use existing user or wait');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+													"mode": "raw",
+													"raw": "{\n    \"email\": \"test.patient@example.com\",\n    \"password\": \"password123\",\n    \"full_name\": \"Test Patient\",\n    \"phone_number\": \"9876543210\",\n    \"role\": \"Patient\"\n}"
+												},
+						"url": {
+							"raw": "{{node_url}}/api/auth/register",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login and Get JWT Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set('jwt_token', jsonData.token);",
+									"    pm.environment.set('user_id', jsonData.user.userId);",
+									"    pm.environment.set('user_uuid', jsonData.user.userUUID);",
+									"    console.log('✅ JWT Token saved:', jsonData.token.substring(0, 20) + '...');",
+									"    console.log('✅ User ID saved:', jsonData.user.userId);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test.patient@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{node_url}}/api/auth/login",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "1. Authentication Endpoints",
+			"item": [
+				{
+					"name": "Register - Patient",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+													"mode": "raw",
+													"raw": "{\n    \"email\": \"patient.test@example.com\",\n    \"password\": \"password123\",\n    \"full_name\": \"Patient Test\",\n    \"phone_number\": \"9876543211\",\n    \"role\": \"Patient\"\n}"
+												},
+						"url": {
+							"raw": "{{node_url}}/api/auth/register",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register - Professional",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+													"mode": "raw",
+													"raw": "{\n    \"email\": \"doctor.test@example.com\",\n    \"password\": \"password123\",\n    \"full_name\": \"Doctor Test\",\n    \"phone_number\": \"9876543212\",\n    \"role\": \"Professional\"\n}"
+												},
+						"url": {
+							"raw": "{{node_url}}/api/auth/register",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register - NGO",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+													"mode": "raw",
+													"raw": "{\n    \"email\": \"ngo.test@example.com\",\n    \"password\": \"password123\",\n    \"full_name\": \"NGO Test\",\n    \"phone_number\": \"9876543213\",\n    \"role\": \"NGO\"\n}"
+												},
+						"url": {
+							"raw": "{{node_url}}/api/auth/register",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test.patient@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{node_url}}/api/auth/login",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. User Endpoints",
+			"item": [
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/users/me",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+													"mode": "raw",
+													"raw": "{\n    \"full_name\": \"Updated Test Patient\",\n    \"phone_number\": \"1234567890\",\n    \"address\": \"Updated Address\"\n}"
+												},
+						"url": {
+							"raw": "{{node_url}}/api/users/me",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Medical Record",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "documentFile",
+									"type": "file",
+									"src": "/path/to/test/document.pdf"
+								},
+								{
+									"key": "documentName",
+									"value": "Test Medical Record",
+									"type": "text"
+								},
+								{
+									"key": "documentType",
+									"value": "Lab Report",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{node_url}}/api/users/me/records",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me",
+								"records"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Medical Records",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/users/me/records",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me",
+								"records"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Medical Record",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/users/me/records/1",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me",
+								"records",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Professional Endpoints",
+			"item": [
+				{
+					"name": "Get Professionals",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{node_url}}/api/professionals",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"professionals"
+							],
+							"query": [
+								{
+									"key": "specialty",
+									"value": "Cardiology",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Professional Availability",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{node_url}}/api/professionals/1/availability",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"professionals",
+								"1",
+								"availability"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Appointment Endpoints",
+			"item": [
+				{
+					"name": "Book Appointment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"slotId\": 1,\n    \"appointmentCode\": \"TEST001\",\n    \"patientNotes\": \"Test appointment\",\n    \"durationMinutes\": 30\n}"
+						},
+						"url": {
+							"raw": "{{node_url}}/api/appointments",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Appointment History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/appointments/me",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"appointments",
+								"me"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "upcoming",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Clinic Endpoints",
+			"item": [
+				{
+					"name": "Search Clinics",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{node_url}}/api/clinics/search?lat=28.6139&lon=77.2090&radius=5",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"clinics",
+								"search"
+							],
+							"query": [
+								{
+									"key": "lat",
+									"value": "28.6139"
+								},
+								{
+									"key": "lon",
+									"value": "77.2090"
+								},
+								{
+									"key": "radius",
+									"value": "5"
+								},
+								{
+									"key": "specialty",
+									"value": "Cardiology",
+									"disabled": true
+								},
+								{
+									"key": "type",
+									"value": "Clinic",
+									"disabled": true
+								},
+								{
+									"key": "available_today",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "min_rating",
+									"value": "4.0",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Clinic Details",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{node_url}}/api/clinics/1",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"clinics",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Clinic Doctors",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{node_url}}/api/clinics/1/doctors",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"clinics",
+								"1",
+								"doctors"
+							],
+							"query": [
+								{
+									"key": "specialty",
+									"value": "Cardiology",
+									"disabled": true
+								},
+								{
+									"key": "available_today",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "min_rating",
+									"value": "4.0",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Doctor Review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rating\": 5,\n    \"comment\": \"Excellent doctor!\",\n    \"appreciated_aspects\": \"Knowledgeable and patient\",\n    \"feedback_suggestions\": \"Keep up the good work\",\n    \"is_verified_visit\": true\n}"
+						},
+						"url": {
+							"raw": "{{node_url}}/api/clinics/doctors/1/reviews",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"clinics",
+								"doctors",
+								"1",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Doctor Reviews",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{node_url}}/api/clinics/doctors/1/reviews",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"clinics",
+								"doctors",
+								"1",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Doctor Review Stats",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{node_url}}/api/clinics/doctors/1/reviews/stats",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"clinics",
+								"doctors",
+								"1",
+								"reviews",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Search History",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"search_query\": \"cardiologist in delhi\",\n    \"search_filters\": {\"specialty\": \"cardiology\", \"location\": \"delhi\"},\n    \"location_searched\": \"Delhi, India\",\n    \"results_count\": 15\n}"
+						},
+						"url": {
+							"raw": "{{node_url}}/api/clinics/search-history",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"clinics",
+								"search-history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Search History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/clinics/search-history",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"clinics",
+								"search-history"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Prescription Endpoints",
+			"item": [
+				{
+					"name": "Get Prescriptions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/prescriptions/me",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"prescriptions",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific Prescription",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/prescriptions/me/1",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"prescriptions",
+								"me",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Prescription Lists",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/prescriptions/lists",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"prescriptions",
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Medicine Reminders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/prescriptions/reminders",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"prescriptions",
+								"reminders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Reminder Logs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/prescriptions/reminders/1/logs",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"prescriptions",
+								"reminders",
+								"1",
+								"logs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "7. Vault Endpoints",
+			"item": [
+				{
+					"name": "Upload to Prescription Vault",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "documentFile",
+									"type": "file",
+									"src": "/path/to/test/prescription.pdf"
+								},
+								{
+									"key": "metadata",
+									"value": "{\"prescription_type\": \"medication\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{node_url}}/api/vault/prescription/upload",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"vault",
+								"prescription",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload to Lab Report Vault",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "documentFile",
+									"type": "file",
+									"src": "/path/to/test/lab_report.pdf"
+								},
+								{
+									"key": "metadata",
+									"value": "{\"test_type\": \"blood\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{node_url}}/api/vault/lab_report/upload",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"vault",
+								"lab_report",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Prescription Vault Documents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/vault/prescription",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"vault",
+								"prescription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Lab Report Vault Documents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/vault/lab_report",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"vault",
+								"lab_report"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "8. Chat Endpoints",
+			"item": [
+				{
+					"name": "Get Conversations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/chat/conversations",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"conversations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Conversation Messages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{node_url}}/api/chat/conversations/1/messages",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"conversations",
+								"1",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"message_content\": \"Hello, how are you?\",\n    \"message_type\": \"Text\",\n    \"attachment_url\": null\n}"
+						},
+						"url": {
+							"raw": "{{node_url}}/api/chat/conversations/1/messages",
+							"host": [
+								"{{node_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"conversations",
+								"1",
+								"messages"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "node_url",
+			"value": "http://localhost:5000"
+	},
+		{
+			"key": "jwt_token",
+			"value": ""
+		},
+		{
+			"key": "user_id",
+			"value": ""
+		},
+		{
+					"key": "user_id_uuid",
+					"value": ""
+				}
+	]
+}

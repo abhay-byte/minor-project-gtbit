@@ -6,13 +6,13 @@ const cloudinary = require('../../config/cloudinary');
 // Fetches the complete profile for the currently logged-in user.
 exports.getMe = async (req, res) => {
     // The user's ID and role are attached to the request object by the verifyToken middleware
-    const { userId, role } = req.user;
+    const { userId, userUUID, role } = req.user;
 
     try {
         let profileQuery;
         // Base query to get common user details
         const baseQuery = `
-            SELECT u.user_id, u.email, u.full_name, u.phone_number, u.role, u.created_at
+            SELECT u.user_id, u.user_id_uuid, u.email, u.full_name, u.phone_number, u.role, u.created_at
             FROM users u
             WHERE u.user_id = $1;
         `;
@@ -22,7 +22,18 @@ exports.getMe = async (req, res) => {
         try {
             await client.query('BEGIN');
 
-            const userResult = await client.query(baseQuery, [userId]);
+            // Use either serial ID or UUID for lookup based on availability
+            let userResult;
+            if (userUUID) {
+                const uuidQuery = `
+                    SELECT u.user_id, u.user_id_uuid, u.email, u.full_name, u.phone_number, u.role, u.created_at
+                    FROM users u
+                    WHERE u.user_id_uuid = $1;
+                `;
+                userResult = await client.query(uuidQuery, [userUUID]);
+            } else {
+                userResult = await client.query(baseQuery, [userId]);
+            }
             if (userResult.rows.length === 0) {
                 return res.status(404).json({ message: 'User not found.' });
             }
@@ -31,13 +42,46 @@ exports.getMe = async (req, res) => {
             let roleDetails = {};
             // Fetch role-specific details
             if (role === 'Patient') {
-                const patientResult = await client.query('SELECT patient_id, date_of_birth, gender, address FROM patients WHERE user_id = $1', [userId]);
+                let patientResult;
+                if (userUUID) {
+                    patientResult = await client.query(`
+                        SELECT patient_id, patient_id_uuid, date_of_birth, gender, address,
+                               blood_group, marital_status, known_allergies,
+                               chronic_conditions, current_medications, lifestyle_notes,
+                               member_since, patient_code, current_location, current_full_address
+                        FROM patients WHERE user_id_uuid = $1`, [userUUID]);
+                } else {
+                    patientResult = await client.query(`
+                        SELECT patient_id, patient_id_uuid, date_of_birth, gender, address,
+                               blood_group, marital_status, known_allergies,
+                               chronic_conditions, current_medications, lifestyle_notes,
+                               member_since, patient_code, current_location, current_full_address
+                        FROM patients WHERE user_id = $1`, [userId]);
+                }
                 if (patientResult.rows.length > 0) roleDetails = patientResult.rows[0];
             } else if (role === 'Professional') {
-                const profResult = await client.query('SELECT professional_id, specialty, credentials, years_of_experience, verification_status FROM professionals WHERE user_id = $1', [userId]);
+                let profResult;
+                if (userUUID) {
+                    profResult = await client.query(`
+                        SELECT professional_id, professional_id_uuid, specialty, credentials, years_of_experience,
+                               verification_status, rating, total_reviews, patients_treated,
+                               languages_spoken, working_hours, is_volunteer
+                        FROM professionals WHERE user_id_uuid = $1`, [userUUID]);
+                } else {
+                    profResult = await client.query(`
+                        SELECT professional_id, professional_id_uuid, specialty, credentials, years_of_experience,
+                               verification_status, rating, total_reviews, patients_treated,
+                               languages_spoken, working_hours, is_volunteer
+                        FROM professionals WHERE user_id = $1`, [userId]);
+                }
                 if (profResult.rows.length > 0) roleDetails = profResult.rows[0];
             } else if (role === 'NGO') {
-                const ngoResult = await client.query('SELECT ngo_user_id, ngo_name, verification_status FROM ngo_users WHERE user_id = $1', [userId]);
+                let ngoResult;
+                if (userUUID) {
+                    ngoResult = await client.query('SELECT ngo_user_id, ngo_user_id_uuid, ngo_name, verification_status FROM ngo_users WHERE user_id_uuid = $1', [userUUID]);
+                } else {
+                    ngoResult = await client.query('SELECT ngo_user_id, ngo_user_id_uuid, ngo_name, verification_status FROM ngo_users WHERE user_id = $1', [userId]);
+                }
                 if (ngoResult.rows.length > 0) roleDetails = ngoResult.rows[0];
             }
 
@@ -60,7 +104,7 @@ exports.getMe = async (req, res) => {
 
 // Updates the profile for the currently logged-in user.
 exports.updateMe = async (req, res) => {
-    const { userId, role } = req.user;
+    const { userId, userUUID, role } = req.user;
     const { fullName, phoneNumber, ...roleSpecificData } = req.body;
 
     const client = await db.connect();
@@ -75,13 +119,70 @@ exports.updateMe = async (req, res) => {
 
         // Update the role-specific table based on the user's role
         if (role === 'Patient' && Object.keys(roleSpecificData).length > 0) {
-            const { address, gender } = roleSpecificData;
-            const patientUpdateQuery = 'UPDATE patients SET address = COALESCE($1, address), gender = COALESCE($2, gender) WHERE user_id = $3';
-            await client.query(patientUpdateQuery, [address, gender, userId]);
+            const { address, gender, blood_group, marital_status, known_allergies, chronic_conditions, current_medications, lifestyle_notes, current_location, current_full_address } = roleSpecificData;
+            let patientUpdateQuery;
+            let patientUpdateParams;
+            
+            if (userUUID) {
+                const patientUpdateQuery = `
+                    UPDATE patients
+                    SET address = COALESCE($1, address),
+                        gender = COALESCE($2, gender),
+                        blood_group = COALESCE($3, blood_group),
+                        marital_status = COALESCE($4, marital_status),
+                        known_allergies = COALESCE($5, known_allergies),
+                        chronic_conditions = COALESCE($6, chronic_conditions),
+                        current_medications = COALESCE($7, current_medications),
+                        lifestyle_notes = COALESCE($8, lifestyle_notes),
+                        current_location = COALESCE($9, current_location),
+                        current_full_address = COALESCE($10, current_full_address)
+                    WHERE user_id_uuid = $11`;
+                const patientUpdateParams = [address, gender, blood_group, marital_status, known_allergies, chronic_conditions, current_medications, lifestyle_notes, current_location, current_full_address, userUUID];
+                await client.query(patientUpdateQuery, patientUpdateParams);
+            } else {
+                const patientUpdateQuery = `
+                    UPDATE patients
+                    SET address = COALESCE($1, address),
+                        gender = COALESCE($2, gender),
+                        blood_group = COALESCE($3, blood_group),
+                        marital_status = COALESCE($4, marital_status),
+                        known_allergies = COALESCE($5, known_allergies),
+                        chronic_conditions = COALESCE($6, chronic_conditions),
+                        current_medications = COALESCE($7, current_medications),
+                        lifestyle_notes = COALESCE($8, lifestyle_notes),
+                        current_location = COALESCE($9, current_location),
+                        current_full_address = COALESCE($10, current_full_address)
+                    WHERE user_id = $11`;
+                const patientUpdateParams = [address, gender, blood_group, marital_status, known_allergies, chronic_conditions, current_medications, lifestyle_notes, current_location, current_full_address, userId];
+                await client.query(patientUpdateQuery, patientUpdateParams);
+            }
         } else if (role === 'Professional' && Object.keys(roleSpecificData).length > 0) {
-            const { specialty, credentials } = roleSpecificData;
-            const profUpdateQuery = 'UPDATE professionals SET specialty = COALESCE($1, specialty), credentials = COALESCE($2, credentials) WHERE user_id = $3';
-            await client.query(profUpdateQuery, [specialty, credentials, userId]);
+            const { specialty, credentials, languages_spoken, working_hours, is_volunteer } = roleSpecificData;
+            let profUpdateQuery;
+            let profUpdateParams;
+            
+            if (userUUID) {
+                profUpdateQuery = `
+                    UPDATE professionals
+                    SET specialty = COALESCE($1, specialty),
+                        credentials = COALESCE($2, credentials),
+                        languages_spoken = COALESCE($3, languages_spoken),
+                        working_hours = COALESCE($4, working_hours),
+                        is_volunteer = COALESCE($5, is_volunteer)
+                    WHERE user_id_uuid = $6`;
+                profUpdateParams = [specialty, credentials, languages_spoken, working_hours, is_volunteer, userUUID];
+            } else {
+                const profUpdateQuery = `
+                    UPDATE professionals
+                    SET specialty = COALESCE($1, specialty),
+                        credentials = COALESCE($2, credentials),
+                        languages_spoken = COALESCE($3, languages_spoken),
+                        working_hours = COALESCE($4, working_hours),
+                        is_volunteer = COALESCE($5, is_volunteer)
+                    WHERE user_id = $6`;
+                const profUpdateParams = [specialty, credentials, languages_spoken, working_hours, is_volunteer, userId];
+            }
+            await client.query(profUpdateQuery, profUpdateParams);
         }
 
         await client.query('COMMIT');
@@ -98,7 +199,7 @@ exports.updateMe = async (req, res) => {
 
 // Uploads a new medical record for the logged-in patient
 exports.uploadMedicalRecord = async (req, res) => {
-    const { userId, role } = req.user;
+    const { userId, userUUID, role } = req.user;
     const { documentName, documentType } = req.body;
 
     if (role !== 'Patient') {
@@ -109,7 +210,12 @@ exports.uploadMedicalRecord = async (req, res) => {
     }
 
     try {
-        const patientResult = await db.query('SELECT patient_id FROM patients WHERE user_id = $1', [userId]);
+        let patientResult;
+        if (userUUID) {
+            patientResult = await db.query('SELECT patient_id, patient_id_uuid FROM patients WHERE user_id_uuid = $1', [userUUID]);
+        } else {
+            patientResult = await db.query('SELECT patient_id, patient_id_uuid FROM patients WHERE user_id = $1', [userId]);
+        }
         if (patientResult.rows.length === 0) {
             return res.status(404).json({ message: 'Patient profile not found.' });
         }
@@ -133,12 +239,26 @@ exports.uploadMedicalRecord = async (req, res) => {
 
         const documentUrl = uploadResult.secure_url;
         
+        const { documentName, documentType, commentsNotes, linkedAppointmentId, uploadedByRole, reportDate, fileFormat, fileSizeMb } = req.body;
+        
         const insertQuery = `
-            INSERT INTO medical_records (patient_id, document_name, document_type, document_url)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO medical_records (patient_id, document_name, document_type, document_url, comments_notes, linked_appointment_id, uploaded_by_user_id, uploaded_by_role, report_date, file_format, file_size_mb)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
             RETURNING record_id;
         `;
-        const dbResult = await db.query(insertQuery, [patientId, documentName, documentType, documentUrl]);
+        const dbResult = await db.query(insertQuery, [
+            patientId,
+            documentName,
+            documentType,
+            documentUrl,
+            commentsNotes || null,
+            linkedAppointmentId || null,
+            userId,
+            role,
+            reportDate || null,
+            fileFormat || null,
+            fileSizeMb || null
+        ]);
 
         res.status(201).json({ 
             message: 'Medical record uploaded successfully.',
@@ -158,21 +278,36 @@ exports.uploadMedicalRecord = async (req, res) => {
 
 // Gets all medical records for the logged-in patient
 exports.getMyMedicalRecords = async (req, res) => {
-    const { userId, role } = req.user;
+    const { userId, userUUID, role } = req.user;
 
     if (role !== 'Patient') {
         return res.status(403).json({ message: 'Forbidden: Only patients can view medical records.' });
     }
 
     try {
-        const queryText = `
-            SELECT r.record_id, r.document_name, r.document_type, r.document_url, r.uploaded_at
-            FROM medical_records r
-            JOIN patients p ON r.patient_id = p.patient_id
-            WHERE p.user_id = $1
-            ORDER BY r.uploaded_at DESC;
-        `;
-        const result = await db.query(queryText, [userId]);
+        let queryText;
+        if (userUUID) {
+            queryText = `
+                SELECT r.record_id, r.document_name, r.document_type, r.document_url,
+                       r.uploaded_at, r.comments_notes, r.report_date, r.file_format, r.file_size_mb
+                FROM medical_records r
+                JOIN patients p ON r.patient_id = p.patient_id
+                WHERE p.user_id_uuid = $1
+                ORDER BY r.uploaded_at DESC;
+            `;
+            const params = [userUUID];
+        } else {
+            queryText = `
+                SELECT r.record_id, r.document_name, r.document_type, r.document_url,
+                       r.uploaded_at, r.comments_notes, r.report_date, r.file_format, r.file_size_mb
+                FROM medical_records r
+                JOIN patients p ON r.patient_id = p.patient_id
+                WHERE p.user_id = $1
+                ORDER BY r.uploaded_at DESC;
+            `;
+            const params = [userId];
+        }
+        const result = await db.query(queryText, userUUID ? [userUUID] : [userId]);
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching medical records:', error);
@@ -182,7 +317,7 @@ exports.getMyMedicalRecords = async (req, res) => {
 
 // Deletes a specific medical record
 exports.deleteMedicalRecord = async (req, res) => {
-    const { userId, role } = req.user;
+    const { userId, userUUID, role } = req.user;
     const { recordId } = req.params;
 
     if (role !== 'Patient') {
@@ -191,12 +326,25 @@ exports.deleteMedicalRecord = async (req, res) => {
 
     try {
         // Verify that the record belongs to the user trying to delete it
-        const deleteQuery = `
-            DELETE FROM medical_records
-            WHERE record_id = $1 AND patient_id = (SELECT patient_id FROM patients WHERE user_id = $2)
-            RETURNING record_id;
-        `;
-        const result = await db.query(deleteQuery, [recordId, userId]);
+        let deleteQuery;
+        let deleteParams;
+        
+        if (userUUID) {
+            deleteQuery = `
+                DELETE FROM medical_records
+                WHERE record_id = $1 AND patient_id = (SELECT patient_id FROM patients WHERE user_id_uuid = $2)
+                RETURNING record_id;
+            `;
+            deleteParams = [recordId, userUUID];
+        } else {
+            deleteQuery = `
+                DELETE FROM medical_records
+                WHERE record_id = $1 AND patient_id = (SELECT patient_id FROM patients WHERE user_id = $2)
+                RETURNING record_id;
+            `;
+            deleteParams = [recordId, userId];
+        }
+        const result = await db.query(deleteQuery, deleteParams);
 
         if (result.rowCount === 0) {
             return res.status(404).json({ message: 'Record not found or you do not have permission to delete it.' });

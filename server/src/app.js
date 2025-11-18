@@ -7,6 +7,8 @@ const professionalRoutes = require('./api/routes/professional.routes');
 const appointmentsRoutes = require('./api/routes/appointments.routes');
 const clinicRoutes = require('./api/routes/clinics.routes');
 const chatRoutes = require('./api/routes/chat.routes');
+const prescriptionRoutes = require('./api/routes/prescriptions.routes');
+const vaultRoutes = require('./api/routes/vault.routes');
 
 const app = express();
 
@@ -22,6 +24,8 @@ app.use('/api/professionals', professionalRoutes);
 app.use('/api/appointments', appointmentsRoutes); 
 app.use('/api/clinics', clinicRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/prescriptions', prescriptionRoutes);
+app.use('/api/vault', vaultRoutes);
 
 // --- Server Setup ---
 const PORT = process.env.PORT || 5000;

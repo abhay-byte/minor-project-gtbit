@@ -4,7 +4,7 @@ const db = require('../../config/db');
 // Creates a new appointment (booking)
 const createAppointment = async (req, res) => {
     // userId and role are attached by the authMiddleware
-    const { userId, role } = req.user;
+    const { userId, userUUID, role } = req.user;
     const { slotId } = req.body;
 
     // Validation: Only patients can book appointments.
@@ -20,8 +20,13 @@ const createAppointment = async (req, res) => {
     try {
         await client.query('BEGIN');
 
-        // Step 1: Find the patient_id from the user_id
-        const patientResult = await client.query('SELECT patient_id FROM patients WHERE user_id = $1', [userId]);
+        // Step 1: Find the patient_id from the user_id or user_id_uuid
+        let patientResult;
+        if (userUUID) {
+            patientResult = await client.query('SELECT patient_id, patient_id_uuid FROM patients WHERE user_id_uuid = $1', [userUUID]);
+        } else {
+            patientResult = await client.query('SELECT patient_id, patient_id_uuid FROM patients WHERE user_id = $1', [userId]);
+        }
         if (patientResult.rows.length === 0) {
             throw new Error('Patient profile not found for the current user.');
         }
@@ -45,13 +50,14 @@ const createAppointment = async (req, res) => {
         const { professional_id, start_time } = slotResult.rows[0];
 
         // Step 3: Create the new appointment record
+        const { appointmentCode, patientNotes, durationMinutes } = req.body;
         const appointmentInsertQuery = `
-            INSERT INTO appointments (patient_id, professional_id, appointment_time, status, appointment_type, consultation_link)
-            VALUES ($1, $2, $3, 'Scheduled'::appointment_status, 'Virtual'::appointment_type_enum, $4)
+            INSERT INTO appointments (patient_id, professional_id, appointment_time, status, appointment_type, consultation_link, appointment_code, patient_notes, duration_minutes)
+            VALUES ($1, $2, $3, 'Scheduled'::appointment_status, 'Virtual'::appointment_type_enum, $4, $5, $6, $7)
             RETURNING appointment_id;
         `;
         const consultationLink = `https://meet.clinico.app/${Date.now()}-${slotId}`;
-        const appointmentResult = await client.query(appointmentInsertQuery, [patientId, professional_id, start_time, consultationLink]);
+        const appointmentResult = await client.query(appointmentInsertQuery, [patientId, professional_id, start_time, consultationLink, appointmentCode || null, patientNotes || null, durationMinutes || null]);
         const newAppointmentId = appointmentResult.rows[0].appointment_id;
 
         // Step 4: Update the availability slot to mark it as booked
@@ -77,7 +83,7 @@ const createAppointment = async (req, res) => {
 
 // Fetches appointments for the logged-in user (either patient or professional)
 const getMyAppointments = async (req, res) => {
-    const { userId, role } = req.user;
+    const { userId, userUUID, role } = req.user;
     const { status } = req.query; // 'upcoming' or 'past'
 
     let timeFilter = '';
@@ -91,27 +97,53 @@ const getMyAppointments = async (req, res) => {
         let queryText;
         let queryParams;
         if (role === 'Patient') {
-            queryText = `
-                SELECT a.appointment_id, a.appointment_time, a.status, a.appointment_type, prof_user.full_name as professional_name, prof.specialty
-                FROM appointments a
-                JOIN patients p ON a.patient_id = p.patient_id
-                JOIN professionals prof ON a.professional_id = prof.professional_id
-                JOIN users prof_user ON prof.user_id = prof_user.user_id
-                WHERE p.user_id = $1 ${timeFilter}
-                ORDER BY a.appointment_time DESC;
-            `;
-            queryParams = [userId];
+            if (userUUID) {
+                queryText = `
+                    SELECT a.appointment_id, a.appointment_time, a.status, a.appointment_type, a.appointment_code, a.patient_notes, a.scheduled_at, a.completed_at, a.duration_minutes, prof_user.full_name as professional_name, prof.specialty
+                    FROM appointments a
+                    JOIN patients p ON a.patient_id = p.patient_id
+                    JOIN professionals prof ON a.professional_id = prof.professional_id
+                    JOIN users prof_user ON prof.user_id = prof_user.user_id
+                    WHERE p.user_id_uuid = $1 ${timeFilter}
+                    ORDER BY a.appointment_time DESC;
+                `;
+                queryParams = [userUUID];
+            } else {
+                queryText = `
+                    SELECT a.appointment_id, a.appointment_time, a.status, a.appointment_type, a.appointment_code, a.patient_notes, a.scheduled_at, a.completed_at, a.duration_minutes, prof_user.full_name as professional_name, prof.specialty
+                    FROM appointments a
+                    JOIN patients p ON a.patient_id = p.patient_id
+                    JOIN professionals prof ON a.professional_id = prof.professional_id
+                    JOIN users prof_user ON prof.user_id = prof_user.user_id
+                    WHERE p.user_id = $1 ${timeFilter}
+                    ORDER BY a.appointment_time DESC;
+                `;
+                queryParams = [userId];
+            }
         } else if (role === 'Professional') {
-            queryText = `
-                SELECT a.appointment_id, a.appointment_time, a.status, a.appointment_type, p_user.full_name as patient_name
-                FROM appointments a
-                JOIN professionals prof ON a.professional_id = prof.professional_id
-                JOIN patients p ON a.patient_id = p.patient_id
-                JOIN users p_user ON p.user_id = p_user.user_id
-                WHERE prof.user_id = $1 ${timeFilter}
-                ORDER BY a.appointment_time DESC;
-            `;
-            queryParams = [userId];
+            if (userUUID) {
+                queryText = `
+                    SELECT a.appointment_id, a.appointment_time, a.status, a.appointment_type, a.appointment_code, a.patient_notes, a.scheduled_at, a.completed_at, a.duration_minutes, p_user.full_name as patient_name
+                    FROM appointments a
+                    JOIN professionals prof ON a.professional_id = prof.professional_id
+                    JOIN patients p ON a.patient_id = p.patient_id
+                    JOIN users p_user ON p.user_id = p_user.user_id
+                    WHERE prof.user_id_uuid = $1 ${timeFilter}
+                    ORDER BY a.appointment_time DESC;
+                `;
+                queryParams = [userUUID];
+            } else {
+                queryText = `
+                    SELECT a.appointment_id, a.appointment_time, a.status, a.appointment_type, a.appointment_code, a.patient_notes, a.scheduled_at, a.completed_at, a.duration_minutes, p_user.full_name as patient_name
+                    FROM appointments a
+                    JOIN professionals prof ON a.professional_id = prof.professional_id
+                    JOIN patients p ON a.patient_id = p.patient_id
+                    JOIN users p_user ON p.user_id = p_user.user_id
+                    WHERE prof.user_id = $1 ${timeFilter}
+                    ORDER BY a.appointment_time DESC;
+                `;
+                queryParams = [userId];
+            }
         } else {
             // For other roles like NGO or Admin, return an empty array or handle as needed.
             return res.status(200).json([]);
