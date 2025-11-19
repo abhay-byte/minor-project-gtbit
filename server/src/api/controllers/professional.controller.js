@@ -93,7 +93,7 @@ const getProfessionalDashboard = async (req, res) => {
             WHERE user_id = $1
         `;
         const profResult = await db.query(profQuery, [userId]);
-
+        
         if (profResult.rows.length === 0) {
             return res.status(404).json({ message: 'Professional profile not found for this user.' });
         }
@@ -271,11 +271,289 @@ const createOrUpdateProfessionalProfile = async (req, res) => {
     }
 };
 
+// Creates recurring availability slots for a professional based on provided parameters
+const createBatchAvailability = async (req, res) => {
+    const { days_of_week, start_time, end_time, slot_duration_minutes } = req.body;
+
+    // Validate request body
+    if (!days_of_week || !Array.isArray(days_of_week) || days_of_week.length === 0) {
+        return res.status(400).json({ 
+            success: false,
+            error: 'days_of_week is required and must be a non-empty array' 
+        });
+    }
+
+    if (!start_time || !end_time) {
+        return res.status(400).json({ 
+            success: false,
+            error: 'start_time and end_time are required' 
+        });
+    }
+
+    if (!slot_duration_minutes || typeof slot_duration_minutes !== 'number' || slot_duration_minutes <= 0) {
+        return res.status(400).json({ 
+            success: false,
+            error: 'slot_duration_minutes is required and must be a positive number' 
+        });
+    }
+
+    // Validate day names
+    const validDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    for (const day of days_of_week) {
+        if (!validDays.includes(day)) {
+            return res.status(400).json({ 
+                success: false,
+                error: `Invalid day of week: ${day}. Must be one of: ${validDays.join(', ')}` 
+            });
+        }
+    }
+
+    // Validate time format (HH:MM:SS)
+    const timeRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+    if (!timeRegex.test(start_time) || !timeRegex.test(end_time)) {
+        return res.status(400).json({ 
+            success: false,
+            error: 'start_time and end_time must be in HH:MM:SS format' 
+        });
+    }
+
+    // Parse start and end times
+    const [startHour, startMinute, startSecond] = start_time.split(':').map(Number);
+    const [endHour, endMinute, endSecond] = end_time.split(':').map(Number);
+
+    // Calculate total minutes for validation
+    const startTimeInMinutes = startHour * 60 + startMinute;
+    const endTimeInMinutes = endHour * 60 + endMinute;
+
+    if (startTimeInMinutes >= endTimeInMinutes) {
+        return res.status(400).json({ 
+            success: false,
+            error: 'start_time must be before end_time' 
+        });
+    }
+
+    if (slot_duration_minutes <= 0 || slot_duration_minutes > 1440) { // 1440 = 24 hours in minutes
+        return res.status(400).json({ 
+            success: false,
+            error: 'slot_duration_minutes must be a positive number not exceeding 1440 (24 hours)' 
+        });
+    }
+
+    try {
+        // Get the professional ID from the authenticated user
+        const profQuery = 'SELECT professional_id FROM professionals WHERE user_id = $1';
+        const profResult = await db.query(profQuery, [req.user.userId]);
+        
+        if (profResult.rows.length === 0) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Professional profile not found for this user.' 
+            });
+        }
+
+        const professionalId = profResult.rows[0].professional_id;
+
+        // Calculate slots for the next 4 weeks (28 days)
+        const slotsCreated = [];
+        const today = new Date();
+        const fourWeeksFromNow = new Date();
+        fourWeeksFromNow.setDate(today.getDate() + 28);
+
+        // Generate dates for the next 4 weeks that match the requested days of the week
+        const targetDates = [];
+        const currentDate = new Date(today);
+        currentDate.setHours(0, 0, 0, 0); // Set to start of day for comparison
+
+        while (currentDate <= fourWeeksFromNow) {
+            const dayOfWeek = currentDate.toLocaleDateString('en-US', { weekday: 'long' });
+            if (days_of_week.includes(dayOfWeek)) {
+                targetDates.push(new Date(currentDate));
+            }
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        // Begin database transaction
+        const client = await db.connect();
+        try {
+            await client.query('BEGIN');
+
+            // For each target date, generate time slots
+            for (const date of targetDates) {
+                // Set the date with the start time
+                const slotDate = new Date(date);
+                slotDate.setHours(startHour, startMinute, startSecond, 0);
+
+                // Calculate end time for this date
+                const dayEndTime = new Date(date);
+                dayEndTime.setHours(endHour, endMinute, endSecond, 0);
+
+                // Generate slots for the day
+                while (slotDate < dayEndTime) {
+                    // Calculate end time for this specific slot
+                    const slotEndTime = new Date(slotDate);
+                    slotEndTime.setMinutes(slotDate.getMinutes() + slot_duration_minutes);
+
+                    // Check if this slot extends beyond the day's end time
+                    if (slotEndTime > dayEndTime) {
+                        break;
+                    }
+
+                    // Insert the availability slot
+                    const insertQuery = `
+                        INSERT INTO availability_slots (professional_id, start_time, end_time, is_booked, slot_date)
+                        VALUES ($1, $2, $3, FALSE, $4)
+                        RETURNING slot_id
+                    `;
+                    
+                    const result = await client.query(insertQuery, [
+                        professionalId,
+                        slotDate,
+                        slotEndTime,
+                        date.toISOString().split('T')[0] // The date part only in YYYY-MM-DD format
+                    ]);
+                    
+                    if (result.rows.length > 0) {
+                        slotsCreated.push(result.rows[0].slot_id);
+                    }
+
+                    // Move to next slot
+                    slotDate.setMinutes(slotDate.getMinutes() + slot_duration_minutes);
+                }
+            }
+
+            // Commit transaction
+            await client.query('COMMIT');
+            client.release();
+
+            res.status(200).json({
+                success: true,
+                message: 'Slots generated successfully',
+                slots_created: slotsCreated.length
+            });
+        } catch (error) {
+            // Rollback transaction in case of error
+            await client.query('ROLLBACK');
+            client.release();
+            throw error;
+        }
+    } catch (error) {
+        console.error('Error creating batch availability:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'An error occurred while creating batch availability.' 
+        });
+    }
+};
+
+// Gets complete profile information for a specific doctor by ID
+const getDoctorProfile = async (req, res) => {
+    const { id } = req.params;
+
+    // Validate the doctor ID parameter
+    if (!id || isNaN(parseInt(id))) {
+        return res.status(400).json({ 
+            success: false,
+            message: 'Valid doctor ID is required.' 
+        });
+    }
+
+    try {
+        // Query to fetch comprehensive doctor profile information
+        const query = `
+            SELECT 
+                p.professional_id,
+                u.full_name,
+                u.email,
+                u.phone_number,
+                p.specialty,
+                p.credentials,
+                p.years_of_experience,
+                p.verification_status,
+                p.rating,
+                p.total_reviews,
+                p.patients_treated,
+                p.languages_spoken,
+                p.working_hours,
+                p.is_volunteer,
+                -- Get average rating from reviews
+                (SELECT COALESCE(AVG(rating), 0) FROM reviews WHERE target_id = p.professional_id AND target_type = 'Professional') as avg_rating,
+                -- Get total number of reviews
+                (SELECT COUNT(*) FROM reviews WHERE target_id = p.professional_id AND target_type = 'Professional') as total_review_count,
+                -- Get upcoming appointments count for this doctor
+                (SELECT COUNT(*) FROM appointments WHERE professional_id = p.professional_id AND appointment_time > NOW() AND status != 'Cancelled') as upcoming_appointments_count,
+                -- Get today's appointments count
+                (SELECT COUNT(*) FROM appointments WHERE professional_id = p.professional_id AND appointment_time::DATE = CURRENT_DATE AND status != 'Cancelled') as today_appointments_count,
+                -- Get consultation statistics
+                (SELECT COUNT(*) FROM appointments WHERE professional_id = p.professional_id AND status = 'Completed') as completed_appointments_count,
+                -- Get availability information (slots for next 7 days)
+                (SELECT json_agg(json_build_object(
+                    'slot_id', slot_id,
+                    'start_time', start_time,
+                    'end_time', end_time,
+                    'is_booked', is_booked,
+                    'slot_date', slot_date
+                )) FROM availability_slots WHERE professional_id = p.professional_id AND slot_date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days' LIMIT 10) as availability_slots
+            FROM professionals p
+            JOIN users u ON p.user_id = u.user_id
+            WHERE p.professional_id = $1;
+        `;
+
+        const result = await db.query(query, [parseInt(id)]);
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ 
+                success: false,
+                message: 'Doctor profile not found.' 
+            });
+        }
+
+        const doctorProfile = result.rows[0];
+
+        // Format the response to include comprehensive doctor information
+        const profileResponse = {
+            doctor: {
+                id: doctorProfile.professional_id,
+                full_name: doctorProfile.full_name,
+                email: doctorProfile.email,
+                phone_number: doctorProfile.phone_number,
+                specialty: doctorProfile.specialty,
+                credentials: doctorProfile.credentials,
+                years_of_experience: doctorProfile.years_of_experience,
+                verification_status: doctorProfile.verification_status,
+                is_volunteer: doctorProfile.is_volunteer,
+                languages_spoken: doctorProfile.languages_spoken ? doctorProfile.languages_spoken.split(',') : [],
+                working_hours: doctorProfile.working_hours,
+                // Rating information
+                rating: parseFloat(doctorProfile.avg_rating || 0),
+                total_reviews: parseInt(doctorProfile.total_review_count || 0),
+                patients_treated: doctorProfile.patients_treated,
+                // Statistics
+                completed_appointments: parseInt(doctorProfile.completed_appointments_count || 0),
+                upcoming_appointments: parseInt(doctorProfile.upcoming_appointments_count || 0),
+                today_appointments: parseInt(doctorProfile.today_appointments_count || 0),
+                // Availability
+                availability: doctorProfile.availability_slots || []
+            }
+        };
+
+        res.status(200).json({
+            success: true,
+            data: profileResponse
+        });
+    } catch (error) {
+        console.error('Error fetching doctor profile:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'An error occurred while fetching doctor profile.' 
+        });
+    }
+};
+
 module.exports = {
     getAllProfessionals,
     getProfessionalAvailability,
     getProfessionalDashboard,
-    createOrUpdateProfessionalProfile // Export the new function
+    createOrUpdateProfessionalProfile,
+    createBatchAvailability,
+    getDoctorProfile
 };
-
-// No duplicate export - the function is already exported above in the first module.exports

@@ -4,7 +4,9 @@ const {
     getAllProfessionals,
     getProfessionalAvailability,
     getProfessionalDashboard,
-    createOrUpdateProfessionalProfile // <--- Import the new function
+    createOrUpdateProfessionalProfile,
+    createBatchAvailability,
+    getDoctorProfile // <--- Import the new function
 } = require('../controllers/professional.controller');
 
 // Assuming you have an authentication middleware to get req.user
@@ -24,7 +26,13 @@ router.get('/me/dashboard', authenticate, getProfessionalDashboard);
 // Public route to get the availability for a specific professional
 router.get('/:id/availability', getProfessionalAvailability);
 
+// Public route to get complete profile information for a specific doctor
+router.get('/:id/profile', getDoctorProfile);
+
 // Private route to create or update professional profile
 router.put('/me/profile', authenticate, createOrUpdateProfessionalProfile);
+
+// Private route to create batch availability slots
+router.post('/availability/batch', authenticate, createBatchAvailability);
 
 module.exports = router;

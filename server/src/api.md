@@ -194,17 +194,19 @@ Get all medical records for the user.
 
 **Response:**
 ```json
-{
-  "record_id": "integer",
-  "document_name": "string",
-  "document_type": "string",
-  "document_url": "string",
-  "uploaded_at": "timestamp",
-  "comments_notes": "text",
-  "report_date": "date",
-  "file_format": "string",
-  "file_size_mb": "integer"
-}
+[
+  {
+    "record_id": "integer",
+    "document_name": "string",
+    "document_type": "string",
+    "document_url": "string",
+    "uploaded_at": "timestamp",
+    "comments_notes": "text",
+    "report_date": "date",
+    "file_format": "string",
+    "file_size_mb": "integer"
+  }
+]
 ```
 
 ### DELETE /api/users/me/records/:recordId
@@ -222,7 +224,7 @@ Delete a specific medical record.
 All professional endpoints are public (no authentication required).
 
 ### GET /api/professionals
-Get a list of verified professionals.
+Get all verified professionals, with optional filtering by specialty.
 
 **Query Parameters:**
 - `specialty`: string (optional) - Filter by specialty
@@ -232,7 +234,6 @@ Get a list of verified professionals.
 [
   {
     "professional_id": "integer",
-    "professional_id_uuid": "UUID string (nullable)",
     "full_name": "string",
     "specialty": "string",
     "credentials": "string",
@@ -270,7 +271,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 ### GET /api/professionals/:id/availability
-Get available slots for a professional.
+Get available slots for a specific professional.
 
 **Path Parameter:**
 - `id`: integer (required) - Professional ID
@@ -321,6 +322,79 @@ Or for update:
 {
   "message": "Professional profile updated successfully.",
   "professional_id": "integer"
+}
+```
+
+### POST /api/professionals/availability/batch
+
+Generate recurring availability slots for a professional.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "days_of_week": ["string (required)", "Array of day names (e.g., Monday, Tuesday)"],
+  "start_time": "string (required, format: HH:MM:SS)",
+  "end_time": "string (required, format: HH:MM:SS)",
+  "slot_duration_minutes": "integer (required, positive number)"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Slots generated successfully",
+  "slots_created": 48
+}
+```
+
+### GET /api/professionals/:id/profile
+
+Get complete profile information for a specific doctor by ID.
+
+**Path Parameter:**
+- `id`: integer (required) - Doctor ID
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "doctor": {
+      "id": "integer",
+      "full_name": "string",
+      "email": "string",
+      "phone_number": "string",
+      "specialty": "string",
+      "credentials": "string",
+      "years_of_experience": "integer",
+      "verification_status": "string",
+      "is_volunteer": "boolean",
+      "languages_spoken": ["string"],
+      "working_hours": "string",
+      "rating": "float",
+      "total_reviews": "integer",
+      "patients_treated": "integer",
+      "completed_appointments": "integer",
+      "upcoming_appointments": "integer",
+      "today_appointments": "integer",
+      "availability": [
+        {
+          "slot_id": "integer",
+          "start_time": "timestamp",
+          "end_time": "timestamp",
+          "is_booked": "boolean",
+          "slot_date": "date"
+        }
+      ]
+    }
+  }
 }
 ```
 

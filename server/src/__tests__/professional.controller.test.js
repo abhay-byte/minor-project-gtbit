@@ -1,4 +1,11 @@
-const { getAllProfessionals, getProfessionalAvailability, getProfessionalDashboard } = require('../api/controllers/professional.controller');
+const { 
+    getAllProfessionals, 
+    getProfessionalAvailability, 
+    getProfessionalDashboard,
+    createOrUpdateProfessionalProfile,
+    createBatchAvailability,
+    getDoctorProfile
+} = require('../api/controllers/professional.controller');
 const db = require('../config/db');
 
 // Mock the database module
@@ -7,6 +14,136 @@ jest.mock('../config/db');
 describe('Professional Controller Tests', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+    });
+
+    describe('getDoctorProfile', () => {
+        const mockReq = {
+            params: { id: '1' }
+        };
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        };
+
+        it('should return 400 when invalid doctor ID is provided', async () => {
+            const mockReqInvalid = {
+                params: { id: 'invalid' }
+            };
+
+            await getDoctorProfile(mockReqInvalid, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(400);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                success: false,
+                message: 'Valid doctor ID is required.'
+            });
+        });
+
+        it('should return 404 when doctor profile is not found', async () => {
+            const mockEmptyResult = {
+                rows: []
+            };
+
+            db.query.mockResolvedValueOnce(mockEmptyResult);
+
+            await getDoctorProfile(mockReq, mockRes);
+
+            expect(db.query).toHaveBeenCalledTimes(1);
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                success: false,
+                message: 'Doctor profile not found.'
+            });
+        });
+
+        it('should return complete doctor profile when found', async () => {
+            const mockDoctorProfile = {
+                rows: [{
+                    professional_id: 1,
+                    full_name: 'Dr. John Doe',
+                    email: 'john.doe@example.com',
+                    phone_number: '+1234567890',
+                    specialty: 'Cardiologist',
+                    credentials: 'MD, FACC',
+                    years_of_experience: 10,
+                    verification_status: 'Verified',
+                    rating: 4.8,
+                    total_reviews: 150,
+                    patients_treated: 1200,
+                    languages_spoken: 'English,Spanish',
+                    working_hours: 'Mon-Fri: 9AM-5PM',
+                    is_volunteer: false,
+                    avg_rating: 4.8,
+                    total_review_count: 150,
+                    upcoming_appointments_count: 5,
+                    today_appointments_count: 2,
+                    completed_appointments_count: 1200,
+                    availability_slots: [
+                        {
+                            slot_id: 1,
+                            start_time: '2023-01-01T09:00:00Z',
+                            end_time: '2023-01-01T09:30:00Z',
+                            is_booked: false,
+                            slot_date: '2023-01-01'
+                        }
+                    ]
+                }]
+            };
+
+            db.query.mockResolvedValueOnce(mockDoctorProfile);
+
+            await getDoctorProfile(mockReq, mockRes);
+
+            expect(db.query).toHaveBeenCalledTimes(1);
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                success: true,
+                data: {
+                    doctor: {
+                        id: 1,
+                        full_name: 'Dr. John Doe',
+                        email: 'john.doe@example.com',
+                        phone_number: '+1234567890',
+                        specialty: 'Cardiologist',
+                        credentials: 'MD, FACC',
+                        years_of_experience: 10,
+                        verification_status: 'Verified',
+                        is_volunteer: false,
+                        languages_spoken: ['English', 'Spanish'],
+                        working_hours: 'Mon-Fri: 9AM-5PM',
+                        rating: 4.8,
+                        total_reviews: 150,
+                        patients_treated: 1200,
+                        completed_appointments: 1200,
+                        upcoming_appointments: 5,
+                        today_appointments: 2,
+                        availability: [
+                            {
+                                slot_id: 1,
+                                start_time: '2023-01-01T09:00:00Z',
+                                end_time: '2023-01-01T09:30:00Z',
+                                is_booked: false,
+                                slot_date: '2023-01-01'
+                            }
+                        ]
+                    }
+                }
+            });
+        });
+
+        it('should handle database errors gracefully', async () => {
+            const error = new Error('Database error');
+            db.query.mockRejectedValueOnce(error);
+
+            await getDoctorProfile(mockReq, mockRes);
+
+            expect(db.query).toHaveBeenCalledTimes(1);
+            expect(mockRes.status).toHaveBeenCalledWith(500);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                success: false,
+                message: 'An error occurred while fetching doctor profile.'
+            });
+        });
     });
 
     describe('getProfessionalDashboard', () => {

@@ -1,0 +1,171 @@
+{
+  "info": {
+    "_postman_id": "batch-availability-endpoint-test",
+    "name": "Batch Availability Endpoint Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "POST /api/professionals/availability/batch - Create Batch Availability",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"days_of_week\": [\n    \"Monday\",\n    \"Tuesday\",\n    \"Wednesday\",\n    \"Thursday\",\n    \"Friday\"\n  ],\n  \"start_time\": \"09:00:00\",\n  \"end_time\": \"17:00:00\",\n  \"slot_duration_minutes\": 30\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/professionals/availability/batch",
+          "host": ["{{base_url}}"],
+          "path": ["api", "professionals", "availability", "batch"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST /api/professionals/availability/batch - Invalid Day of Week",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"days_of_week\": [\n    \"InvalidDay\"\n  ],\n  \"start_time\": \"09:00:00\",\n  \"end_time\": \"17:00:00\",\n  \"slot_duration_minutes\": 30\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/professionals/availability/batch",
+          "host": ["{{base_url}}"],
+          "path": ["api", "professionals", "availability", "batch"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST /api/professionals/availability/batch - Invalid Time Format",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"days_of_week\": [\n    \"Monday\"\n  ],\n  \"start_time\": \"25:00:00\",\n  \"end_time\": \"17:00:00\",\n  \"slot_duration_minutes\": 30\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/professionals/availability/batch",
+          "host": ["{{base_url}}"],
+          "path": ["api", "professionals", "availability", "batch"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST /api/professionals/availability/batch - Missing Required Fields",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"days_of_week\": [\n    \"Monday\"\n  ],\n  \"start_time\": \"09:00:00\"\n  \n  // Missing end_time and slot_duration_minutes\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/professionals/availability/batch",
+          "host": ["{{base_url}}"],
+          "path": ["api", "professionals", "availability", "batch"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "jwt_token",
+      "value": "your-jwt-token-here"
+    }
+  ]
+}
