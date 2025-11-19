@@ -1,0 +1,375 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "name": "Clinico Professional Dashboard API",
+    "description": "API collection for testing the professional dashboard endpoint",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET Professional Dashboard",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}",
+            "description": "JWT token for authenticated professional user"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": "Content type header"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/professionals/me/dashboard",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "professionals",
+            "me",
+            "dashboard"
+          ]
+        },
+        "description": "Fetches aggregated statistics for the logged-in professional's dashboard"
+      },
+      "response": [
+        {
+          "name": "Successful Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/professionals/me/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "professionals",
+                "me",
+                "dashboard"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n \"rating\": 4.85,\n  \"total_reviews\": 150,\n  \"patients_treated\": 1200,\n  \"verification_status\": \"Verified\",\n  \"is_volunteer\": true,\n  \"appointments_today_count\": 8,\n \"pending_reports_count\": 3\n}"
+        },
+        {
+          "name": "Unauthorized Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid_token"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/professionals/me/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "professionals",
+                "me",
+                "dashboard"
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Access denied. Invalid or expired token.\"\n}"
+        },
+        {
+          "name": "Professional Not Found",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer valid_token_without_professional"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/professionals/me/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "professionals",
+                "me",
+                "dashboard"
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n \"message\": \"Professional profile not found for this user.\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "PUT Professional Profile",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}",
+            "description": "JWT token for authenticated professional user"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": "Content type header"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/professionals/me/profile",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "professionals",
+            "me",
+            "profile"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"specialty\": \"Cardiologist\",\n  \"credentials\": \"MD, FACC\",\n  \"years_of_experience\": 10,\n  \"languages_spoken\": \"English, Hindi\",\n  \"working_hours\": \"9AM-5PM\",\n  \"is_volunteer\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Creates or updates a professional's profile information"
+      },
+      "response": [
+        {
+          "name": "Successful Creation Response",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specialty\": \"Cardiologist\",\n  \"credentials\": \"MD, FACC\",\n  \"years_of_experience\": 10,\n  \"languages_spoken\": \"English, Hindi\",\n  \"working_hours\": \"9AM-5PM\",\n  \"is_volunteer\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/professionals/me/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "professionals",
+                "me",
+                "profile"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Professional profile created successfully.\",\n  \"professional_id\": 1\n}"
+        },
+        {
+          "name": "Successful Update Response",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specialty\": \"Cardiologist\",\n  \"credentials\": \"MD, FACC\",\n  \"years_of_experience\": 10,\n  \"languages_spoken\": \"English, Hindi\",\n  \"working_hours\": \"9AM-5PM\",\n  \"is_volunteer\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/professionals/me/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "professionals",
+                "me",
+                "profile"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Professional profile updated successfully.\",\n  \"professional_id\": 1\n}"
+        },
+        {
+          "name": "Unauthorized Response",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid_token"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/professionals/me/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "professionals",
+                "me",
+                "profile"
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Access denied. Invalid or expired token.\"\n}"
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Pre-request Script",
+          "// Any code written here will be executed before the request is sent"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Test Script",
+          "// Any code written here will be executed after the response is received",
+          "",
+          "// Example test assertions:",
+          "// pm.test(\"Status code is 200\", function () {",
+          "//     pm.response.to.have.status(200);",
+          "// });",
+          "",
+          "// pm.test(\"Response has required fields\", function () {",
+          "//     const jsonData = pm.response.json();",
+          "//     pm.expect(jsonData).to.have.property('rating');",
+          "//     pm.expect(jsonData).to.have.property('total_reviews');",
+          "//     pm.expect(jsonData).to.have.property('patients_treated');",
+          "//     pm.expect(jsonData).to.have.property('verification_status');",
+          "//     pm.expect(jsonData).to.have.property('is_volunteer');",
+          "//     pm.expect(jsonData).to.have.property('appointments_today_count');",
+          "//     pm.expect(jsonData).to.have.property('pending_reports_count');",
+          "// });"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "your_jwt_token_here",
+      "type": "string"
+    }
+  ]
+}
