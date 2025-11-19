@@ -10,7 +10,6 @@ This document provides a comprehensive overview of all available API endpoints i
 5. [Clinic Endpoints](#clinic-endpoints)
 6. [Prescription Endpoints](#prescription-endpoints)
 7. [Vault Endpoints](#vault-endpoints)
-8. [Chat Endpoints](#chat-endpoints)
 
 ## Authentication Endpoints
 
@@ -248,6 +247,28 @@ Get a list of verified professionals.
 ]
 ```
 
+### GET /api/professionals/me/dashboard
+
+Fetches aggregated statistics for the logged-in professional's dashboard.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Response:**
+```json
+{
+  "rating": 4.85,
+  "total_reviews": 150,
+  "patients_treated": 1200,
+  "verification_status": "Verified",
+  "is_volunteer": true,
+  "appointments_today_count": 8,
+  "pending_reports_count": 3
+}
+```
+
 ### GET /api/professionals/:id/availability
 Get available slots for a professional.
 
@@ -263,6 +284,44 @@ Get available slots for a professional.
     "end_time": "timestamp"
   }
 ]
+```
+
+### PUT /api/professionals/me/profile
+
+Creates or updates a professional's profile information.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "specialty": "string (optional)",
+  "credentials": "string (optional)",
+  "years_of_experience": "integer (optional)",
+  "languages_spoken": "text (optional)",
+  "working_hours": "text (optional)",
+  "is_volunteer": "boolean (optional)"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Professional profile created successfully.",
+  "professional_id": "integer"
+}
+```
+
+Or for update:
+```json
+{
+  "message": "Professional profile updated successfully.",
+  "professional_id": "integer"
+}
 ```
 
 ## Appointment Endpoints
@@ -812,110 +871,6 @@ Authorization: Bearer {jwt_token}
 ]
 ```
 
-## Chat Endpoints
-
-All chat endpoints require authentication.
-
-### GET /api/chat/conversations
-Get the user's conversations.
-
-**Headers:**
-```
-Authorization: Bearer {jwt_token}
-```
-
-**Response:**
-```json
-[
-  {
-    "conversation_id": "UUID",
-    "last_message_at": "timestamp",
-    "is_active": "boolean",
-    "conversation_type": "enum: Appointment | Follow-up | Query",
-    "with_user": {
-      "user_id": "integer",
-      "full_name": "string",
-      "role": "string"
-    }
-  }
-]
-```
-
-### GET /api/chat/conversations/:conversationId/messages
-Get messages in a specific conversation.
-
-**Path Parameter:**
-- `conversationId`: UUID (required) - Conversation ID
-
-**Headers:**
-```
-Authorization: Bearer {jwt_token}
-```
-
-**Query Parameters:**
-- `limit`: integer (optional, default: 50)
-- `offset`: integer (optional, default: 0)
-
-**Response:**
-```json
-{
-  "conversation_id": "UUID",
-  "messages": [
-    {
-      "message_id": "UUID",
-      "sender_user_id": "integer",
-      "sender_type": "enum: Patient | Doctor | System",
-      "message_content": "text",
-      "message_type": "enum: Text | Prescription | Report | JoinCall | Submitted",
-      "attachment_url": "string",
-      "sent_at": "timestamp",
-      "is_read": "boolean",
-      "read_at": "timestamp"
-    }
-  ]
-}
-```
-
-### POST /api/chat/conversations/:conversationId/messages
-Send a message in a conversation.
-
-**Path Parameter:**
-- `conversationId`: UUID (required) - Conversation ID
-
-**Headers:**
-```
-Authorization: Bearer {jwt_token}
-```
-
-**Request Body:**
-```json
-{
-  "message_content": "string (required)",
-  "message_type": "enum: Text | Prescription | Report | JoinCall | Submitted (optional, default: Text)",
-  "attachment_url": "string (optional)"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Message sent successfully.",
-  "message_id": "UUID"
-}
-```
-
-## Rate Limiting
-
-Most authenticated endpoints are subject to rate limiting (typically 100 requests per hour per user). Exceeding the limit will result in a 429 status code.
-
-## Error Responses
-
-Standard error response format:
-```json
-{
-  "message": "Error description"
-}
-```
 
 Common status codes:
 - 400: Bad Request (validation error)
