@@ -76,6 +76,28 @@ describe('Clinic Controller', () => {
             expect(mockRes.status).toHaveBeenCalledWith(200);
             expect(mockRes.json).toHaveBeenCalledWith({ ...mockClinic, doctors: mockDoctors, doctor_count: 1 });
         });
+
+        it('should return 400 if clinic id is invalid', async () => {
+            mockReq.params = { id: 'invalid' };
+            await getClinicById(mockReq, mockRes);
+            expect(mockRes.status).toHaveBeenCalledWith(400);
+            expect(mockRes.json).toHaveBeenCalledWith({ message: 'Invalid clinic ID provided.' });
+
+            mockReq.params = { id: '' };
+            await getClinicById(mockReq, mockRes);
+            expect(mockRes.status).toHaveBeenCalledWith(400);
+            expect(mockRes.json).toHaveBeenCalledWith({ message: 'Invalid clinic ID provided.' });
+
+            mockReq.params = { id: '0' };
+            await getClinicById(mockReq, mockRes);
+            expect(mockRes.status).toHaveBeenCalledWith(400);
+            expect(mockRes.json).toHaveBeenCalledWith({ message: 'Invalid clinic ID provided.' });
+
+            mockReq.params = { id: '-1' };
+            await getClinicById(mockReq, mockRes);
+            expect(mockRes.status).toHaveBeenCalledWith(400);
+            expect(mockRes.json).toHaveBeenCalledWith({ message: 'Invalid clinic ID provided.' });
+        });
     });
 
     describe('getDoctorsByClinic', () => {
@@ -126,12 +148,17 @@ describe('Clinic Controller', () => {
             mockReq.body = { rating: 5, comment: 'Great doctor!' };
 
             db.query
-                .mockResolvedValueOnce({ rows: [{ patient_id: 201, patient_id_uuid: 'patient-uuid' }] })
-                .mockResolvedValueOnce({ rows: [{ review_id: 701, review_id_uuid: 'review-uuid' }] });
+                .mockResolvedValueOnce({ rows: [{ patient_id: 201, patient_id_uuid: 'patient-uuid' }] })  // Find patient
+                .mockResolvedValueOnce({ rows: [{ clinic_doctor_id: 5 }] })  // Check doctor exists
+                .mockResolvedValueOnce({ rows: [{ review_id: 701, review_id_uuid: 'review-uuid', created_at: '2025-01-01' }] })  // Insert review
+                .mockResolvedValueOnce();  // Update clinic doctor rating
             
             await submitClinicDoctorReview(mockReq, mockRes);
             expect(mockRes.status).toHaveBeenCalledWith(201);
-            expect(mockRes.json).toHaveBeenCalledWith({ message: 'Review submitted successfully.' });
+            expect(mockRes.json).toHaveBeenCalledWith({
+                message: 'Review submitted successfully.',
+                review: { review_id: 701, review_id_uuid: 'review-uuid', created_at: '2025-01-01' }
+            });
         });
         
         it('should return 400 if rating is missing', async () => {
@@ -169,7 +196,7 @@ describe('Clinic Controller', () => {
             
             await getClinicDoctorReviews(mockReq, mockRes);
             
-            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('FROM reviews r JOIN patients p ON r.patient_id = p.patient_id WHERE r.target_type = $1 AND r.target_id = $2'), ['Clinic_Doctor', 5]);
+            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('FROM reviews r JOIN patients p ON r.patient_id = p.patient_id WHERE r.target_type = $1 AND r.target_id = $2'), ['ClinicDoctor', 5]);
             expect(mockRes.status).toHaveBeenCalledWith(200);
             expect(mockRes.json).toHaveBeenCalledWith(mockReviews);
         });
@@ -192,7 +219,7 @@ describe('Clinic Controller', () => {
             
             await getClinicDoctorReviewStats(mockReq, mockRes);
             
-            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('FROM reviews'), ['Clinic_Doctor', 5]);
+            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('FROM reviews'), ['ClinicDoctor', 5]);
             expect(mockRes.status).toHaveBeenCalledWith(200);
             expect(mockRes.json).toHaveBeenCalledWith(mockStats);
         });

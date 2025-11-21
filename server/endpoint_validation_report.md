@@ -22,7 +22,7 @@ This report documents the validation results for all API endpoints in the Clinic
 | POST /api/appointments | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | GET /api/appointments/me | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | GET /api/clinics/search | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
-| GET /api/clinics/:id | ✅ | 🔴 Failed | Yes | Yes | Passed | Yes |
+| GET /api/clinics/:id | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | GET /api/clinics/:id/doctors | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | POST /api/clinics/doctors/:doctorId/reviews | ✅ | 🔴 Failed | Yes | Yes | Passed | Yes |
 | GET /api/clinics/doctors/:doctorId/reviews | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
@@ -563,9 +563,8 @@ Successfully retrieved specific review with expected response structure when pro
 3. **GET /api/prescriptions/lists** - Database connection error or missing prescription data for the user
 4. **GET /api/prescriptions/reminders** - Database connection error or missing reminder data for the user
 5. **GET /api/prescriptions/reminders/1/logs** - Database schema mismatch (column rl.created_at does not exist)
-6. **GET /api/clinics/search-history** - Database connection error
-7. **POST /api/vault/prescription/upload** - Database schema mismatch (column vault_prescription_id_uuid does not exist)
-8. **GET /api/vault/prescription** - Database connection error or missing vault data for the user
+6. **POST /api/vault/prescription/upload** - Database schema mismatch (column vault_prescription_id_uuid does not exist)
+7. **GET /api/vault/prescription** - Database connection error or missing vault data for the user
 
 ## Suggested Fixes
 
