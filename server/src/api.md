@@ -10,6 +10,7 @@ This document provides a comprehensive overview of all available API endpoints i
 5. [Clinic Endpoints](#clinic-endpoints)
 6. [Prescription Endpoints](#prescription-endpoints)
 7. [Vault Endpoints](#vault-endpoints)
+8. [Review Endpoints](#review-endpoints)
 
 ## Authentication Endpoints
 
@@ -945,6 +946,202 @@ Authorization: Bearer {jwt_token}
 ]
 ```
 
+
+## Review Endpoints
+
+All review endpoints require authentication via JWT token.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+### POST /api/reviews
+Submit a new review for a professional, clinic doctor, or other entity.
+
+**Request Body:**
+```json
+{
+  "target_type": "string (required) - Entity type: 'Professional' | 'ClinicDoctor' | 'Clinic' | 'Appointment'",
+  "target_id": "integer (required) - ID of the entity being reviewed",
+  "rating": "integer (required, 1-5) - Star rating",
+  "comment": "string (optional) - Review text",
+  "appreciated_aspects": "string (optional) - Positive aspects",
+  "feedback_suggestions": "string (optional) - Improvement suggestions",
+  "is_verified_visit": "boolean (optional, default: false) - Whether visit was verified"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Review submitted successfully",
+  "review": {
+    "review_id": "integer",
+    "review_id_uuid": "UUID string",
+    "patient_id": "integer",
+    "target_type": "string",
+    "target_id": "integer",
+    "rating": "integer",
+    "comment": "string",
+    "appreciated_aspects": "string",
+    "feedback_suggestions": "string",
+    "is_verified_visit": "boolean",
+    "created_at": "timestamp"
+  }
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Invalid rating (must be 1-5) or missing required fields
+- `401 Unauthorized`: Invalid or missing JWT token
+- `403 Forbidden`: User is not a patient or trying to review their own service
+- `404 Not Found`: Target entity doesn't exist
+- `409 Conflict`: User has already reviewed this entity
+
+---
+
+### PUT /api/reviews/:reviewId
+Update an existing review.
+
+**Path Parameter:**
+- `reviewId`: integer (required) - Review ID to update
+
+**Request Body:**
+```json
+{
+  "rating": "integer (optional, 1-5) - Updated star rating",
+  "comment": "string (optional) - Updated review text",
+  "appreciated_aspects": "string (optional) - Updated positive aspects",
+  "feedback_suggestions": "string (optional) - Updated improvement suggestions",
+  "is_verified_visit": "boolean (optional) - Updated verification status"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Review updated successfully",
+  "review": {
+    "review_id": "integer",
+    "review_id_uuid": "UUID string",
+    "patient_id": "integer",
+    "target_type": "string",
+    "target_id": "integer",
+    "rating": "integer",
+    "comment": "string",
+    "appreciated_aspects": "string",
+    "feedback_suggestions": "string",
+    "is_verified_visit": "boolean",
+    "created_at": "timestamp",
+    "updated_at": "timestamp"
+  }
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Invalid rating or no fields provided for update
+- `401 Unauthorized`: Invalid or missing JWT token
+- `403 Forbidden`: User doesn't own this review
+- `404 Not Found`: Review doesn't exist
+
+---
+
+### DELETE /api/reviews/:reviewId
+Delete a review.
+
+**Path Parameter:**
+- `reviewId`: integer (required) - Review ID to delete
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Review deleted successfully",
+  "deleted_review_id": "integer"
+}
+```
+
+**Error Responses:**
+- `401 Unauthorized`: Invalid or missing JWT token
+- `403 Forbidden`: User doesn't own this review
+- `404 Not Found`: Review doesn't exist
+
+---
+
+### GET /api/reviews/me
+Get all reviews submitted by the logged-in user.
+
+**Query Parameters:**
+- `target_type`: string (optional) - Filter by entity type
+- `limit`: integer (optional, default: 50, max: 100)
+- `offset`: integer (optional, default: 0)
+- `order_by`: string (optional, default: 'created_at') - Sort field: 'created_at' | 'rating'
+- `order_direction`: string (optional, default: 'DESC') - Sort direction: 'ASC' | 'DESC'
+
+**Response:**
+```json
+{
+  "success": true,
+  "total": "integer",
+  "limit": "integer",
+  "offset": "integer",
+  "reviews": [
+    {
+      "review_id": "integer",
+      "review_id_uuid": "UUID string",
+      "target_type": "string",
+      "target_id": "integer",
+      "target_name": "string - Name of reviewed entity",
+      "rating": "integer",
+      "comment": "string",
+      "appreciated_aspects": "string",
+      "feedback_suggestions": "string",
+      "is_verified_visit": "boolean",
+      "created_at": "timestamp",
+      "updated_at": "timestamp"
+    }
+  ]
+}
+```
+
+---
+
+### GET /api/reviews/:reviewId
+Get details of a specific review.
+
+**Path Parameter:**
+- `reviewId`: integer (required) - Review ID
+
+**Response:**
+```json
+{
+  "success": true,
+  "review": {
+    "review_id": "integer",
+    "review_id_uuid": "UUID string",
+    "patient_id": "integer",
+    "patient_name": "string",
+    "target_type": "string",
+    "target_id": "integer",
+    "target_name": "string",
+    "rating": "integer",
+    "comment": "string",
+    "appreciated_aspects": "string",
+    "feedback_suggestions": "string",
+    "is_verified_visit": "boolean",
+    "created_at": "timestamp",
+    "updated_at": "timestamp"
+  }
+}
+```
+
+**Error Responses:**
+- `404 Not Found`: Review doesn't exist
+
+---
 
 Common status codes:
 - 400: Bad Request (validation error)
