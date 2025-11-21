@@ -813,32 +813,20 @@ Authorization: Bearer {jwt_token}
 ```
 
 **Response:**
-```json
-{
-  "clinic_id": "integer",
-  "count": "integer",
-  "doctors": [
-    {
-      "clinic_doctor_id": "integer",
-      "clinic_doctor_id_uuid": "UUID string (nullable)",
-      "full_name": "string",
-      "specialty": "string",
-      "consultation_fee": "integer",
-      "qualifications": "text",
-      "available_days": "text",
-      "available_hours": "text",
-      "rating": "decimal",
-      "review_count": "integer",
-      "languages": "text",
-      "distance_km": "string",
-      "hospital_affiliation": "string",
-      "is_volunteer": "boolean",
-      "available_today": "boolean",
-      "available_tomorrow": "boolean",
-      "available_this_week": "boolean"
-    }
-  ]
-}
+[
+  {
+    "list_id": "UUID",
+    "prescription_id": "integer",
+    "condition_treated": "string",
+    "medicines_count": "integer",
+    "next_followup": "date",
+    "prescription_status": "string",
+    "last_viewed": "timestamp",
+    "medication_name": "string",
+    "dosage": "string",
+    "frequency": "string"
+  }
+]
 ```
 
 ### GET /api/prescriptions/reminders
@@ -888,7 +876,8 @@ Authorization: Bearer {jwt_token}
     "scheduled_time": "timestamp",
     "taken_time": "timestamp",
     "status": "enum: Pending | Taken | Missed | Snoozed",
-    "notes": "text"
+    "notes": "text",
+    "created_at": "timestamp"
   }
 ]
 ```

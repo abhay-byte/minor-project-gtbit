@@ -14,7 +14,7 @@ sudo docker-compose up -d
 
 echo
 echo "--- Waiting for PostgreSQL to become available (5 seconds)... ---"
-sleep 30
+sleep 5
 
 echo
 echo "--- Checking if database is already initialized... ---"

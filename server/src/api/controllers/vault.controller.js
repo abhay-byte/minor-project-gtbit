@@ -54,7 +54,7 @@ exports.uploadPrescriptionToVault = async (req, res) => {
                 insertQuery = `
                     INSERT INTO prescription_vault (patient_id, document_url, metadata, file_count)
                     VALUES ($1, $2, $3, 1)
-                    RETURNING vault_prescription_id, vault_prescription_id_uuid;
+                    RETURNING vault_prescription_id;
                 `;
                 insertParams = [patientId, documentUrl, JSON.stringify(req.body.metadata || {})];
                 break;
@@ -62,7 +62,7 @@ exports.uploadPrescriptionToVault = async (req, res) => {
                 insertQuery = `
                     INSERT INTO lab_report_vault (patient_id, document_url, metadata, file_count)
                     VALUES ($1, $2, $3, 1)
-                    RETURNING vault_lab_id, vault_lab_id_uuid;
+                    RETURNING vault_lab_id;
                 `;
                 insertParams = [patientId, documentUrl, JSON.stringify(req.body.metadata || {})];
                 break;
@@ -70,7 +70,7 @@ exports.uploadPrescriptionToVault = async (req, res) => {
                 insertQuery = `
                     INSERT INTO radiology_vault (patient_id, document_url, metadata, file_count)
                     VALUES ($1, $2, $3, 1)
-                    RETURNING vault_radiology_id, vault_radiology_id_uuid;
+                    RETURNING vault_radiology_id;
                 `;
                 insertParams = [patientId, documentUrl, JSON.stringify(req.body.metadata || {})];
                 break;
@@ -78,7 +78,7 @@ exports.uploadPrescriptionToVault = async (req, res) => {
                 insertQuery = `
                     INSERT INTO discharge_vault (patient_id, document_url, metadata, file_count)
                     VALUES ($1, $2, $3, 1)
-                    RETURNING vault_discharge_id, vault_discharge_id_uuid;
+                    RETURNING vault_discharge_id;
                 `;
                 insertParams = [patientId, documentUrl, JSON.stringify(req.body.metadata || {})];
                 break;
@@ -86,7 +86,7 @@ exports.uploadPrescriptionToVault = async (req, res) => {
                 insertQuery = `
                     INSERT INTO vaccination_vault (patient_id, document_url, metadata, file_count)
                     VALUES ($1, $2, $3, 1)
-                    RETURNING vault_vaccination_id, vault_vaccination_id_uuid;
+                    RETURNING vault_vaccination_id;
                 `;
                 insertParams = [patientId, documentUrl, JSON.stringify(req.body.metadata || {})];
                 break;
@@ -94,7 +94,7 @@ exports.uploadPrescriptionToVault = async (req, res) => {
                 insertQuery = `
                     INSERT INTO doctor_notes_vault (patient_id, document_url, metadata, file_count)
                     VALUES ($1, $2, $3, 1)
-                    RETURNING vault_notes_id, vault_notes_id_uuid;
+                    RETURNING vault_notes_id;
                 `;
                 insertParams = [patientId, documentUrl, JSON.stringify(req.body.metadata || {})];
                 break;
@@ -102,7 +102,7 @@ exports.uploadPrescriptionToVault = async (req, res) => {
                 insertQuery = `
                     INSERT INTO other_documents_vault (patient_id, document_url, metadata, file_count)
                     VALUES ($1, $2, $3, 1)
-                    RETURNING vault_other_id, vault_other_id_uuid;
+                    RETURNING vault_other_id;
                 `;
                 insertParams = [patientId, documentUrl, JSON.stringify(req.body.metadata || {})];
                 break;
@@ -119,7 +119,7 @@ exports.uploadPrescriptionToVault = async (req, res) => {
 
     } catch (error) {
         console.error('Error uploading document to vault:', error);
-        res.status(500).json({ message: 'An error occurred while uploading the document.' });
+        res.status(500).json({ message: 'An error occurred while uploading the document.', error: error.message });
     }
 };
 
@@ -150,99 +150,92 @@ exports.getVaultDocuments = async (req, res) => {
         switch(vaultType) {
             case 'prescription':
                 query = `
-                    SELECT 
+                    SELECT
                         vault_prescription_id as vault_id,
                         document_url,
                         metadata,
-                        file_count,
-                        created_at
+                        file_count
                     FROM prescription_vault
                     WHERE patient_id = $1
-                    ORDER BY created_at DESC;
+                    ORDER BY vault_prescription_id DESC;
                 `;
                 queryParams = [patientId];
                 break;
             case 'lab_report':
                 query = `
-                    SELECT 
+                    SELECT
                         vault_lab_id as vault_id,
                         document_url,
                         metadata,
-                        file_count,
-                        created_at
+                        file_count
                     FROM lab_report_vault
                     WHERE patient_id = $1
-                    ORDER BY created_at DESC;
+                    ORDER BY vault_lab_id DESC;
                 `;
                 queryParams = [patientId];
                 break;
             case 'radiology':
                 query = `
-                    SELECT 
+                    SELECT
                         vault_radiology_id as vault_id,
                         document_url,
                         metadata,
-                        file_count,
-                        created_at
+                        file_count
                     FROM radiology_vault
                     WHERE patient_id = $1
-                    ORDER BY created_at DESC;
+                    ORDER BY vault_radiology_id DESC;
                 `;
                 queryParams = [patientId];
                 break;
             case 'discharge':
                 query = `
-                    SELECT 
+                    SELECT
                         vault_discharge_id as vault_id,
                         document_url,
                         metadata,
-                        file_count,
-                        created_at
+                        file_count
                     FROM discharge_vault
                     WHERE patient_id = $1
-                    ORDER BY created_at DESC;
+                    ORDER BY vault_discharge_id DESC;
                 `;
                 queryParams = [patientId];
                 break;
             case 'vaccination':
                 query = `
-                    SELECT 
+                    SELECT
                         vault_vaccination_id as vault_id,
                         document_url,
                         metadata,
-                        file_count,
-                        created_at
+                        file_count
                     FROM vaccination_vault
                     WHERE patient_id = $1
-                    ORDER BY created_at DESC;
+                    ORDER BY vault_vaccination_id DESC;
                 `;
                 queryParams = [patientId];
                 break;
             case 'doctor_notes':
                 query = `
-                    SELECT 
+                    SELECT
                         vault_notes_id as vault_id,
                         document_url,
                         metadata,
-                        file_count,
-                        created_at
+                        file_count
                     FROM doctor_notes_vault
                     WHERE patient_id = $1
-                    ORDER BY created_at DESC;
+                    ORDER BY vault_notes_id DESC;
                 `;
                 queryParams = [patientId];
                 break;
             case 'other':
                 query = `
-                    SELECT 
+                    SELECT
                         vault_other_id as vault_id,
                         document_url,
                         metadata,
-                        file_count,
-                        created_at
+                        file_count
                     FROM other_documents_vault
                     WHERE patient_id = $1
-                    ORDER BY created_at DESC;
+                    ORDER BY vault_other_id DESC;
                 `;
                 queryParams = [patientId];
                 break;
@@ -255,6 +248,6 @@ exports.getVaultDocuments = async (req, res) => {
 
     } catch (error) {
         console.error('Error fetching vault documents:', error);
-        res.status(500).json({ message: 'An error occurred while fetching documents.' });
+        res.status(500).json({ message: 'An error occurred while fetching documents.', error: error.message });
     }
 };

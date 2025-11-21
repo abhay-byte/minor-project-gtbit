@@ -1,0 +1,529 @@
+{
+  "info": {
+    "_postman_id": "prescription-vault-endpoint-collection",
+    "name": "Prescription and Vault Endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collections.json",
+    "description": "Collection for prescription and vault management endpoints"
+  },
+  "item": [
+    {
+      "name": "GET /api/prescriptions/me - Get All Prescriptions",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/prescriptions/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "prescriptions", "me"]
+        },
+        "description": "Get all prescriptions for the logged-in patient."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/prescriptions/me/:prescriptionId - Get Specific Prescription",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/prescriptions/me/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "prescriptions", "me", "1"],
+          "variable": [
+            {
+              "key": "prescriptionId",
+              "value": "1"
+            }
+          ]
+        },
+        "description": "Get a specific prescription by ID."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/prescriptions/lists - Get Prescription Lists",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/prescriptions/lists",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "prescriptions", "lists"]
+        },
+        "description": "Get prescription lists for the logged-in patient."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/prescriptions/reminders - Get Medicine Reminders",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/prescriptions/reminders",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "prescriptions", "reminders"]
+        },
+        "description": "Get medicine reminders for the logged-in patient."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/prescriptions/reminders/:reminderId/logs - Get Reminder Logs",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/prescriptions/reminders/1/logs",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "prescriptions", "reminders", "1", "logs"],
+          "variable": [
+            {
+              "key": "reminderId",
+              "value": "1"
+            }
+          ]
+        },
+        "description": "Get reminder logs for a specific medicine reminder."
+      },
+      "response": []
+    },
+    {
+      "name": "POST /api/vault/prescription/upload - Upload Prescription to Vault",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "documentFile",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "metadata",
+              "value": "{\"documentType\":\"prescription\",\"notes\":\"Sample prescription\"}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/prescription/upload",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "prescription", "upload"]
+        },
+        "description": "Upload a prescription document to the vault."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/vault/prescription - Get Prescription Documents from Vault",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/prescription",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "prescription"]
+        },
+        "description": "Get all prescription documents from the vault."
+      },
+      "response": []
+    },
+    {
+      "name": "POST /api/vault/lab_report/upload - Upload Lab Report to Vault",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "documentFile",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "metadata",
+              "value": "{\"documentType\":\"lab_report\",\"notes\":\"Lab test results\"}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/lab_report/upload",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "lab_report", "upload"]
+        },
+        "description": "Upload a lab report document to the vault."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/vault/lab_report - Get Lab Report Documents from Vault",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/lab_report",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "lab_report"]
+        },
+        "description": "Get all lab report documents from the vault."
+      },
+      "response": []
+    },
+    {
+      "name": "POST /api/vault/radiology/upload - Upload Radiology to Vault",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "documentFile",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "metadata",
+              "value": "{\"documentType\":\"radiology\",\"notes\":\"Radiology scan\"}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/radiology/upload",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "radiology", "upload"]
+        },
+        "description": "Upload a radiology document to the vault."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/vault/radiology - Get Radiology Documents from Vault",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/radiology",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "radiology"]
+        },
+        "description": "Get all radiology documents from the vault."
+      },
+      "response": []
+    },
+    {
+      "name": "POST /api/vault/discharge/upload - Upload Discharge Summary to Vault",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "documentFile",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "metadata",
+              "value": "{\"documentType\":\"discharge\",\"notes\":\"Discharge summary\"}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/discharge/upload",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "discharge", "upload"]
+        },
+        "description": "Upload a discharge summary document to the vault."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/vault/discharge - Get Discharge Summary Documents from Vault",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/discharge",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "discharge"]
+        },
+        "description": "Get all discharge summary documents from the vault."
+      },
+      "response": []
+    },
+    {
+      "name": "POST /api/vault/vaccination/upload - Upload Vaccination Record to Vault",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "documentFile",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "metadata",
+              "value": "{\"documentType\":\"vaccination\",\"notes\":\"Vaccination record\"}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/vaccination/upload",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "vaccination", "upload"]
+        },
+        "description": "Upload a vaccination record document to the vault."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/vault/vaccination - Get Vaccination Record Documents from Vault",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/vaccination",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "vaccination"]
+        },
+        "description": "Get all vaccination record documents from the vault."
+      },
+      "response": []
+    },
+    {
+      "name": "POST /api/vault/doctor_notes/upload - Upload Doctor Notes to Vault",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "documentFile",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "metadata",
+              "value": "{\"documentType\":\"doctor_notes\",\"notes\":\"Doctor's notes\"}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/doctor_notes/upload",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "doctor_notes", "upload"]
+        },
+        "description": "Upload a doctor notes document to the vault."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/vault/doctor_notes - Get Doctor Notes Documents from Vault",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/doctor_notes",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "doctor_notes"]
+        },
+        "description": "Get all doctor notes documents from the vault."
+      },
+      "response": []
+    },
+    {
+      "name": "POST /api/vault/other/upload - Upload Other Document to Vault",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "documentFile",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "metadata",
+              "value": "{\"documentType\":\"other\",\"notes\":\"Other medical document\"}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/other/upload",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "other", "upload"]
+        },
+        "description": "Upload another type of medical document to the vault."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/vault/other - Get Other Documents from Vault",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/vault/other",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "vault", "other"]
+        },
+        "description": "Get all other medical documents from the vault."
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    }
+  ]
+}
