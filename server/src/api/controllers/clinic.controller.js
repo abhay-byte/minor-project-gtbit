@@ -365,17 +365,18 @@ exports.submitClinicDoctorReview = async (req, res) => {
                 feedback_suggestions,
                 is_verified_visit
             )
-            VALUES ($1, $2, $3, 'ClinicDoctor', $4, $5, $6, $7)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
             RETURNING review_id, review_id_uuid, created_at;
         `;
         
         const result = await db.query(insertQuery, [
-            patientId, 
-            rating, 
-            comment, 
+            patientId,
+            rating,
+            comment,
+            'ClinicDoctor',
             doctorId,
-            appreciated_aspects,
-            feedback_suggestions,
+            appreciated_aspects || null,
+            feedback_suggestions || null,
             is_verified_visit
         ]);
 
