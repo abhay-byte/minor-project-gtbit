@@ -28,7 +28,7 @@ This report documents the validation results for all API endpoints in the Clinic
 | GET /api/clinics/doctors/:doctorId/reviews | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | GET /api/clinics/doctors/:doctorId/reviews/stats | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | POST /api/clinics/search-history | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
-| GET /api/clinics/search-history | ✅ | 🔴 Failed | Yes | Yes | Passed | Yes |
+| GET /api/clinics/search-history | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | GET /api/prescriptions/me | ✅ | 🔴 Failed | Yes | Yes | Failed | Yes |
 | GET /api/prescriptions/me/:prescriptionId | ✅ | 🔴 Failed | Yes | Yes | Failed | Yes |
 | GET /api/prescriptions/lists | ✅ | 🔴 Failed | Yes | Yes | Failed | Yes |
@@ -342,14 +342,14 @@ Successfully saved search history with confirmation message and search ID.
 | Check Item | Result |
 |------------|--------|
 | Curl request executed | ✅ |
-| Server response received | 🔴 Failed |
+| Server response received | 🟢 Success |
 | Response matches expected schema | Yes |
 | Automated test case exists | Yes |
 | `npm run test` result | Passed |
 | Tested using Postman | Yes |
 
 **Notes / Errors Found:**
-Received "An error occurred while fetching clinic details" - likely due to database connection issues.
+Successfully retrieved search history for the authenticated user.
 
 ### Prescription Endpoints
 #### Endpoint: `GET /api/prescriptions/me`
