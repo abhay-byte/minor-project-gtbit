@@ -516,7 +516,7 @@ const seedDatabase = async () => {
                 patient_id, rating, comment, target_type, target_id, 
                 appreciated_aspects, feedback_suggestions, is_verified_visit
             ) VALUES
-            ($1, 5, 'Dr. Alok was very helpful and professional.', 'Clinic_Doctor', $2, 
+            ($1, 5, 'Dr. Alok was very helpful and professional.', 'ClinicDoctor', $2,
              'Knowledgeable, Patient, Explained well', 'Perhaps more time for each patient', true),
             ($3, 4, 'Good consultation, felt heard and understood.', 'Professional', $4, 
              'Empathetic, Good listener', 'Maybe shorter waiting times', true);

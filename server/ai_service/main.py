@@ -403,7 +403,7 @@ collections = {}
 try:
     print("--- Initializing AI Service ---")
     print("Loading embedding model (this may take a moment on first run)...")
-    embedding_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2', device='cuda')
+    embedding_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2', device='cpu')
     print("✅ Embedding model loaded.")
 
     db_client = chromadb.PersistentClient(path="db")

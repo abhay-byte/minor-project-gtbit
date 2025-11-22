@@ -10,7 +10,7 @@ This document provides a comprehensive overview of all available API endpoints i
 5. [Clinic Endpoints](#clinic-endpoints)
 6. [Prescription Endpoints](#prescription-endpoints)
 7. [Vault Endpoints](#vault-endpoints)
-8. [Chat Endpoints](#chat-endpoints)
+8. [Review Endpoints](#review-endpoints)
 
 ## Authentication Endpoints
 
@@ -195,17 +195,19 @@ Get all medical records for the user.
 
 **Response:**
 ```json
-{
-  "record_id": "integer",
-  "document_name": "string",
-  "document_type": "string",
-  "document_url": "string",
-  "uploaded_at": "timestamp",
-  "comments_notes": "text",
-  "report_date": "date",
-  "file_format": "string",
-  "file_size_mb": "integer"
-}
+[
+  {
+    "record_id": "integer",
+    "document_name": "string",
+    "document_type": "string",
+    "document_url": "string",
+    "uploaded_at": "timestamp",
+    "comments_notes": "text",
+    "report_date": "date",
+    "file_format": "string",
+    "file_size_mb": "integer"
+  }
+]
 ```
 
 ### DELETE /api/users/me/records/:recordId
@@ -223,7 +225,7 @@ Delete a specific medical record.
 All professional endpoints are public (no authentication required).
 
 ### GET /api/professionals
-Get a list of verified professionals.
+Get all verified professionals, with optional filtering by specialty.
 
 **Query Parameters:**
 - `specialty`: string (optional) - Filter by specialty
@@ -233,7 +235,6 @@ Get a list of verified professionals.
 [
   {
     "professional_id": "integer",
-    "professional_id_uuid": "UUID string (nullable)",
     "full_name": "string",
     "specialty": "string",
     "credentials": "string",
@@ -248,8 +249,30 @@ Get a list of verified professionals.
 ]
 ```
 
+### GET /api/professionals/me/dashboard
+
+Fetches aggregated statistics for the logged-in professional's dashboard.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+**Response:**
+```json
+{
+  "rating": 4.85,
+  "total_reviews": 150,
+  "patients_treated": 1200,
+  "verification_status": "Verified",
+  "is_volunteer": true,
+  "appointments_today_count": 8,
+  "pending_reports_count": 3
+}
+```
+
 ### GET /api/professionals/:id/availability
-Get available slots for a professional.
+Get available slots for a specific professional.
 
 **Path Parameter:**
 - `id`: integer (required) - Professional ID
@@ -263,6 +286,117 @@ Get available slots for a professional.
     "end_time": "timestamp"
   }
 ]
+```
+
+### PUT /api/professionals/me/profile
+
+Creates or updates a professional's profile information.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "specialty": "string (optional)",
+  "credentials": "string (optional)",
+  "years_of_experience": "integer (optional)",
+  "languages_spoken": "text (optional)",
+  "working_hours": "text (optional)",
+  "is_volunteer": "boolean (optional)"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Professional profile created successfully.",
+  "professional_id": "integer"
+}
+```
+
+Or for update:
+```json
+{
+  "message": "Professional profile updated successfully.",
+  "professional_id": "integer"
+}
+```
+
+### POST /api/professionals/availability/batch
+
+Generate recurring availability slots for a professional.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "days_of_week": ["string (required)", "Array of day names (e.g., Monday, Tuesday)"],
+  "start_time": "string (required, format: HH:MM:SS)",
+  "end_time": "string (required, format: HH:MM:SS)",
+  "slot_duration_minutes": "integer (required, positive number)"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Slots generated successfully",
+  "slots_created": 48
+}
+```
+
+### GET /api/professionals/:id/profile
+
+Get complete profile information for a specific doctor by ID.
+
+**Path Parameter:**
+- `id`: integer (required) - Doctor ID
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "doctor": {
+      "id": "integer",
+      "full_name": "string",
+      "email": "string",
+      "phone_number": "string",
+      "specialty": "string",
+      "credentials": "string",
+      "years_of_experience": "integer",
+      "verification_status": "string",
+      "is_volunteer": "boolean",
+      "languages_spoken": ["string"],
+      "working_hours": "string",
+      "rating": "float",
+      "total_reviews": "integer",
+      "patients_treated": "integer",
+      "completed_appointments": "integer",
+      "upcoming_appointments": "integer",
+      "today_appointments": "integer",
+      "availability": [
+        {
+          "slot_id": "integer",
+          "start_time": "timestamp",
+          "end_time": "timestamp",
+          "is_booked": "boolean",
+          "slot_date": "date"
+        }
+      ]
+    }
+  }
+}
 ```
 
 ## Appointment Endpoints
@@ -679,32 +813,20 @@ Authorization: Bearer {jwt_token}
 ```
 
 **Response:**
-```json
-{
-  "clinic_id": "integer",
-  "count": "integer",
-  "doctors": [
-    {
-      "clinic_doctor_id": "integer",
-      "clinic_doctor_id_uuid": "UUID string (nullable)",
-      "full_name": "string",
-      "specialty": "string",
-      "consultation_fee": "integer",
-      "qualifications": "text",
-      "available_days": "text",
-      "available_hours": "text",
-      "rating": "decimal",
-      "review_count": "integer",
-      "languages": "text",
-      "distance_km": "string",
-      "hospital_affiliation": "string",
-      "is_volunteer": "boolean",
-      "available_today": "boolean",
-      "available_tomorrow": "boolean",
-      "available_this_week": "boolean"
-    }
-  ]
-}
+[
+  {
+    "list_id": "UUID",
+    "prescription_id": "integer",
+    "condition_treated": "string",
+    "medicines_count": "integer",
+    "next_followup": "date",
+    "prescription_status": "string",
+    "last_viewed": "timestamp",
+    "medication_name": "string",
+    "dosage": "string",
+    "frequency": "string"
+  }
+]
 ```
 
 ### GET /api/prescriptions/reminders
@@ -754,7 +876,8 @@ Authorization: Bearer {jwt_token}
     "scheduled_time": "timestamp",
     "taken_time": "timestamp",
     "status": "enum: Pending | Taken | Missed | Snoozed",
-    "notes": "text"
+    "notes": "text",
+    "created_at": "timestamp"
   }
 ]
 ```
@@ -812,110 +935,202 @@ Authorization: Bearer {jwt_token}
 ]
 ```
 
-## Chat Endpoints
 
-All chat endpoints require authentication.
+## Review Endpoints
 
-### GET /api/chat/conversations
-Get the user's conversations.
+All review endpoints require authentication via JWT token.
 
 **Headers:**
 ```
 Authorization: Bearer {jwt_token}
 ```
 
-**Response:**
+### POST /api/reviews
+Submit a new review for a professional, clinic doctor, or other entity.
+
+**Request Body:**
 ```json
-[
-  {
-    "conversation_id": "UUID",
-    "last_message_at": "timestamp",
-    "is_active": "boolean",
-    "conversation_type": "enum: Appointment | Follow-up | Query",
-    "with_user": {
-      "user_id": "integer",
-      "full_name": "string",
-      "role": "string"
-    }
-  }
-]
+{
+  "target_type": "string (required) - Entity type: 'Professional' | 'ClinicDoctor' | 'Clinic' | 'Appointment'",
+  "target_id": "integer (required) - ID of the entity being reviewed",
+  "rating": "integer (required, 1-5) - Star rating",
+  "comment": "string (optional) - Review text",
+  "appreciated_aspects": "string (optional) - Positive aspects",
+  "feedback_suggestions": "string (optional) - Improvement suggestions",
+  "is_verified_visit": "boolean (optional, default: false) - Whether visit was verified"
+}
 ```
-
-### GET /api/chat/conversations/:conversationId/messages
-Get messages in a specific conversation.
-
-**Path Parameter:**
-- `conversationId`: UUID (required) - Conversation ID
-
-**Headers:**
-```
-Authorization: Bearer {jwt_token}
-```
-
-**Query Parameters:**
-- `limit`: integer (optional, default: 50)
-- `offset`: integer (optional, default: 0)
 
 **Response:**
 ```json
 {
-  "conversation_id": "UUID",
-  "messages": [
+  "success": true,
+  "message": "Review submitted successfully",
+  "review": {
+    "review_id": "integer",
+    "review_id_uuid": "UUID string",
+    "patient_id": "integer",
+    "target_type": "string",
+    "target_id": "integer",
+    "rating": "integer",
+    "comment": "string",
+    "appreciated_aspects": "string",
+    "feedback_suggestions": "string",
+    "is_verified_visit": "boolean",
+    "created_at": "timestamp"
+  }
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Invalid rating (must be 1-5) or missing required fields
+- `401 Unauthorized`: Invalid or missing JWT token
+- `403 Forbidden`: User is not a patient or trying to review their own service
+- `404 Not Found`: Target entity doesn't exist
+- `409 Conflict`: User has already reviewed this entity
+
+---
+
+### PUT /api/reviews/:reviewId
+Update an existing review.
+
+**Path Parameter:**
+- `reviewId`: integer (required) - Review ID to update
+
+**Request Body:**
+```json
+{
+  "rating": "integer (optional, 1-5) - Updated star rating",
+  "comment": "string (optional) - Updated review text",
+  "appreciated_aspects": "string (optional) - Updated positive aspects",
+  "feedback_suggestions": "string (optional) - Updated improvement suggestions",
+  "is_verified_visit": "boolean (optional) - Updated verification status"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Review updated successfully",
+  "review": {
+    "review_id": "integer",
+    "review_id_uuid": "UUID string",
+    "patient_id": "integer",
+    "target_type": "string",
+    "target_id": "integer",
+    "rating": "integer",
+    "comment": "string",
+    "appreciated_aspects": "string",
+    "feedback_suggestions": "string",
+    "is_verified_visit": "boolean",
+    "created_at": "timestamp",
+    "updated_at": "timestamp"
+  }
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Invalid rating or no fields provided for update
+- `401 Unauthorized`: Invalid or missing JWT token
+- `403 Forbidden`: User doesn't own this review
+- `404 Not Found`: Review doesn't exist
+
+---
+
+### DELETE /api/reviews/:reviewId
+Delete a review.
+
+**Path Parameter:**
+- `reviewId`: integer (required) - Review ID to delete
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Review deleted successfully",
+  "deleted_review_id": "integer"
+}
+```
+
+**Error Responses:**
+- `401 Unauthorized`: Invalid or missing JWT token
+- `403 Forbidden`: User doesn't own this review
+- `404 Not Found`: Review doesn't exist
+
+---
+
+### GET /api/reviews/me
+Get all reviews submitted by the logged-in user.
+
+**Query Parameters:**
+- `target_type`: string (optional) - Filter by entity type
+- `limit`: integer (optional, default: 50, max: 100)
+- `offset`: integer (optional, default: 0)
+- `order_by`: string (optional, default: 'created_at') - Sort field: 'created_at' | 'rating'
+- `order_direction`: string (optional, default: 'DESC') - Sort direction: 'ASC' | 'DESC'
+
+**Response:**
+```json
+{
+  "success": true,
+  "total": "integer",
+  "limit": "integer",
+  "offset": "integer",
+  "reviews": [
     {
-      "message_id": "UUID",
-      "sender_user_id": "integer",
-      "sender_type": "enum: Patient | Doctor | System",
-      "message_content": "text",
-      "message_type": "enum: Text | Prescription | Report | JoinCall | Submitted",
-      "attachment_url": "string",
-      "sent_at": "timestamp",
-      "is_read": "boolean",
-      "read_at": "timestamp"
+      "review_id": "integer",
+      "review_id_uuid": "UUID string",
+      "target_type": "string",
+      "target_id": "integer",
+      "target_name": "string - Name of reviewed entity",
+      "rating": "integer",
+      "comment": "string",
+      "appreciated_aspects": "string",
+      "feedback_suggestions": "string",
+      "is_verified_visit": "boolean",
+      "created_at": "timestamp",
+      "updated_at": "timestamp"
     }
   ]
 }
 ```
 
-### POST /api/chat/conversations/:conversationId/messages
-Send a message in a conversation.
+---
+
+### GET /api/reviews/:reviewId
+Get details of a specific review.
 
 **Path Parameter:**
-- `conversationId`: UUID (required) - Conversation ID
-
-**Headers:**
-```
-Authorization: Bearer {jwt_token}
-```
-
-**Request Body:**
-```json
-{
-  "message_content": "string (required)",
-  "message_type": "enum: Text | Prescription | Report | JoinCall | Submitted (optional, default: Text)",
-  "attachment_url": "string (optional)"
-}
-```
+- `reviewId`: integer (required) - Review ID
 
 **Response:**
 ```json
 {
-  "message": "Message sent successfully.",
-  "message_id": "UUID"
+  "success": true,
+  "review": {
+    "review_id": "integer",
+    "review_id_uuid": "UUID string",
+    "patient_id": "integer",
+    "patient_name": "string",
+    "target_type": "string",
+    "target_id": "integer",
+    "target_name": "string",
+    "rating": "integer",
+    "comment": "string",
+    "appreciated_aspects": "string",
+    "feedback_suggestions": "string",
+    "is_verified_visit": "boolean",
+    "created_at": "timestamp",
+    "updated_at": "timestamp"
+  }
 }
 ```
 
-## Rate Limiting
+**Error Responses:**
+- `404 Not Found`: Review doesn't exist
 
-Most authenticated endpoints are subject to rate limiting (typically 100 requests per hour per user). Exceeding the limit will result in a 429 status code.
-
-## Error Responses
-
-Standard error response format:
-```json
-{
-  "message": "Error description"
-}
-```
+---
 
 Common status codes:
 - 400: Bad Request (validation error)

@@ -1,0 +1,172 @@
+{
+  "info": {
+    "_postman_id": "review-endpoint-collection",
+    "name": "Review Endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collections.json",
+    "description": "Collection for review management endpoints"
+  },
+  "item": [
+    {
+      "name": "Submit Review",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"target_type\": \"Professional\",\n  \"target_id\": 1,\n  \"rating\": 5,\n  \"comment\": \"Great service!\",\n \"appreciated_aspects\": \"Punctuality and expertise\",\n  \"feedback_suggestions\": \"Nothing\",\n \"is_verified_visit\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/reviews",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "reviews"]
+        },
+        "description": "Submit a new review for a professional, clinic doctor, or other entity."
+      },
+      "response": []
+    },
+    {
+      "name": "Update Review",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rating\": 4,\n  \"comment\": \"Updated review comment\",\n  \"appreciated_aspects\": \"Updated appreciated aspects\",\n  \"feedback_suggestions\": \"Updated feedback suggestions\",\n \"is_verified_visit\": false\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/reviews/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "reviews", "1"]
+        },
+        "description": "Update an existing review by ID."
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Review",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/reviews/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "reviews", "1"]
+        },
+        "description": "Delete a review by ID."
+      },
+      "response": []
+    },
+    {
+      "name": "Get My Reviews",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/reviews/me?target_type=Professional&limit=10&offset=0&order_by=created_at&order_direction=DESC",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "reviews", "me"],
+          "query": [
+            {
+              "key": "target_type",
+              "value": "Professional"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "offset",
+              "value": "0"
+            },
+            {
+              "key": "order_by",
+              "value": "created_at"
+            },
+            {
+              "key": "order_direction",
+              "value": "DESC"
+            }
+          ]
+        },
+        "description": "Get all reviews submitted by the logged-in user."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Review by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/reviews/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "reviews", "1"]
+        },
+        "description": "Get details of a specific review by ID."
+      },
+      "response": []
+    }
+ ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    }
+  ]
+}

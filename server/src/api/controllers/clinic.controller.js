@@ -143,9 +143,15 @@ exports.getClinicById = async (req, res) => {
     const { id } = req.params;
     
     try {
+        // Validate that id is a valid positive integer
+        const clinicId = parseInt(id);
+        if (!id || isNaN(clinicId) || clinicId <= 0) {
+            return res.status(400).json({ message: 'Invalid clinic ID provided.' });
+        }
+
         // Updated query with new columns from ER diagram
         const clinicQuery = `
-            SELECT 
+            SELECT
                 clinic_id,
                 clinic_id_uuid,
                 name,
@@ -161,13 +167,13 @@ exports.getClinicById = async (req, res) => {
                 city,
                 area,
                 pincode
-            FROM clinics 
+            FROM clinics
             WHERE clinic_id = $1
         `;
         
         // Updated doctors query with new columns
         const doctorsQuery = `
-            SELECT 
+            SELECT
                 clinic_doctor_id,
                 clinic_doctor_id_uuid,
                 full_name,
@@ -185,7 +191,7 @@ exports.getClinicById = async (req, res) => {
                 available_today,
                 available_tomorrow,
                 available_this_week
-            FROM clinic_doctors 
+            FROM clinic_doctors
             WHERE clinic_id = $1
             ORDER BY rating DESC, review_count DESC
         `;
@@ -206,7 +212,7 @@ exports.getClinicById = async (req, res) => {
         
     } catch (error) {
         console.error('Error fetching clinic with ID %s:', id, error);
-        res.status(500).json({ 
+        res.status(500).json({
             message: 'An error occurred while fetching clinic details.',
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
@@ -350,42 +356,43 @@ exports.submitClinicDoctorReview = async (req, res) => {
         // Insert review with new columns
         const insertQuery = `
             INSERT INTO reviews (
-                patient_id, 
-                rating, 
-                comment, 
-                target_type, 
+                patient_id,
+                rating,
+                comment,
+                target_type,
                 target_id,
                 appreciated_aspects,
                 feedback_suggestions,
                 is_verified_visit
             )
-            VALUES ($1, $2, $3, 'Clinic_Doctor', $4, $5, $6, $7)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
             RETURNING review_id, review_id_uuid, created_at;
         `;
         
         const result = await db.query(insertQuery, [
-            patientId, 
-            rating, 
-            comment, 
+            patientId,
+            rating,
+            comment,
+            'ClinicDoctor',
             doctorId,
-            appreciated_aspects,
-            feedback_suggestions,
+            appreciated_aspects || null,
+            feedback_suggestions || null,
             is_verified_visit
         ]);
 
         // Update clinic doctor's rating and review count
         await db.query(`
-            UPDATE clinic_doctors 
-            SET 
+            UPDATE clinic_doctors
+            SET
                 rating = (
-                    SELECT AVG(rating)::NUMERIC(3,2) 
-                    FROM reviews 
-                    WHERE target_type = 'Clinic_Doctor' AND target_id = $1
+                    SELECT AVG(rating)::NUMERIC(3,2)
+                    FROM reviews
+                    WHERE target_type = 'ClinicDoctor' AND target_id = $1
                 ),
                 review_count = (
-                    SELECT COUNT(*) 
-                    FROM reviews 
-                    WHERE target_type = 'Clinic_Doctor' AND target_id = $1
+                    SELECT COUNT(*)
+                    FROM reviews
+                    WHERE target_type = 'ClinicDoctor' AND target_id = $1
                 )
             WHERE clinic_doctor_id = $1
         `, [doctorId]);
@@ -413,7 +420,7 @@ exports.getClinicDoctorReviews = async (req, res) => {
     const { limit = 50, offset = 0, min_rating } = req.query;
 
     try {
-        const params = ['Clinic_Doctor', doctorId, parseInt(limit), parseInt(offset)];
+        const params = ['ClinicDoctor', doctorId, parseInt(limit), parseInt(offset)];
 
         const query = `
             SELECT
@@ -444,7 +451,7 @@ exports.getClinicDoctorReviews = async (req, res) => {
 
         const [reviewsResult, countResult] = await Promise.all([
             db.query(query, params),
-            db.query(countQuery, ['Clinic_Doctor', doctorId])
+            db.query(countQuery, ['ClinicDoctor', doctorId])
         ]);
 
         // Calculate average rating
@@ -453,7 +460,7 @@ exports.getClinicDoctorReviews = async (req, res) => {
             FROM reviews
             WHERE target_type = $1 AND target_id = $2;
         `;
-        const avgResult = await db.query(avgQuery, ['Clinic_Doctor', doctorId]);
+        const avgResult = await db.query(avgQuery, ['ClinicDoctor', doctorId]);
 
         res.status(200).json({
             total: parseInt(countResult.rows[0].total),
@@ -492,8 +499,8 @@ exports.getClinicDoctorReviewStats = async (req, res) => {
             FROM reviews
             WHERE target_type = $1 AND target_id = $2;
         `;
-
-        const result = await db.query(query, ['Clinic_Doctor', doctorId]);
+        
+        const result = await db.query(query, ['ClinicDoctor', doctorId]);
 
         res.status(200).json(result.rows[0]);
 

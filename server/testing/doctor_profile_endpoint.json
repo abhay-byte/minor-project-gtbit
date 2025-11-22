@@ -1,0 +1,74 @@
+{
+  "info": {
+    "_postman_id": "doctor-profile-endpoint-test",
+    "name": "Doctor Profile Endpoint Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET /api/professionals/:id/profile - Get Doctor Profile",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/professionals/1/profile",
+          "host": ["{{base_url}}"],
+          "path": ["api", "professionals", "1", "profile"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/professionals/invalid/profile - Invalid Doctor ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/professionals/invalid/profile",
+          "host": ["{{base_url}}"],
+          "path": ["api", "professionals", "invalid", "profile"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/professionals/999999/profile - Non-existent Doctor",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/professionals/999999/profile",
+          "host": ["{{base_url}}"],
+          "path": ["api", "professionals", "999999", "profile"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000"
+    }
+  ]
+}

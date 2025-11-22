@@ -10,7 +10,7 @@
 
 echo
 echo "--- Starting PostgreSQL container in the background... ---"
-sudo docker-compose up -d
+docker-compose up -d
 
 echo
 echo "--- Waiting for PostgreSQL to become available (5 seconds)... ---"
@@ -21,7 +21,7 @@ echo "--- Checking if database is already initialized... ---"
 # We check for the existence of the 'users' table.
 # The psql command will return 'users' if it exists, or be empty if it doesn't.
 # We pipe to tr to remove any leading/trailing whitespace for a reliable check.
-TABLE_EXISTS=$(sudo docker exec clinico_postgres_db psql -U clinico_user -d clinico_db -t -c "SELECT to_regclass('public.users');" | tr -d '[:space:]')
+TABLE_EXISTS=$(docker exec clinico_postgres_db psql -U clinico_user -d clinico_db -t -c "SELECT to_regclass('public.users');" | tr -d '[:space:]')
 
 # Check if the result string is empty.
 if [ -z "$TABLE_EXISTS" ]; then
@@ -33,7 +33,7 @@ if [ -z "$TABLE_EXISTS" ]; then
     # Note the forward slashes for the path, which is standard on Linux/macOS.
     for f in migrations/*.sql; do
         echo "Executing $f..."
-        sudo docker exec -i clinico_postgres_db psql -U clinico_user -d clinico_db < "$f"
+        docker exec -i clinico_postgres_db psql -U clinico_user -d clinico_db < "$f"
     done
 
 else
@@ -43,7 +43,7 @@ fi
 
 echo
 echo "--- Checking final container status: ---"
-sudo docker-compose ps
+docker-compose ps
 
 echo
 echo "--- Setup complete! ---"

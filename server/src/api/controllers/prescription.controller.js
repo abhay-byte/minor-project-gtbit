@@ -24,7 +24,7 @@ exports.getMyPrescriptions = async (req, res) => {
         const patientId = patientResult.rows[0].patient_id;
 
         const query = `
-            SELECT 
+            SELECT
                 p.prescription_id,
                 p.prescription_code,
                 p.medication_name,
@@ -39,12 +39,12 @@ exports.getMyPrescriptions = async (req, res) => {
                 p.doctor_name,
                 p.doctor_specialty,
                 p.clinic_name,
-                p.important_notes,
-                p.created_at,
-                p.updated_at
+                p.important_notes
             FROM prescriptions p
-            WHERE p.patient_id = $1
-            ORDER BY p.created_at DESC;
+            JOIN consultations c ON p.consultation_id = c.consultation_id
+            JOIN appointments a ON c.appointment_id = a.appointment_id
+            WHERE a.patient_id = $1
+            ORDER BY p.prescribed_date DESC;
         `;
 
         const result = await db.query(query, [patientId]);
@@ -52,7 +52,7 @@ exports.getMyPrescriptions = async (req, res) => {
 
     } catch (error) {
         console.error('Error fetching prescriptions:', error);
-        res.status(500).json({ message: 'An error occurred while fetching prescriptions.' });
+        res.status(500).json({ message: 'An error occurred while fetching prescriptions.', error: error.message });
     }
 };
 
@@ -80,7 +80,7 @@ exports.getPrescriptionById = async (req, res) => {
         const patientId = patientResult.rows[0].patient_id;
 
         const query = `
-            SELECT 
+            SELECT
                 p.prescription_id,
                 p.prescription_code,
                 p.medication_name,
@@ -95,11 +95,11 @@ exports.getPrescriptionById = async (req, res) => {
                 p.doctor_name,
                 p.doctor_specialty,
                 p.clinic_name,
-                p.important_notes,
-                p.created_at,
-                p.updated_at
+                p.important_notes
             FROM prescriptions p
-            WHERE p.prescription_id = $1 AND p.patient_id = $2
+            JOIN consultations c ON p.consultation_id = c.consultation_id
+            JOIN appointments a ON c.appointment_id = a.appointment_id
+            WHERE p.prescription_id = $1 AND a.patient_id = $2
         `;
 
         const result = await db.query(query, [prescriptionId, patientId]);
@@ -112,7 +112,7 @@ exports.getPrescriptionById = async (req, res) => {
 
     } catch (error) {
         console.error('Error fetching prescription:', error);
-        res.status(500).json({ message: 'An error occurred while fetching prescription.' });
+        res.status(500).json({ message: 'An error occurred while fetching prescription.', error: error.message });
     }
 };
 
@@ -139,7 +139,7 @@ exports.getPrescriptionList = async (req, res) => {
         const patientId = patientResult.rows[0].patient_id;
 
         const query = `
-            SELECT 
+            SELECT
                 pl.list_id,
                 pl.prescription_id,
                 pl.condition_treated,
@@ -147,15 +147,13 @@ exports.getPrescriptionList = async (req, res) => {
                 pl.next_followup,
                 pl.prescription_status,
                 pl.last_viewed,
-                pl.created_at,
-                pl.updated_at,
                 p.medication_name,
                 p.dosage,
                 p.frequency
             FROM prescription_list pl
             JOIN prescriptions p ON pl.prescription_id = p.prescription_id
             WHERE pl.patient_id = $1
-            ORDER BY pl.created_at DESC;
+            ORDER BY pl.list_id DESC;
         `;
 
         const result = await db.query(query, [patientId]);
@@ -163,7 +161,7 @@ exports.getPrescriptionList = async (req, res) => {
 
     } catch (error) {
         console.error('Error fetching prescription list:', error);
-        res.status(500).json({ message: 'An error occurred while fetching prescription list.' });
+        res.status(500).json({ message: 'An error occurred while fetching prescription list.', error: error.message });
     }
 };
 
@@ -190,7 +188,7 @@ exports.getMedicineReminders = async (req, res) => {
         const patientId = patientResult.rows[0].patient_id;
 
         const query = `
-            SELECT 
+            SELECT
                 mr.reminder_id,
                 mr.prescription_id,
                 mr.medication_name,
@@ -205,7 +203,7 @@ exports.getMedicineReminders = async (req, res) => {
                 mr.next_reminder_time
             FROM medicine_reminders mr
             WHERE mr.patient_id = $1
-            ORDER BY mr.created_at DESC;
+            ORDER BY mr.reminder_id DESC;
         `;
 
         const result = await db.query(query, [patientId]);
@@ -213,7 +211,7 @@ exports.getMedicineReminders = async (req, res) => {
 
     } catch (error) {
         console.error('Error fetching medicine reminders:', error);
-        res.status(500).json({ message: 'An error occurred while fetching medicine reminders.' });
+        res.status(500).json({ message: 'An error occurred while fetching medicine reminders.', error: error.message });
     }
 };
 
@@ -241,13 +239,13 @@ exports.getReminderLogs = async (req, res) => {
         const patientId = patientResult.rows[0].patient_id;
 
         const query = `
-            SELECT 
+            SELECT
                 rl.log_id,
                 rl.scheduled_time,
                 rl.taken_time,
                 rl.status,
                 rl.notes,
-                rl.created_at
+                rl.scheduled_time as created_at
             FROM reminder_logs rl
             JOIN medicine_reminders mr ON rl.reminder_id = mr.reminder_id
             WHERE mr.patient_id = $1 AND rl.reminder_id = $2
@@ -259,6 +257,6 @@ exports.getReminderLogs = async (req, res) => {
 
     } catch (error) {
         console.error('Error fetching reminder logs:', error);
-        res.status(500).json({ message: 'An error occurred while fetching reminder logs.' });
+        res.status(500).json({ message: 'An error occurred while fetching reminder logs.', error: error.message });
     }
 };
