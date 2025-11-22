@@ -1,0 +1,6 @@
+[submodule "frontend/Clinicofrontend"]
+	path = frontend/Clinicofrontend
+	url = https://github.com/abhay-byte/Clinicofrontend
+[submodule "frontend/clinico-flutter"]
+	path = frontend/clinico-flutter
+	url = https://github.com/abhay-byte/clinico-flutter
