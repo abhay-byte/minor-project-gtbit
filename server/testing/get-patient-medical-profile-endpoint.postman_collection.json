@@ -1,0 +1,65 @@
+{
+  "info": {
+    "_postman_id": "7f8d2e4a-6b9a-4c1f-8e2d-1a3b5c6d7e8f",
+    "name": "Get Patient Medical Profile Endpoint",
+    "description": "Postman collection for the GET /api/patients/:id/medical-profile endpoint",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Patient Medical Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/patients/:id/medical-profile",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "patients", ":id", "medical-profile"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1",
+              "description": "Patient ID"
+            }
+          ]
+        },
+        "description": "Retrieve complete medical history for consultation reference"
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    }
+  ]
+}

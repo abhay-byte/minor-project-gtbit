@@ -3,15 +3,48 @@
 This document provides a comprehensive overview of all available API endpoints in the Clinico backend server, including detailed information about request/response formats, authentication requirements, and usage examples.
 
 ## Table of Contents
-1. [General Endpoints](#general-endpoints)
-2. [Authentication Endpoints](#authentication-endpoints)
-3. [User Endpoints](#user-endpoints)
-4. [Professional Endpoints](#professional-endpoints)
-5. [Appointment Endpoints](#appointment-endpoints)
-6. [Clinic Endpoints](#clinic-endpoints)
-7. [Prescription Endpoints](#prescription-endpoints)
-8. [Vault Endpoints](#vault-endpoints)
-9. [Review Endpoints](#review-endpoints)
+1. [CORS Configuration](#cors-configuration)
+2. [General Endpoints](#general-endpoints)
+3. [Authentication Endpoints](#authentication-endpoints)
+4. [User Endpoints](#user-endpoints)
+5. [Professional Endpoints](#professional-endpoints)
+6. [Appointment Endpoints](#appointment-endpoints)
+7. [Clinic Endpoints](#clinic-endpoints)
+8. [Prescription Endpoints](#prescription-endpoints)
+9. [Vault Endpoints](#vault-endpoints)
+10. [Review Endpoints](#review-endpoints)
+
+## CORS Configuration
+
+The Clinico API is configured to allow cross-origin requests from frontend applications. This enables the frontend to communicate with the backend API server.
+
+**CORS Settings:**
+- **Allowed Origins**: By default, requests are allowed from `http://localhost:5173` (Vite default port). Multiple origins can be configured using the `FRONTEND_URL` environment variable.
+- **Allowed Methods**: GET, POST, PUT, DELETE, OPTIONS
+- **Allowed Headers**: Content-Type, Authorization, X-Requested-With
+- **Credentials**: Enabled (cookies and authentication headers are allowed)
+
+**Environment Configuration:**
+The CORS origin can be configured using the `FRONTEND_URL` environment variable in your `.env` file. For multiple origins, separate them with commas:
+
+```
+FRONTEND_URL="http://localhost:5173,https://clinicofrontend.onrender.com"
+```
+
+**Example Request with CORS Headers:**
+```
+Origin: http://localhost:5173
+Access-Control-Request-Method: GET
+Access-Control-Request-Headers: Content-Type, Authorization
+```
+
+**Expected Response Headers:**
+```
+Access-Control-Allow-Origin: http://localhost:5173
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
+Access-Control-Allow-Credentials: true
+```
 
 ## General Endpoints
 
@@ -698,6 +731,65 @@ Get appointment history for the user.
 ]
 ```
 
+### PUT /api/appointments/:id/cancel
+Cancel an appointment and release the associated time slot.
+
+**Path Parameter:**
+- `id`: integer (required) - Appointment ID
+
+**Request:**
+- Method: `PUT`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  Content-Type: application/json
+  ```
+- Authentication: Required (Patient or Professional)
+
+**Request Body:**
+```json
+{
+  "reason": "string (optional) - Cancellation reason"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Appointment cancelled successfully",
+  "appointment": {
+    "appointment_id": 102,
+    "appointment_id_uuid": "uuid-string",
+    "status": "Cancelled",
+    "cancelled_at": "2025-01-23T10:30:00.000Z",
+    "cancellation_reason": "Emergency surgery required",
+    "slot_released": true
+  }
+}
+```
+
+**Response (403 Forbidden):**
+```json
+{
+  "error": "You are not authorized to cancel this appointment"
+}
+```
+
+**Response (404 Not Found):**
+```json
+{
+  "error": "Appointment not found"
+}
+```
+
+**Response (400 Bad Request):**
+```json
+{
+  "error": "Appointment is already cancelled or completed"
+}
+```
+
 ## Clinic Endpoints
 
 Public clinic endpoints do not require authentication, while review endpoints require authentication.
@@ -1377,6 +1469,154 @@ Get details of a specific review.
 
 **Error Responses:**
 - `404 Not Found`: Review doesn't exist
+
+---
+
+## Medical Profile Endpoints
+
+All medical profile endpoints require authentication via JWT token.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+### GET /api/patients/:id/medical-profile
+Retrieve complete medical history for consultation reference.
+
+**Path Parameter:**
+- `id`: integer (required) - Patient ID
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "patient": {
+      "patient_id": "integer",
+      "patient_id_uuid": "UUID string",
+      "user_id": "integer",
+      "full_name": "string",
+      "email": "string",
+      "phone_number": "string",
+      "date_of_birth": "date",
+      "gender": "string",
+      "address": "string",
+      "blood_group": "string",
+      "marital_status": "string",
+      "known_allergies": "text",
+      "chronic_conditions": "text",
+      "current_medications": "text",
+      "lifestyle_notes": "text",
+      "member_since": "timestamp",
+      "patient_code": "string",
+      "current_location": "text",
+      "current_full_address": "text"
+    },
+    "appointments": [
+      {
+        "appointment_id": "integer",
+        "appointment_id_uuid": "UUID string",
+        "appointment_time": "timestamp",
+        "status": "enum",
+        "appointment_type": "enum",
+        "appointment_code": "string",
+        "patient_notes": "string",
+        "scheduled_at": "timestamp",
+        "completed_at": "timestamp",
+        "duration_minutes": "integer",
+        "professional_name": "string",
+        "specialty": "string"
+      }
+    ],
+    "consultations": [
+      {
+        "consultation_id": "integer",
+        "consultation_id_uuid": "UUID string",
+        "appointment_id": "integer",
+        "notes": "text",
+        "ai_briefing": "text",
+        "created_at": "timestamp",
+        "diagnosis": "text",
+        "doctor_recommendations": "text",
+        "follow_up_instructions": "text",
+        "prescription_attached": "boolean"
+      }
+    ],
+    "prescriptions": [
+      {
+        "prescription_id": "integer",
+        "prescription_id_uuid": "UUID string",
+        "medication_name": "string",
+        "dosage": "string",
+        "instructions": "text",
+        "prescription_code": "string",
+        "frequency": "string",
+        "duration": "string",
+        "medication_category": "string",
+        "doctor_notes": "text",
+        "prescribed_date": "date",
+        "is_active": "boolean",
+        "doctor_name": "string",
+        "doctor_specialty": "string",
+        "clinic_name": "string",
+        "important_notes": "text",
+        "consultation_id": "integer",
+        "consultation_notes": "text"
+      }
+    ],
+    "medical_records": [
+      {
+        "record_id": "integer",
+        "record_id_uuid": "UUID string",
+        "document_name": "string",
+        "document_type": "string",
+        "document_url": "string",
+        "uploaded_at": "timestamp",
+        "comments_notes": "text",
+        "report_date": "date",
+        "file_format": "string",
+        "file_size_mb": "integer",
+        "linked_appointment_code": "string"
+      }
+    ],
+    "medicine_reminders": [
+      {
+        "reminder_id": "UUID",
+        "medication_name": "string",
+        "dosage_form": "enum: 1 tablet | 1 capsule | Other",
+        "timing_schedule": "text",
+        "how_to_take": "enum: After food | Before food | After breakfast | Other",
+        "duration": "text",
+        "doctor_note": "text",
+        "start_date": "date",
+        "end_date": "date",
+        "is_active": "boolean",
+        "next_reminder_time": "timestamp"
+      }
+    ],
+    "ai_chat_sessions": [
+      {
+        "session_id": "UUID",
+        "started_at": "timestamp",
+        "ended_at": "timestamp",
+        "session_type": "enum: Health Query | Mental Wellness | Triage | Crisis",
+        "session_summary": "text",
+        "escalated_to_professional": "boolean",
+        "crisis_detected": "boolean",
+        "crisis_type": "enum: Suicidal | Self-harm | Severe distress"
+      }
+    ]
+ }
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Invalid patient ID
+- `401 Unauthorized`: Invalid or missing JWT token
+- `403 Forbidden`: User doesn't have permission to access patient medical profile
+- `404 Not Found`: Patient doesn't exist
+- `500 Internal Server Error`: Server error while fetching medical profile
 
 ---
 
