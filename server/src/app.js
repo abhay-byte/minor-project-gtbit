@@ -43,6 +43,17 @@ app.use('/api/vault', vaultRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api', healthRoutes);
 
+// Root endpoint
+app.get('/', (req, res) => {
+    res.json({
+        message: "Welcome to Clinico API Server",
+        version: "1.0.0",
+        status: "running",
+        documentation: "/api",
+        health: "/api/health"
+    });
+});
+
 // --- Server Setup ---
 const PORT = process.env.PORT || 5000;
 
