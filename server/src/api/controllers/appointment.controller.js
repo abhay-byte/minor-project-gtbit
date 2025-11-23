@@ -183,7 +183,7 @@ const cancelAppointment = async (req, res) => {
             if (role === 'Patient') {
                 // Patient request - only return appointments belonging to this patient
                 appointmentQuery = `
-                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time
+                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time, a.appointment_type
                     FROM appointments a
                     JOIN patients p ON a.patient_id = p.patient_id
                     WHERE a.appointment_id = $1 AND p.user_id_uuid = $2
@@ -192,7 +192,7 @@ const cancelAppointment = async (req, res) => {
             } else if (role === 'Professional') {
                 // Professional request - only return appointments assigned to this professional
                 appointmentQuery = `
-                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time
+                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time, a.appointment_type
                     FROM appointments a
                     WHERE a.appointment_id = $1 AND a.professional_id IN (
                         SELECT professional_id FROM professionals WHERE user_id_uuid = $2
@@ -202,7 +202,7 @@ const cancelAppointment = async (req, res) => {
             } else {
                 // Other roles - restrict appropriately
                 appointmentQuery = `
-                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time
+                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time, a.appointment_type
                     FROM appointments a
                     JOIN patients p ON a.patient_id = p.patient_id
                     WHERE a.appointment_id = $1 AND p.user_id_uuid = $2
@@ -213,7 +213,7 @@ const cancelAppointment = async (req, res) => {
             if (role === 'Patient') {
                 // Patient request - only return appointments belonging to this patient
                 appointmentQuery = `
-                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time
+                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time, a.appointment_type
                     FROM appointments a
                     JOIN patients p ON a.patient_id = p.patient_id
                     WHERE a.appointment_id = $1 AND p.user_id = $2
@@ -222,7 +222,7 @@ const cancelAppointment = async (req, res) => {
             } else if (role === 'Professional') {
                 // Professional request - only return appointments assigned to this professional
                 appointmentQuery = `
-                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time
+                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time, a.appointment_type
                     FROM appointments a
                     WHERE a.appointment_id = $1 AND a.professional_id IN (
                         SELECT professional_id FROM professionals WHERE user_id = $2
@@ -232,7 +232,7 @@ const cancelAppointment = async (req, res) => {
             } else {
                 // Other roles - restrict appropriately
                 appointmentQuery = `
-                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time
+                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time, a.appointment_type
                     FROM appointments a
                     JOIN patients p ON a.patient_id = p.patient_id
                     WHERE a.appointment_id = $1 AND p.user_id = $2
@@ -273,6 +273,30 @@ const cancelAppointment = async (req, res) => {
         
         const updatedAppointment = updateResult.rows[0];
         
+        // Release the availability slot if it's a virtual appointment
+        let slotReleased = false;
+        if (appointment.appointment_type === 'Virtual' && appointment.professional_id) {
+            // Find the associated availability slot and mark it as available
+            const findSlotQuery = `
+                SELECT slot_id
+                FROM availability_slots
+                WHERE professional_id = $1 AND start_time = $2 AND is_booked = true
+            `;
+            const slotResult = await client.query(findSlotQuery, [appointment.professional_id, appointment.appointment_time]);
+            
+            if (slotResult.rows.length > 0) {
+                const slotId = slotResult.rows[0].slot_id;
+                // Update the slot to make it available again
+                const releaseSlotQuery = `
+                    UPDATE availability_slots
+                    SET is_booked = false
+                    WHERE slot_id = $1
+                `;
+                await client.query(releaseSlotQuery, [slotId]);
+                slotReleased = true;
+            }
+        }
+        
         // Commit the transaction
         await client.query('COMMIT');
 
@@ -285,7 +309,7 @@ const cancelAppointment = async (req, res) => {
                 status: updatedAppointment.status,
                 cancelled_at: new Date().toISOString(),  // Adding current time for response
                 cancellation_reason: reason || null,
-                slot_released: false  // Skipping slot release for stability
+                slot_released: slotReleased  // Indicate if the slot was released
             }
         });
 
