@@ -10,15 +10,28 @@ const chatRoutes = require('./api/routes/chat.routes');
 const prescriptionRoutes = require('./api/routes/prescriptions.routes');
 const vaultRoutes = require('./api/routes/vault.routes');
 const reviewRoutes = require('./api/routes/reviews.routes');
+const healthRoutes = require('./api/routes/health.routes');
 
 const app = express();
 
 // --- Middleware ---
-
 app.use(express.json());
 
-// --- API Routes ---
+// Production-specific middleware
+if (process.env.NODE_ENV === 'production') {
+  // Enable trust proxy for SSL termination
+  app.set('trust proxy', 1);
+  
+  // Add security headers in production
+  app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    next();
+  });
+}
 
+// --- API Routes ---
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/professionals', professionalRoutes);
@@ -28,10 +41,22 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/prescriptions', prescriptionRoutes);
 app.use('/api/vault', vaultRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api', healthRoutes);
+
+// Root endpoint
+app.get('/', (req, res) => {
+    res.json({
+        message: "Welcome to Clinico API Server",
+        version: "1.0.0",
+        status: "running",
+        documentation: "/api",
+        health: "/api/health"
+    });
+});
 
 // --- Server Setup ---
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}${process.env.NODE_ENV === 'production' ? ' in production mode' : ''}`);
 });
