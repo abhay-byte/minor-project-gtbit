@@ -3,14 +3,75 @@
 This document provides a comprehensive overview of all available API endpoints in the Clinico backend server, including detailed information about request/response formats, authentication requirements, and usage examples.
 
 ## Table of Contents
-1. [Authentication Endpoints](#authentication-endpoints)
-2. [User Endpoints](#user-endpoints)
-3. [Professional Endpoints](#professional-endpoints)
-4. [Appointment Endpoints](#appointment-endpoints)
-5. [Clinic Endpoints](#clinic-endpoints)
-6. [Prescription Endpoints](#prescription-endpoints)
-7. [Vault Endpoints](#vault-endpoints)
-8. [Review Endpoints](#review-endpoints)
+1. [General Endpoints](#general-endpoints)
+2. [Authentication Endpoints](#authentication-endpoints)
+3. [User Endpoints](#user-endpoints)
+4. [Professional Endpoints](#professional-endpoints)
+5. [Appointment Endpoints](#appointment-endpoints)
+6. [Clinic Endpoints](#clinic-endpoints)
+7. [Prescription Endpoints](#prescription-endpoints)
+8. [Vault Endpoints](#vault-endpoints)
+9. [Review Endpoints](#review-endpoints)
+
+## General Endpoints
+
+### GET /api/health
+Check if the API server is running and healthy.
+
+**Request:**
+- Headers: None required
+- Body: None
+- Authentication: Not required
+
+**Response (200 OK):**
+```json
+{
+  "status": "healthy",
+  "timestamp": "2025-01-23T10:30:00.000Z",
+  "uptime": 3600,
+ "service": "Clinico API",
+  "version": "1.0.0"
+}
+```
+
+**Response (503 Service Unavailable):**
+```json
+{
+  "status": "unhealthy",
+  "timestamp": "2025-01-23T10:30:00.000Z",
+  "error": "Database connection failed"
+}
+```
+
+### GET /api
+Get API information and available routes.
+
+**Request:**
+- Headers: None required
+- Body: None
+- Authentication: Not required
+
+**Response (200 OK):**
+```json
+{
+  "message": "Welcome to Clinico API",
+  "version": "1.0.0",
+  "status": "running",
+ "timestamp": "2025-01-23T10:30:00.000Z",
+  "endpoints": {
+    "health": "/api/health",
+    "auth": "/api/auth",
+    "users": "/api/users",
+    "professionals": "/api/professionals",
+    "appointments": "/api/appointments",
+    "clinics": "/api/clinics",
+    "prescriptions": "/api/prescriptions",
+    "reviews": "/api/reviews",
+    "vault": "/api/vault"
+  },
+  "documentation": "https://docs.clinico.com/api"
+}
+```
 
 ## Authentication Endpoints
 

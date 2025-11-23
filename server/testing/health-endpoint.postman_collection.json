@@ -1,0 +1,124 @@
+{
+  "info": {
+    "_postman_id": "health-endpoint-collection",
+    "name": "Health & Root Endpoints",
+    "description": "Postman collection for Clinico API health and root endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        }
+      },
+      "response": [
+        {
+          "name": "Healthy Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"healthy\",\n  \"timestamp\": \"2025-01-23T10:30:00.000Z\",\n  \"uptime\": 3600,\n \"service\": \"Clinico API\",\n  \"version\": \"1.0.0\"\n}"
+        },
+        {
+          "name": "Unhealthy Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            }
+          },
+          "status": "Service Unavailable",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n \"status\": \"unhealthy\",\n  \"timestamp\": \"2025-01-23T10:30:00.000Z\",\n  \"error\": \"Database connection failed\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Root Endpoint",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api",
+          "host": ["{{baseUrl}}"],
+          "path": ["api"]
+        }
+      },
+      "response": [
+        {
+          "name": "API Info Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api",
+              "host": ["{{baseUrl}}"],
+              "path": ["api"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Welcome to Clinico API\",\n  \"version\": \"1.0.0\",\n  \"status\": \"running\",\n  \"timestamp\": \"2025-01-23T10:30:00.000Z\",\n  \"endpoints\": {\n    \"health\": \"/api/health\",\n    \"auth\": \"/api/auth\",\n    \"users\": \"/api/users\",\n    \"professionals\": \"/api/professionals\",\n    \"appointments\": \"/api/appointments\",\n    \"clinics\": \"/api/clinics\",\n    \"prescriptions\": \"/api/prescriptions\",\n    \"reviews\": \"/api/reviews\",\n    \"vault\": \"/api/vault\"\n  },\n  \"documentation\": \"https://docs.clinico.com/api\"\n}"
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    }
+  ]
+}

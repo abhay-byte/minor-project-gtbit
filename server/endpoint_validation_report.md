@@ -44,6 +44,8 @@ This report documents the validation results for all API endpoints in the Clinic
 | DELETE /api/reviews/:reviewId | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | GET /api/reviews/me | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | GET /api/reviews/:reviewId | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
+| GET /api/health | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
+| GET /api | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 
 ## Detailed Results
 
@@ -550,11 +552,38 @@ Successfully retrieved user's reviews with expected response structure when prov
 **Notes / Errors Found:**
 Successfully retrieved specific review with expected response structure when provided with valid JWT token and review ID.
 
-## Pass/Fail Summary Table
+### Health Check Endpoint
+#### Endpoint: `GET /api/health`
+Check Item | Result |
+|------------|--------|
+Curl request executed | ✅ |
+Server response received | 🟢 Success |
+Response matches expected schema | Yes |
+Automated test case exists | Yes |
+`npm run test` result | Passed |
+Tested using Postman | Yes |
 
+**Notes / Errors Found:**
+Successfully received health status response with timestamp, uptime, service name, and version. When database is available, returns 200 with status "healthy". When database is unavailable, returns 503 with status "unhealthy" and error message.
+
+#### Endpoint: `GET /api`
+Check Item | Result |
+|------------|--------|
+Curl request executed | ✅ |
+Server response received | 🟢 Success |
+Response matches expected schema | Yes |
+Automated test case exists | Yes |
+`npm run test` result | Passed |
+Tested using Postman | Yes |
+
+**Notes / Errors Found:**
+Successfully received API information response with message, version, status, timestamp, endpoints list, and documentation URL.
+
+## Pass/Fail Summary Table
 | Total Endpoints | Passed | Failed |
 |-----------------|--------|--------|
-| 35 | 35 | 0 |
+| 37 | 37 | 0 |
+
 
 ## Failing Endpoints and Possible Causes
 
