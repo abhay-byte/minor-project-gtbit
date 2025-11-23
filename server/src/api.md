@@ -3,15 +3,48 @@
 This document provides a comprehensive overview of all available API endpoints in the Clinico backend server, including detailed information about request/response formats, authentication requirements, and usage examples.
 
 ## Table of Contents
-1. [General Endpoints](#general-endpoints)
-2. [Authentication Endpoints](#authentication-endpoints)
-3. [User Endpoints](#user-endpoints)
-4. [Professional Endpoints](#professional-endpoints)
-5. [Appointment Endpoints](#appointment-endpoints)
-6. [Clinic Endpoints](#clinic-endpoints)
-7. [Prescription Endpoints](#prescription-endpoints)
-8. [Vault Endpoints](#vault-endpoints)
-9. [Review Endpoints](#review-endpoints)
+1. [CORS Configuration](#cors-configuration)
+2. [General Endpoints](#general-endpoints)
+3. [Authentication Endpoints](#authentication-endpoints)
+4. [User Endpoints](#user-endpoints)
+5. [Professional Endpoints](#professional-endpoints)
+6. [Appointment Endpoints](#appointment-endpoints)
+7. [Clinic Endpoints](#clinic-endpoints)
+8. [Prescription Endpoints](#prescription-endpoints)
+9. [Vault Endpoints](#vault-endpoints)
+10. [Review Endpoints](#review-endpoints)
+
+## CORS Configuration
+
+The Clinico API is configured to allow cross-origin requests from frontend applications. This enables the frontend to communicate with the backend API server.
+
+**CORS Settings:**
+- **Allowed Origins**: By default, requests are allowed from `http://localhost:5173` (Vite default port). Multiple origins can be configured using the `FRONTEND_URL` environment variable.
+- **Allowed Methods**: GET, POST, PUT, DELETE, OPTIONS
+- **Allowed Headers**: Content-Type, Authorization, X-Requested-With
+- **Credentials**: Enabled (cookies and authentication headers are allowed)
+
+**Environment Configuration:**
+The CORS origin can be configured using the `FRONTEND_URL` environment variable in your `.env` file. For multiple origins, separate them with commas:
+
+```
+FRONTEND_URL="http://localhost:5173,https://clinicofrontend.onrender.com"
+```
+
+**Example Request with CORS Headers:**
+```
+Origin: http://localhost:5173
+Access-Control-Request-Method: GET
+Access-Control-Request-Headers: Content-Type, Authorization
+```
+
+**Expected Response Headers:**
+```
+Access-Control-Allow-Origin: http://localhost:5173
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
+Access-Control-Allow-Credentials: true
+```
 
 ## General Endpoints
 

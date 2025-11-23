@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 require('dotenv').config();
 
 const authRoutes = require('./api/routes/auth.routes');
@@ -14,6 +15,23 @@ const healthRoutes = require('./api/routes/health.routes');
 const medicalProfileRoutes = require('./api/routes/medicalProfile.routes');
 
 const app = express();
+
+// --- CORS Configuration ---
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173').split(',').map(url => url.trim());
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true, // Allow credentials to be sent with requests
+};
+
+app.use(cors(corsOptions));
 
 // --- Middleware ---
 app.use(express.json({
@@ -62,6 +80,12 @@ app.get('/', (req, res) => {
 // --- Server Setup ---
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}${process.env.NODE_ENV === 'production' ? ' in production mode' : ''}`);
-});
+if (require.main === module) {
+    // Only run the server if this file is executed directly
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}${process.env.NODE_ENV === 'production' ? ' in production mode' : ''}`);
+    });
+}
+
+// --- Export App for Testing and Server ---
+module.exports = app;

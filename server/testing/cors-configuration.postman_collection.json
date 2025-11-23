@@ -1,0 +1,129 @@
+{
+  "info": {
+    "_postman_id": "cors-config-1234-5678-9012-cors-configuration",
+    "name": "CORS Configuration Test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Test collection to verify CORS configuration for Clinico API"
+  },
+  "item": [
+    {
+      "name": "CORS Preflight Request",
+      "request": {
+        "method": "OPTIONS",
+        "header": [
+          {
+            "key": "Origin",
+            "value": "http://localhost:5173",
+            "description": "Frontend origin"
+          },
+          {
+            "key": "Access-Control-Request-Method",
+            "value": "GET",
+            "description": "Requested method"
+          },
+          {
+            "key": "Access-Control-Request-Headers",
+            "value": "Content-Type, Authorization",
+            "description": "Requested headers"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        },
+        "description": "Test CORS preflight request to verify allowed origins, methods, and headers"
+      },
+      "response": []
+    },
+    {
+      "name": "Health Check with CORS Headers",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Origin",
+            "value": "http://localhost:5173",
+            "description": "Frontend origin"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        },
+        "description": "Test health endpoint with CORS origin header to verify response headers"
+      },
+      "response": []
+    },
+    {
+      "name": "Auth Endpoint with CORS",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Origin",
+            "value": "http://localhost:5173",
+            "description": "Frontend origin"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": "Content type"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test@example.com\",\n \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "login"]
+        },
+        "description": "Test auth endpoint with CORS headers to verify cross-origin requests work for authentication"
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('Check for CORS headers in response', function () {",
+          "    const allowOrigin = pm.response.headers.get('access-control-allow-origin');",
+          "    pm.expect(allowOrigin).to.eql('http://localhost:5173');",
+          "    ",
+          "    const allowMethods = pm.response.headers.get('access-control-allow-methods');",
+          "    if (allowMethods) {",
+          "        pm.expect(allowMethods).to.include('GET');",
+          "        pm.expect(allowMethods).to.include('POST');",
+          "    }",
+          "    ",
+          "    const allowHeaders = pm.response.headers.get('access-control-allow-headers');",
+          "    if (allowHeaders) {",
+          "        pm.expect(allowHeaders).to.include('Content-Type');",
+          "        pm.expect(allowHeaders).to.include('Authorization');",
+          "    }",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    }
+  ]
+}
