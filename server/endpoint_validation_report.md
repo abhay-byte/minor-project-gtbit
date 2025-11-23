@@ -577,7 +577,7 @@ Automated test case exists | Yes |
 Tested using Postman | Yes |
 
 **Notes / Errors Found:**
-Successfully received API information response with message, version, status, timestamp, endpoints list, and documentation URL.
+Successfully received API information response with message, version, status, timestamp, detailed endpoints list with methods, descriptions, example requests and responses for each endpoint group (health, auth, users, professionals, appointments, clinics, prescriptions, reviews, vault, chat), and documentation URL.
 
 ## Pass/Fail Summary Table
 | Total Endpoints | Passed | Failed |
