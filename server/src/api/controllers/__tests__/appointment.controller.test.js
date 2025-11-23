@@ -1,6 +1,6 @@
 // src/api/controllers/__tests__/appointment.controller.test.js
 
-const { createAppointment, getMyAppointments } = require('../appointment.controller');
+const { createAppointment, getMyAppointments, cancelAppointment } = require('../appointment.controller');
 const db = require('../../../config/db');
 
 // Mock the entire db module
@@ -141,6 +141,224 @@ describe('Appointment Controller', () => {
             expect(db.query).toHaveBeenCalledWith(expect.stringContaining('WHERE prof.user_id_uuid = $1'), ['test-uuid-prof']);
             expect(mockRes.status).toHaveBeenCalledWith(200);
             expect(mockRes.json).toHaveBeenCalledWith(mockAppointments);
+        });
+    });
+
+    // --- cancelAppointment TESTS ---
+    describe('cancelAppointment', () => {
+        it('should successfully cancel an appointment for a patient', async () => {
+            mockReq.user = { userId: 1, userUUID: 'patient-uuid', role: 'Patient' };
+            mockReq.params = { id: '102' };
+            mockReq.body = { reason: 'Emergency surgery required' };
+
+            const mockAppointment = {
+                appointment_id: 102,
+                appointment_id_uuid: 'appointment-uuid',
+                patient_id: 201,
+                professional_id: 301,
+                status: 'Scheduled',
+                appointment_time: '2025-12-01T10:00:00Z'
+            };
+
+            const mockUpdatedAppointment = {
+                appointment_id: 102,
+                appointment_id_uuid: 'appointment-uuid',
+                status: 'Cancelled',
+                cancelled_at: '2025-1-23T12:00:00Z',
+                cancellation_reason: 'Emergency surgery required'
+            };
+
+            mockClient.query
+                .mockResolvedValueOnce({}) // BEGIN
+                .mockResolvedValueOnce({ rows: [mockAppointment] }) // Get appointment details
+                .mockResolvedValueOnce({ rows: [{ patient_id: 201 }] }) // Check patient ownership
+                .mockResolvedValueOnce({ rows: [mockUpdatedAppointment] }) // Update appointment
+                .mockResolvedValueOnce({ rows: [{ slot_id: 401 }] }) // Check for availability slot
+                .mockResolvedValueOnce({}) // Update slot to available
+                .mockResolvedValueOnce({}); // COMMIT
+
+            await cancelAppointment(mockReq, mockRes);
+
+            expect(mockClient.query).toHaveBeenCalledWith('BEGIN');
+            expect(mockClient.query).toHaveBeenCalledWith('COMMIT');
+            expect(mockClient.release).toHaveBeenCalled();
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                success: true,
+                message: 'Appointment cancelled successfully',
+                appointment: {
+                    appointment_id: 102,
+                    appointment_id_uuid: 'appointment-uuid',
+                    status: 'Cancelled',
+                    cancelled_at: '2025-1-23T12:00:00Z',
+                    cancellation_reason: 'Emergency surgery required',
+                    slot_released: true
+                }
+            });
+        });
+
+        it('should return 400 if appointment ID is invalid', async () => {
+            mockReq.user = { userId: 1, userUUID: 'patient-uuid', role: 'Patient' };
+            mockReq.params = { id: 'invalid' }; // Invalid ID
+            mockReq.body = { reason: 'Emergency surgery required' };
+
+            await cancelAppointment(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(400);
+            expect(mockRes.json).toHaveBeenCalledWith({ error: 'Valid appointment ID is required' });
+        });
+
+        it('should return 404 if appointment is not found', async () => {
+            mockReq.user = { userId: 1, userUUID: 'patient-uuid', role: 'Patient' };
+            mockReq.params = { id: '999' };
+            mockReq.body = { reason: 'Emergency surgery required' };
+
+            mockClient.query
+                .mockResolvedValueOnce({}) // BEGIN
+                .mockResolvedValueOnce({ rows: [] }); // No appointment found
+
+            await cancelAppointment(mockReq, mockRes);
+
+            expect(mockClient.query).toHaveBeenCalledWith('ROLLBACK');
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.json).toHaveBeenCalledWith({ error: 'Appointment not found' });
+        });
+
+        it('should return 403 if user is not authorized to cancel appointment', async () => {
+            mockReq.user = { userId: 1, userUUID: 'different-patient-uuid', role: 'Patient' };
+            mockReq.params = { id: '102' };
+            mockReq.body = { reason: 'Emergency surgery required' };
+
+            const mockAppointment = {
+                appointment_id: 102,
+                appointment_id_uuid: 'appointment-uuid',
+                patient_id: 202, // Different patient
+                professional_id: 301,
+                status: 'Scheduled',
+                appointment_time: '2025-12-01T10:00:00Z'
+            };
+
+            mockClient.query
+                .mockResolvedValueOnce({}) // BEGIN
+                .mockResolvedValueOnce({ rows: [mockAppointment] }) // Get appointment
+                .mockResolvedValueOnce({ rows: [] }); // No ownership check result
+
+            await cancelAppointment(mockReq, mockRes);
+
+            expect(mockClient.query).toHaveBeenCalledWith('ROLLBACK');
+            expect(mockRes.status).toHaveBeenCalledWith(403);
+            expect(mockRes.json).toHaveBeenCalledWith({ error: 'You are not authorized to cancel this appointment' });
+        });
+
+        it('should return 400 if appointment is already cancelled', async () => {
+            mockReq.user = { userId: 1, userUUID: 'patient-uuid', role: 'Patient' };
+            mockReq.params = { id: '102' };
+            mockReq.body = { reason: 'Emergency surgery required' };
+
+            const mockAppointment = {
+                appointment_id: 102,
+                appointment_id_uuid: 'appointment-uuid',
+                patient_id: 201,
+                professional_id: 301,
+                status: 'Cancelled', // Already cancelled
+                appointment_time: '2025-12-01T10:00:00Z'
+            };
+
+            mockClient.query
+                .mockResolvedValueOnce({}) // BEGIN
+                .mockResolvedValueOnce({ rows: [mockAppointment] }) // Get appointment
+                .mockResolvedValueOnce({ rows: [{ patient_id: 201 }] }); // Check ownership
+
+            await cancelAppointment(mockReq, mockRes);
+
+            expect(mockClient.query).toHaveBeenCalledWith('ROLLBACK');
+            expect(mockRes.status).toHaveBeenCalledWith(400);
+            expect(mockRes.json).toHaveBeenCalledWith({ error: 'Appointment is already cancelled or completed' });
+        });
+
+        it('should return 400 if appointment is already completed', async () => {
+            mockReq.user = { userId: 1, userUUID: 'patient-uuid', role: 'Patient' };
+            mockReq.params = { id: '102' };
+            mockReq.body = { reason: 'Emergency surgery required' };
+
+            const mockAppointment = {
+                appointment_id: 102,
+                appointment_id_uuid: 'appointment-uuid',
+                patient_id: 201,
+                professional_id: 301,
+                status: 'Completed', // Already completed
+                appointment_time: '2025-12-01T10:00:00Z'
+            };
+
+            mockClient.query
+                .mockResolvedValueOnce({}) // BEGIN
+                .mockResolvedValueOnce({ rows: [mockAppointment] }) // Get appointment
+                .mockResolvedValueOnce({ rows: [{ patient_id: 201 }] }); // Check ownership
+
+            await cancelAppointment(mockReq, mockRes);
+
+            expect(mockClient.query).toHaveBeenCalledWith('ROLLBACK');
+            expect(mockRes.status).toHaveBeenCalledWith(400);
+            expect(mockRes.json).toHaveBeenCalledWith({ error: 'Appointment is already cancelled or completed' });
+        });
+
+        it('should successfully cancel an appointment for a professional', async () => {
+            mockReq.user = { userId: 4, userUUID: 'professional-uuid', role: 'Professional' };
+            mockReq.params = { id: '102' };
+            mockReq.body = { reason: 'Emergency surgery required' };
+
+            const mockAppointment = {
+                appointment_id: 102,
+                appointment_id_uuid: 'appointment-uuid',
+                patient_id: 201,
+                professional_id: 301,
+                status: 'Scheduled',
+                appointment_time: '2025-12-01T10:00:00Z'
+            };
+
+            const mockUpdatedAppointment = {
+                appointment_id: 102,
+                appointment_id_uuid: 'appointment-uuid',
+                status: 'Cancelled',
+                cancelled_at: '2025-1-23T12:00:00Z',
+                cancellation_reason: 'Emergency surgery required'
+            };
+
+            // Mock the sequence of queries in the correct order for professional
+            // 1. BEGIN
+            // 2. Get appointment details (with UUID) - this query has "OR $3 = 'Professional'" so it returns the appointment
+            // 3. Professional ownership check (with UUID) - checking if professional user owns the appointment
+            // 4. Update appointment
+            // 5. Check for availability slot
+            // 6. Update slot to available (if slot exists)
+            // 7. COMMIT
+            mockClient.query
+                .mockResolvedValueOnce({}) // BEGIN
+                .mockResolvedValueOnce({ rows: [mockAppointment] }) // Get appointment details
+                .mockResolvedValueOnce({ rows: [{ professional_id: 301 }] }) // Professional ownership check
+                .mockResolvedValueOnce({ rows: [mockUpdatedAppointment] }) // Update appointment
+                .mockResolvedValueOnce({ rows: [{ slot_id: 401 }] }) // Check for availability slot
+                .mockResolvedValueOnce({}) // Update slot to available
+                .mockResolvedValueOnce({}); // COMMIT
+
+            await cancelAppointment(mockReq, mockRes);
+
+            expect(mockClient.query).toHaveBeenCalledWith('BEGIN');
+            expect(mockClient.query).toHaveBeenCalledWith('COMMIT');
+            expect(mockClient.release).toHaveBeenCalled();
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                success: true,
+                message: 'Appointment cancelled successfully',
+                appointment: {
+                    appointment_id: 102,
+                    appointment_id_uuid: 'appointment-uuid',
+                    status: 'Cancelled',
+                    cancelled_at: '2025-1-23T12:00:00Z',
+                    cancellation_reason: 'Emergency surgery required',
+                    slot_released: true
+                }
+            });
         });
     });
 });

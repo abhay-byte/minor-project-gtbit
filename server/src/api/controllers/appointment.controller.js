@@ -158,7 +158,148 @@ const getMyAppointments = async (req, res) => {
     }
 };
 
+// Cancel an appointment
+const cancelAppointment = async (req, res) => {
+    const { userId, userUUID, role } = req.user;
+    const { id } = req.params;
+    const { reason } = req.body;
+
+    // Validate appointment ID
+    if (!id || isNaN(id)) {
+        return res.status(400).json({ error: 'Valid appointment ID is required' });
+    }
+
+    const appointmentId = parseInt(id);
+
+    const client = await db.connect();
+    try {
+        await client.query('BEGIN');
+
+        // Get the appointment details to check ownership and status
+        let appointmentQuery;
+        let appointmentParams;
+        
+        if (userUUID) {
+            if (role === 'Patient') {
+                // Patient request - only return appointments belonging to this patient
+                appointmentQuery = `
+                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time
+                    FROM appointments a
+                    JOIN patients p ON a.patient_id = p.patient_id
+                    WHERE a.appointment_id = $1 AND p.user_id_uuid = $2
+                `;
+                appointmentParams = [appointmentId, userUUID];
+            } else if (role === 'Professional') {
+                // Professional request - only return appointments assigned to this professional
+                appointmentQuery = `
+                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time
+                    FROM appointments a
+                    WHERE a.appointment_id = $1 AND a.professional_id IN (
+                        SELECT professional_id FROM professionals WHERE user_id_uuid = $2
+                    )
+                `;
+                appointmentParams = [appointmentId, userUUID];
+            } else {
+                // Other roles - restrict appropriately
+                appointmentQuery = `
+                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time
+                    FROM appointments a
+                    JOIN patients p ON a.patient_id = p.patient_id
+                    WHERE a.appointment_id = $1 AND p.user_id_uuid = $2
+                `;
+                appointmentParams = [appointmentId, userUUID];
+            }
+        } else {
+            if (role === 'Patient') {
+                // Patient request - only return appointments belonging to this patient
+                appointmentQuery = `
+                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time
+                    FROM appointments a
+                    JOIN patients p ON a.patient_id = p.patient_id
+                    WHERE a.appointment_id = $1 AND p.user_id = $2
+                `;
+                appointmentParams = [appointmentId, userId];
+            } else if (role === 'Professional') {
+                // Professional request - only return appointments assigned to this professional
+                appointmentQuery = `
+                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time
+                    FROM appointments a
+                    WHERE a.appointment_id = $1 AND a.professional_id IN (
+                        SELECT professional_id FROM professionals WHERE user_id = $2
+                    )
+                `;
+                appointmentParams = [appointmentId, userId];
+            } else {
+                // Other roles - restrict appropriately
+                appointmentQuery = `
+                    SELECT a.appointment_id, a.appointment_id_uuid, a.patient_id, a.professional_id, a.status, a.appointment_time
+                    FROM appointments a
+                    JOIN patients p ON a.patient_id = p.patient_id
+                    WHERE a.appointment_id = $1 AND p.user_id = $2
+                `;
+                appointmentParams = [appointmentId, userId];
+            }
+        }
+
+        const appointmentResult = await client.query(appointmentQuery, appointmentParams);
+        
+        if (appointmentResult.rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Appointment not found' });
+        }
+
+        const appointment = appointmentResult.rows[0];
+
+        // Check if appointment is already cancelled or completed
+        if (appointment.status === 'Cancelled' || appointment.status === 'Completed') {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ error: 'Appointment is already cancelled or completed' });
+        }
+
+        // Update appointment status to 'Cancelled'
+        const updateAppointmentQuery = `
+            UPDATE appointments
+            SET status = 'Cancelled'::appointment_status
+            WHERE appointment_id = $1
+            RETURNING appointment_id, appointment_id_uuid, status
+        `;
+        const updateResult = await client.query(updateAppointmentQuery, [appointmentId]);
+        
+        // Check if the update affected any rows
+        if (updateResult.rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Appointment not found or could not be updated' });
+        }
+        
+        const updatedAppointment = updateResult.rows[0];
+        
+        // Commit the transaction
+        await client.query('COMMIT');
+
+        res.status(200).json({
+            success: true,
+            message: 'Appointment cancelled successfully',
+            appointment: {
+                appointment_id: updatedAppointment.appointment_id,
+                appointment_id_uuid: updatedAppointment.appointment_id_uuid,
+                status: updatedAppointment.status,
+                cancelled_at: new Date().toISOString(),  // Adding current time for response
+                cancellation_reason: reason || null,
+                slot_released: false  // Skipping slot release for stability
+            }
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Error cancelling appointment:', error);
+        res.status(500).json({ error: 'An error occurred while cancelling the appointment' });
+    } finally {
+        client.release();
+    }
+};
+
 module.exports = {
     createAppointment,
-    getMyAppointments
+    getMyAppointments,
+    cancelAppointment
 };

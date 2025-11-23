@@ -698,6 +698,65 @@ Get appointment history for the user.
 ]
 ```
 
+### PUT /api/appointments/:id/cancel
+Cancel an appointment and release the associated time slot.
+
+**Path Parameter:**
+- `id`: integer (required) - Appointment ID
+
+**Request:**
+- Method: `PUT`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  Content-Type: application/json
+  ```
+- Authentication: Required (Patient or Professional)
+
+**Request Body:**
+```json
+{
+  "reason": "string (optional) - Cancellation reason"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Appointment cancelled successfully",
+  "appointment": {
+    "appointment_id": 102,
+    "appointment_id_uuid": "uuid-string",
+    "status": "Cancelled",
+    "cancelled_at": "2025-01-23T10:30:00.000Z",
+    "cancellation_reason": "Emergency surgery required",
+    "slot_released": true
+  }
+}
+```
+
+**Response (403 Forbidden):**
+```json
+{
+  "error": "You are not authorized to cancel this appointment"
+}
+```
+
+**Response (404 Not Found):**
+```json
+{
+  "error": "Appointment not found"
+}
+```
+
+**Response (400 Bad Request):**
+```json
+{
+  "error": "Appointment is already cancelled or completed"
+}
+```
+
 ## Clinic Endpoints
 
 Public clinic endpoints do not require authentication, while review endpoints require authentication.

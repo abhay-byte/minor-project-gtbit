@@ -21,6 +21,7 @@ This report documents the validation results for all API endpoints in the Clinic
 | GET /api/professionals/:id/profile | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | POST /api/appointments | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | GET /api/appointments/me | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
+| PUT /api/appointments/:id/cancel | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | GET /api/clinics/search | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | GET /api/clinics/:id | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
 | GET /api/clinics/:id/doctors | ✅ | 🟢 Success | Yes | Yes | Passed | Yes |
@@ -222,6 +223,19 @@ Successfully generated availability slots with confirmation message and count of
 Received complete doctor profile as expected.
 
 ### Appointment Endpoints
+#### Endpoint: `PUT /api/appointments/:id/cancel`
+| Check Item | Result |
+|------------|--------|
+| Curl request executed | ✅ |
+| Server response received | 🟢 Success |
+| Response matches expected schema | Yes |
+| Automated test case exists | Yes |
+| `npm run test` result | Passed |
+| Tested using Postman | Yes |
+
+**Notes / Errors Found:**
+Successfully implemented and tested the cancel appointment endpoint. The endpoint allows both patients and professionals to cancel appointments they own. Returns proper error responses for unauthorized access (403), non-existent appointments (404), and already cancelled/completed appointments (400). The functionality includes releasing the corresponding availability slot if one exists.
+
 #### Endpoint: `POST /api/appointments`
 | Check Item | Result |
 |------------|--------|
@@ -582,7 +596,7 @@ Successfully received API information response with message, version, status, ti
 ## Pass/Fail Summary Table
 | Total Endpoints | Passed | Failed |
 |-----------------|--------|--------|
-| 37 | 37 | 0 |
+| 38 | 38 | 0 |
 
 
 ## Failing Endpoints and Possible Causes
