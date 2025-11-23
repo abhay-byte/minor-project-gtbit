@@ -11,11 +11,15 @@ const prescriptionRoutes = require('./api/routes/prescriptions.routes');
 const vaultRoutes = require('./api/routes/vault.routes');
 const reviewRoutes = require('./api/routes/reviews.routes');
 const healthRoutes = require('./api/routes/health.routes');
+const medicalProfileRoutes = require('./api/routes/medicalProfile.routes');
 
 const app = express();
 
 // --- Middleware ---
-app.use(express.json());
+app.use(express.json({
+  type: ['application/json', 'application/*+json', 'text/plain'],
+  limit: '10mb'
+}));
 
 // Production-specific middleware
 if (process.env.NODE_ENV === 'production') {
@@ -42,6 +46,7 @@ app.use('/api/prescriptions', prescriptionRoutes);
 app.use('/api/vault', vaultRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api', healthRoutes);
+app.use('/api', medicalProfileRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {

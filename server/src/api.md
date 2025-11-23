@@ -1439,6 +1439,154 @@ Get details of a specific review.
 
 ---
 
+## Medical Profile Endpoints
+
+All medical profile endpoints require authentication via JWT token.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+### GET /api/patients/:id/medical-profile
+Retrieve complete medical history for consultation reference.
+
+**Path Parameter:**
+- `id`: integer (required) - Patient ID
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "patient": {
+      "patient_id": "integer",
+      "patient_id_uuid": "UUID string",
+      "user_id": "integer",
+      "full_name": "string",
+      "email": "string",
+      "phone_number": "string",
+      "date_of_birth": "date",
+      "gender": "string",
+      "address": "string",
+      "blood_group": "string",
+      "marital_status": "string",
+      "known_allergies": "text",
+      "chronic_conditions": "text",
+      "current_medications": "text",
+      "lifestyle_notes": "text",
+      "member_since": "timestamp",
+      "patient_code": "string",
+      "current_location": "text",
+      "current_full_address": "text"
+    },
+    "appointments": [
+      {
+        "appointment_id": "integer",
+        "appointment_id_uuid": "UUID string",
+        "appointment_time": "timestamp",
+        "status": "enum",
+        "appointment_type": "enum",
+        "appointment_code": "string",
+        "patient_notes": "string",
+        "scheduled_at": "timestamp",
+        "completed_at": "timestamp",
+        "duration_minutes": "integer",
+        "professional_name": "string",
+        "specialty": "string"
+      }
+    ],
+    "consultations": [
+      {
+        "consultation_id": "integer",
+        "consultation_id_uuid": "UUID string",
+        "appointment_id": "integer",
+        "notes": "text",
+        "ai_briefing": "text",
+        "created_at": "timestamp",
+        "diagnosis": "text",
+        "doctor_recommendations": "text",
+        "follow_up_instructions": "text",
+        "prescription_attached": "boolean"
+      }
+    ],
+    "prescriptions": [
+      {
+        "prescription_id": "integer",
+        "prescription_id_uuid": "UUID string",
+        "medication_name": "string",
+        "dosage": "string",
+        "instructions": "text",
+        "prescription_code": "string",
+        "frequency": "string",
+        "duration": "string",
+        "medication_category": "string",
+        "doctor_notes": "text",
+        "prescribed_date": "date",
+        "is_active": "boolean",
+        "doctor_name": "string",
+        "doctor_specialty": "string",
+        "clinic_name": "string",
+        "important_notes": "text",
+        "consultation_id": "integer",
+        "consultation_notes": "text"
+      }
+    ],
+    "medical_records": [
+      {
+        "record_id": "integer",
+        "record_id_uuid": "UUID string",
+        "document_name": "string",
+        "document_type": "string",
+        "document_url": "string",
+        "uploaded_at": "timestamp",
+        "comments_notes": "text",
+        "report_date": "date",
+        "file_format": "string",
+        "file_size_mb": "integer",
+        "linked_appointment_code": "string"
+      }
+    ],
+    "medicine_reminders": [
+      {
+        "reminder_id": "UUID",
+        "medication_name": "string",
+        "dosage_form": "enum: 1 tablet | 1 capsule | Other",
+        "timing_schedule": "text",
+        "how_to_take": "enum: After food | Before food | After breakfast | Other",
+        "duration": "text",
+        "doctor_note": "text",
+        "start_date": "date",
+        "end_date": "date",
+        "is_active": "boolean",
+        "next_reminder_time": "timestamp"
+      }
+    ],
+    "ai_chat_sessions": [
+      {
+        "session_id": "UUID",
+        "started_at": "timestamp",
+        "ended_at": "timestamp",
+        "session_type": "enum: Health Query | Mental Wellness | Triage | Crisis",
+        "session_summary": "text",
+        "escalated_to_professional": "boolean",
+        "crisis_detected": "boolean",
+        "crisis_type": "enum: Suicidal | Self-harm | Severe distress"
+      }
+    ]
+ }
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Invalid patient ID
+- `401 Unauthorized`: Invalid or missing JWT token
+- `403 Forbidden`: User doesn't have permission to access patient medical profile
+- `404 Not Found`: Patient doesn't exist
+- `500 Internal Server Error`: Server error while fetching medical profile
+
+---
+
 Common status codes:
 - 400: Bad Request (validation error)
 - 401: Unauthorized (invalid/expired token)
