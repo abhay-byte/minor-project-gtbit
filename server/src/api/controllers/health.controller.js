@@ -263,7 +263,7 @@ const getApiInfo = (req, res) => {
         }
       }
     },
-    documentation: 'https://docs.clinico.com/api'
+    documentation: 'https://github.com/abhay-byte/minor-project-gtbit/blob/main/server/src/api.md'
   });
 };
 

@@ -256,7 +256,7 @@ Get API information and available routes.
       }
     }
   },
-  "documentation": "https://docs.clinico.com/api"
+  "documentation": "https://github.com/abhay-byte/minor-project-gtbit/blob/main/server/src/api.md"
 }
 ```
 
