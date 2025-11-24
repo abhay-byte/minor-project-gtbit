@@ -17,7 +17,7 @@ app.use(express.json());
 
 // Mock user authentication middleware for testing
 const mockAuth = (req, res, next) => {
-  req.user = { user_id: 1 }; // Mock user
+  req.user = { userId: 1, role: 'Patient' }; // Mock user
   next();
 };
 
@@ -27,9 +27,13 @@ app.get('/api/conversations/:id/messages', mockAuth, getMessages);
 app.post('/api/conversations/:id/messages', mockAuth, sendMessage);
 
 describe('Conversation Controller', () => {
+  beforeEach(() => {
+    jest.clearAllMocks(); // Clear mocks before each test
+  });
+
   // Mock data for testing
   const mockConversation = {
-    conversation_id: 'test-uuid-123',
+    conversation_id: '123e4567-e89b-12d3-a456-426614174000',
     other_user_name: 'Dr. Sharma',
     last_message_at: new Date(),
     is_active: true,
@@ -37,7 +41,7 @@ describe('Conversation Controller', () => {
   };
 
   const mockMessage = {
-    message_id: 'test-message-uuid-123',
+    message_id: '123e4567-e89b-12d3-a456-426614174999',
     sender_type: 'Patient',
     message_content: 'Hello, doctor!',
     message_type: 'Text',
@@ -127,7 +131,7 @@ describe('Conversation Controller', () => {
 
   describe('getMessages', () => {
     it('should return messages for a valid conversation', async () => {
-      const conversationId = 'test-conversation-id';
+      const conversationId = '123e4567-e89b-12d3-a456-426614174000';
 
       // Mock database queries
       db.query
@@ -167,13 +171,24 @@ describe('Conversation Controller', () => {
       expect(response.body.data[0]).toHaveProperty('is_read');
     });
 
+    it('should return 400 if conversation ID is invalid format', async () => {
+      const invalidConversationId = 'test-id'; // Invalid UUID format
+
+      const response = await request(app)
+        .get(`/api/conversations/${invalidConversationId}/messages`)
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toBe('Invalid conversation ID format');
+    });
+    
     it('should return 404 if conversation not found', async () => {
-      const conversationId = 'non-existent-conversation';
+      const conversationId = '123e4567-e89b-12d3-a456-426614174001';
 
       // Mock database query to return no conversation
       db.query
         .mockResolvedValueOnce({ // Check conversation access
-          rows: []
+          rows: [] // Empty result simulates conversation not found
         });
 
       const response = await request(app)
@@ -185,7 +200,7 @@ describe('Conversation Controller', () => {
     });
 
     it('should return 403 if user does not have access to conversation', async () => {
-      const conversationId = 'test-conversation-id';
+      const conversationId = '123e4567-e89b-12d3-a456-426614174000';
 
       // Mock database queries
       db.query
@@ -216,9 +231,9 @@ describe('Conversation Controller', () => {
     });
   });
 
- describe('sendMessage', () => {
+  describe('sendMessage', () => {
     it('should send a new message successfully', async () => {
-      const conversationId = 'test-conversation-id';
+      const conversationId = '123e4567-e89b-12d3-a456-426614174000';
       const messageData = {
         message_content: 'Test message content',
         message_type: 'Text'
@@ -259,7 +274,7 @@ describe('Conversation Controller', () => {
     });
 
     it('should return 400 if message content is missing', async () => {
-      const conversationId = 'test-conversation-id';
+      const conversationId = '123e4567-e89b-12d3-a456-426614174000';
       const messageData = {
         message_type: 'Text'
         // message_content is missing
@@ -275,7 +290,7 @@ describe('Conversation Controller', () => {
     });
 
     it('should return 404 if conversation not found', async () => {
-      const conversationId = 'non-existent-conversation';
+      const conversationId = '123e4567-e89b-12d3-a456-426614174001';
       const messageData = {
         message_content: 'Test message content',
         message_type: 'Text'
@@ -296,8 +311,24 @@ describe('Conversation Controller', () => {
       expect(response.body.error).toBe('Conversation not found');
     });
 
+    it('should return 400 if conversation ID is invalid format', async () => {
+      const invalidConversationId = 'test-id'; // Invalid UUID format
+      const messageData = {
+        message_content: 'Test message content',
+        message_type: 'Text'
+      };
+
+      const response = await request(app)
+        .post(`/api/conversations/${invalidConversationId}/messages`)
+        .send(messageData)
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toBe('Invalid conversation ID format');
+    });
+    
     it('should return 403 if user does not have access to conversation', async () => {
-      const conversationId = 'test-conversation-id';
+      const conversationId = '123e4567-e89b-12d3-a456-426614174000';
       const messageData = {
         message_content: 'Test message content',
         message_type: 'Text'
@@ -330,7 +361,7 @@ describe('Conversation Controller', () => {
     });
   });
 
- // Clean up mocks after each test
+  // Clean up mocks after each test
   afterEach(() => {
     jest.clearAllMocks();
   });

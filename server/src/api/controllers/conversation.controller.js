@@ -101,6 +101,16 @@ const getConversations = async (req, res) => {
 const getMessages = async (req, res) => {
   try {
     const { id } = req.params;
+    
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid conversation ID format'
+      });
+    }
+    
     const userId = req.user.userId; // Assuming user info is attached by auth middleware
 
     // Verify that the user has access to this conversation
@@ -205,6 +215,16 @@ const getMessages = async (req, res) => {
 const sendMessage = async (req, res) => {
   try {
     const { id } = req.params;
+    
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid conversation ID format'
+      });
+    }
+    
     const { message_content, message_type = 'Text' } = req.body;
     const userId = req.user.userId; // Assuming user info is attached by auth middleware
 

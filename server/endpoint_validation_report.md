@@ -170,12 +170,15 @@ This document tracks all validated endpoints in the Clinico API backend, includi
 6. ✅ Error handling
 7. ✅ Database integration (mocked in unit tests)
 8. ✅ Access control to ensure users can only access their own conversations
+9. ✅ UUID format validation for conversation IDs
+10. ✅ Manual cURL testing with valid/invalid tokens and conversation IDs
 
 ### Test Results:
-- Unit Tests: All 11 tests passed
+- Unit Tests: All 13 tests passed
 - Integration Tests: Manual verification with cURL
 - Postman Collection: Created and validated
 - Database Integration: Properly queries patient_doctor_conversations and messages tables
+- UUID Validation: Successfully validates UUID format and rejects invalid formats
 
 ## Summary
-The chat & messaging system endpoints have been successfully implemented, tested, and documented. The feature includes fetching conversation lists, retrieving message history, and sending new messages between patients and doctors. All endpoints are properly secured with authentication and authorization, and include comprehensive error handling and validation. The implementation correctly integrates with the existing database schema using the patient_doctor_conversations and messages tables.
+The chat & messaging system endpoints have been successfully implemented, tested, and documented. The feature includes fetching conversation lists, retrieving message history, and sending new messages between patients and doctors. All endpoints are properly secured with authentication and authorization, and include comprehensive error handling and validation. The implementation correctly integrates with the existing database schema using the patient_doctor_conversations and messages tables. Special attention was paid to validating UUID formats to prevent database errors when invalid conversation IDs are provided.
