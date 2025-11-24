@@ -157,21 +157,19 @@ describe('Appointment Controller', () => {
                 patient_id: 201,
                 professional_id: 301,
                 status: 'Scheduled',
-                appointment_time: '2025-12-01T10:00:00Z'
+                appointment_time: '2025-12-01T10:00:00Z',
+                appointment_type: 'Virtual'
             };
 
             const mockUpdatedAppointment = {
                 appointment_id: 102,
                 appointment_id_uuid: 'appointment-uuid',
-                status: 'Cancelled',
-                cancelled_at: '2025-1-23T12:00:00Z',
-                cancellation_reason: 'Emergency surgery required'
+                status: 'Cancelled'
             };
 
             mockClient.query
                 .mockResolvedValueOnce({}) // BEGIN
                 .mockResolvedValueOnce({ rows: [mockAppointment] }) // Get appointment details
-                .mockResolvedValueOnce({ rows: [{ patient_id: 201 }] }) // Check patient ownership
                 .mockResolvedValueOnce({ rows: [mockUpdatedAppointment] }) // Update appointment
                 .mockResolvedValueOnce({ rows: [{ slot_id: 401 }] }) // Check for availability slot
                 .mockResolvedValueOnce({}) // Update slot to available
@@ -190,9 +188,9 @@ describe('Appointment Controller', () => {
                     appointment_id: 102,
                     appointment_id_uuid: 'appointment-uuid',
                     status: 'Cancelled',
-                    cancelled_at: '2025-1-23T12:00:00Z',
                     cancellation_reason: 'Emergency surgery required',
-                    slot_released: true
+                    slot_released: true,
+                    cancelled_at: expect.any(String)
                 }
             });
         });
@@ -224,7 +222,7 @@ describe('Appointment Controller', () => {
             expect(mockRes.json).toHaveBeenCalledWith({ error: 'Appointment not found' });
         });
 
-        it('should return 403 if user is not authorized to cancel appointment', async () => {
+        it('should return 404 if user is not authorized to cancel appointment', async () => {
             mockReq.user = { userId: 1, userUUID: 'different-patient-uuid', role: 'Patient' };
             mockReq.params = { id: '102' };
             mockReq.body = { reason: 'Emergency surgery required' };
@@ -240,14 +238,13 @@ describe('Appointment Controller', () => {
 
             mockClient.query
                 .mockResolvedValueOnce({}) // BEGIN
-                .mockResolvedValueOnce({ rows: [mockAppointment] }) // Get appointment
-                .mockResolvedValueOnce({ rows: [] }); // No ownership check result
+                .mockResolvedValueOnce({ rows: [] }); // No appointment found (due to wrong user)
 
             await cancelAppointment(mockReq, mockRes);
 
             expect(mockClient.query).toHaveBeenCalledWith('ROLLBACK');
-            expect(mockRes.status).toHaveBeenCalledWith(403);
-            expect(mockRes.json).toHaveBeenCalledWith({ error: 'You are not authorized to cancel this appointment' });
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.json).toHaveBeenCalledWith({ error: 'Appointment not found' });
         });
 
         it('should return 400 if appointment is already cancelled', async () => {
@@ -287,13 +284,12 @@ describe('Appointment Controller', () => {
                 patient_id: 201,
                 professional_id: 301,
                 status: 'Completed', // Already completed
-                appointment_time: '2025-12-01T10:00:00Z'
+                appointment_time: '2025-12-01T10:00Z'
             };
 
             mockClient.query
                 .mockResolvedValueOnce({}) // BEGIN
-                .mockResolvedValueOnce({ rows: [mockAppointment] }) // Get appointment
-                .mockResolvedValueOnce({ rows: [{ patient_id: 201 }] }); // Check ownership
+                .mockResolvedValueOnce({ rows: [mockAppointment] }); // Get appointment
 
             await cancelAppointment(mockReq, mockRes);
 
@@ -313,29 +309,19 @@ describe('Appointment Controller', () => {
                 patient_id: 201,
                 professional_id: 301,
                 status: 'Scheduled',
-                appointment_time: '2025-12-01T10:00:00Z'
+                appointment_time: '2025-12-01T10:00Z',
+                appointment_type: 'Virtual'
             };
 
             const mockUpdatedAppointment = {
                 appointment_id: 102,
                 appointment_id_uuid: 'appointment-uuid',
-                status: 'Cancelled',
-                cancelled_at: '2025-1-23T12:00:00Z',
-                cancellation_reason: 'Emergency surgery required'
+                status: 'Cancelled'
             };
 
-            // Mock the sequence of queries in the correct order for professional
-            // 1. BEGIN
-            // 2. Get appointment details (with UUID) - this query has "OR $3 = 'Professional'" so it returns the appointment
-            // 3. Professional ownership check (with UUID) - checking if professional user owns the appointment
-            // 4. Update appointment
-            // 5. Check for availability slot
-            // 6. Update slot to available (if slot exists)
-            // 7. COMMIT
             mockClient.query
                 .mockResolvedValueOnce({}) // BEGIN
                 .mockResolvedValueOnce({ rows: [mockAppointment] }) // Get appointment details
-                .mockResolvedValueOnce({ rows: [{ professional_id: 301 }] }) // Professional ownership check
                 .mockResolvedValueOnce({ rows: [mockUpdatedAppointment] }) // Update appointment
                 .mockResolvedValueOnce({ rows: [{ slot_id: 401 }] }) // Check for availability slot
                 .mockResolvedValueOnce({}) // Update slot to available
@@ -354,9 +340,9 @@ describe('Appointment Controller', () => {
                     appointment_id: 102,
                     appointment_id_uuid: 'appointment-uuid',
                     status: 'Cancelled',
-                    cancelled_at: '2025-1-23T12:00:00Z',
                     cancellation_reason: 'Emergency surgery required',
-                    slot_released: true
+                    slot_released: true,
+                    cancelled_at: expect.any(String)
                 }
             });
         });

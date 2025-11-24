@@ -91,18 +91,40 @@ describe('Health Controller', () => {
           message: 'Welcome to Clinico API',
           version: '1.0.0',
           status: 'running',
+          timestamp: expect.any(String),
           endpoints: expect.objectContaining({
-            health: '/api/health',
-            auth: '/api/auth',
-            users: '/api/users',
-            professionals: '/api/professionals',
-            appointments: '/api/appointments',
-            clinics: '/api/clinics',
-            prescriptions: '/api/prescriptions',
-            reviews: '/api/reviews',
-            vault: '/api/vault'
+            health: expect.objectContaining({
+              path: '/api/health'
+            }),
+            auth: expect.objectContaining({
+              path: '/api/auth'
+            }),
+            users: expect.objectContaining({
+              path: '/api/users'
+            }),
+            professionals: expect.objectContaining({
+              path: '/api/professionals'
+            }),
+            appointments: expect.objectContaining({
+              path: '/api/appointments'
+            }),
+            clinics: expect.objectContaining({
+              path: '/api/clinics'
+            }),
+            prescriptions: expect.objectContaining({
+              path: '/api/prescriptions'
+            }),
+            reviews: expect.objectContaining({
+              path: '/api/reviews'
+            }),
+            vault: expect.objectContaining({
+              path: '/api/vault'
+            }),
+            chat: expect.objectContaining({
+              path: '/api/chat'
+            })
           }),
-          documentation: 'https://docs.clinico.com/api'
+          documentation: 'https://github.com/abhay-byte/minor-project-gtbit/blob/main/server/src/api.md'
         })
       );
     });
