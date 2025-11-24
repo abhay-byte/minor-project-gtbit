@@ -20,4 +20,19 @@ router.get('/lists', prescriptionController.getPrescriptionList);
 router.get('/reminders', prescriptionController.getMedicineReminders);
 router.get('/reminders/:reminderId/logs', prescriptionController.getReminderLogs);
 
+// Middleware to check if user is a professional
+const requireProfessionalRole = (req, res, next) => {
+  if (req.user.role !== 'Professional') {
+    return res.status(403).json({ error: 'Only professionals can access this endpoint' });
+  }
+ next();
+};
+
+// POST /api/prescriptions - Issue a new prescription during or after consultation (for professionals)
+router.post('/', requireProfessionalRole, (req, res, next) => {
+  // Delegate to the consultation controller's createPrescription function
+  const { createPrescription } = require('../controllers/consultation.controller');
+  createPrescription(req, res, next);
+});
+
 module.exports = router;

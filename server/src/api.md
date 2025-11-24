@@ -9,10 +9,12 @@ This document provides a comprehensive overview of all available API endpoints i
 4. [User Endpoints](#user-endpoints)
 5. [Professional Endpoints](#professional-endpoints)
 6. [Appointment Endpoints](#appointment-endpoints)
-7. [Clinic Endpoints](#clinic-endpoints)
-8. [Prescription Endpoints](#prescription-endpoints)
+7. [Consultation Endpoints](#consultation-endpoints)
+8. [Clinic Endpoints](#clinic-endpoints)
+9. [Prescription Endpoints](#prescription-endpoints)
 9. [Vault Endpoints](#vault-endpoints)
 10. [Review Endpoints](#review-endpoints)
+11. [Medical Profile Endpoints](#medical-profile-endpoints)
 
 ## CORS Configuration
 
@@ -789,6 +791,207 @@ Cancel an appointment and release the associated time slot.
   "error": "Appointment is already cancelled or completed"
 }
 ```
+
+## Consultation Endpoints
+
+All consultation endpoints require authentication and are restricted to professionals.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+### POST /api/consultations
+Save clinical outcome after appointment completion.
+
+**Request:**
+- Method: `POST`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  Content-Type: application/json
+  ```
+- Authentication: Required (Professional only)
+
+**Request Body:**
+```json
+{
+  "appointment_id": 102,
+  "diagnosis": "string (required) - Primary diagnosis",
+  "doctor_recommendations": "string (required) - Treatment recommendations",
+  "follow_up_instructions": "string (optional) - Follow-up care instructions",
+  "notes": "string (optional) - Clinical notes",
+  "ai_briefing": "string (optional) - AI-generated patient summary"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "message": "Consultation record created successfully",
+  "consultation": {
+    "consultation_id": 205,
+    "consultation_id_uuid": "uuid-string",
+    "appointment_id": 102,
+    "diagnosis": "Acute Bronchitis",
+    "doctor_recommendations": "Steam inhalation, rest.",
+    "follow_up_instructions": "Visit again if fever persists > 3 days.",
+    "notes": "Patient presented with dry cough.",
+    "prescription_attached": false,
+    "created_at": "2025-11-19T10:30:00Z"
+ }
+}
+```
+
+**Response (400 Bad Request):**
+```json
+{
+  "error": "Appointment not found or not completed"
+}
+```
+
+**Response (403 Forbidden):**
+```json
+{
+  "error": "You are not authorized to create consultation for this appointment"
+}
+```
+
+**Response (409 Conflict):**
+```json
+{
+  "error": "Consultation record already exists for this appointment"
+}
+```
+
+---
+
+### POST /api/prescriptions
+Issue a new prescription during or after consultation.
+
+**Request:**
+- Method: `POST`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  Content-Type: application/json
+  ```
+- Authentication: Required (Professional only)
+
+**Request Body:**
+```json
+{
+  "consultation_id": 205,
+  "medication_name": "string (required)",
+  "dosage": "string (required)",
+  "frequency": "string (required)",
+  "duration": "string (required)",
+  "medication_category": "string (optional)",
+  "instructions": "string (required) - How to take",
+  "doctor_notes": "string (optional)",
+  "important_notes": "string (optional) - Warnings/precautions"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "message": "Prescription created successfully",
+  "prescription": {
+    "prescription_id": 301,
+    "prescription_id_uuid": "uuid-string",
+    "consultation_id": 205,
+    "medication_name": "Azithromycin",
+    "dosage": "500mg",
+    "frequency": "Once daily",
+    "duration": "5 days",
+    "medication_category": "Antibiotic",
+    "doctor_notes": "Complete the full course",
+    "important_notes": "May cause slight drowsiness",
+    "prescribed_date": "2025-11-19",
+    "is_active": true,
+    "prescribed_by_doctor_id": 10,
+    "doctor_name": "Dr. Smith",
+    "doctor_specialty": "General Physician"
+  }
+}
+```
+
+**Response (400 Bad Request):**
+```json
+{
+  "error": "Consultation not found"
+}
+```
+
+**Response (403 Forbidden):**
+```json
+{
+  "error": "You are not authorized to prescribe for this consultation"
+}
+```
+
+---
+
+### POST /api/upload-report-requests
+Request patient to upload specific lab test reports.
+
+**Request:**
+- Method: `POST`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  Content-Type: application/json
+  ```
+- Authentication: Required (Professional only)
+
+**Request Body:**
+```json
+{
+  "patient_id": 55,
+  "consultation_id": 205,
+  "requested_tests": "string (required) - Comma-separated test names",
+  "due_date": "date (required) - YYYY-MM-DD",
+  "additional_notes": "string (optional) - Special instructions"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "message": "Report request sent to patient",
+  "request": {
+    "request_id": "uuid-string",
+    "request_code": "REQ-2025-889",
+    "patient_id": 55,
+    "professional_id": 10,
+    "requested_tests": "CBC, Lipid Profile, HbA1c",
+    "due_date": "2025-11-25",
+    "status": "Pending",
+    "additional_notes": "Fasting required for 12 hours before test",
+    "created_at": "2025-11-19T10:30:00Z"
+  }
+}
+```
+
+**Response (400 Bad Request):**
+```json
+{
+  "error": "Invalid patient ID or due date"
+}
+```
+
+**Response (404 Not Found):**
+```json
+{
+  "error": "Patient not found"
+}
+```
+
+---
 
 ## Clinic Endpoints
 

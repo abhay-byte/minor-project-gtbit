@@ -13,6 +13,8 @@ const vaultRoutes = require('./api/routes/vault.routes');
 const reviewRoutes = require('./api/routes/reviews.routes');
 const healthRoutes = require('./api/routes/health.routes');
 const medicalProfileRoutes = require('./api/routes/medicalProfile.routes');
+const consultationsRoutes = require('./api/routes/consultations.routes');
+const uploadReportRequestsRoutes = require('./api/routes/upload-report-requests.routes');
 
 const app = express();
 
@@ -65,6 +67,8 @@ app.use('/api/vault', vaultRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api', healthRoutes);
 app.use('/api', medicalProfileRoutes);
+app.use('/api/consultations', consultationsRoutes);
+app.use('/api/upload-report-requests', uploadReportRequestsRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {

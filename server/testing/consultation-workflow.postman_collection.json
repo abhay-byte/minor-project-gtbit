@@ -1,0 +1,122 @@
+{
+  "info": {
+    "_postman_id": "consultation-workflow",
+    "name": "Consultation Workflow Endpoints",
+    "description": "Collection for testing consultation workflow endpoints: Create Consultation Record, Issue Prescription, Request Lab Report Upload",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Consultation Record",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"appointment_id\": 102,\n  \"diagnosis\": \"string (required) - Primary diagnosis\",\n \"doctor_recommendations\": \"string (required) - Treatment recommendations\",\n \"follow_up_instructions\": \"string (optional) - Follow-up care instructions\",\n  \"notes\": \"string (optional) - Clinical notes\",\n \"ai_briefing\": \"string (optional) - AI-generated patient summary\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/consultations",
+          "host": ["{{base_url}}"],
+          "path": ["api", "consultations"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Issue Prescription (Doctor)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"consultation_id\": 205,\n  \"medication_name\": \"string (required)\",\n  \"dosage\": \"string (required)\",\n  \"frequency\": \"string (required)\",\n  \"duration\": \"string (required)\",\n  \"medication_category\": \"string (optional)\",\n  \"instructions\": \"string (required) - How to take\",\n  \"doctor_notes\": \"string (optional)\",\n  \"important_notes\": \"string (optional) - Warnings/precautions\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/prescriptions",
+          "host": ["{{base_url}}"],
+          "path": ["api", "prescriptions"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Request Lab Report Upload",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"patient_id\": 55,\n  \"consultation_id\": 205,\n  \"requested_tests\": \"string (required) - Comma-separated test names\",\n  \"due_date\": \"date (required) - YYYY-MM-DD\",\n  \"additional_notes\": \"string (optional) - Special instructions\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/upload-report-requests",
+          "host": ["{{base_url}}"],
+          "path": ["api", "upload-report-requests"]
+        }
+      },
+      "response": []
+    }
+ ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
