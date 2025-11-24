@@ -1954,6 +1954,138 @@ Patient uploads requested test report.
 
 ---
 
+## Conversation Endpoints
+
+All conversation endpoints require authentication via JWT token.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+### GET /api/conversations
+
+Fetches the list of active conversations for the user (Patient or Doctor).
+
+**Request:**
+- Method: `GET`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  ```
+- Authentication: Required (Patient or Professional)
+- Parameters: None
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "conversation_id": "uuid-string",
+      "other_user_name": "Dr. Sharma",
+      "last_message_at": "2025-11-19T09:15:00Z",
+      "is_active": true,
+      "conversation_type": "Appointment"
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `401 Unauthorized`: Invalid or missing JWT token
+- `403 Forbidden`: User role is not Patient or Professional
+- `404 Not Found`: User doesn't exist
+- `500 Internal Server Error`: Server error while fetching conversations
+
+---
+
+### GET /api/conversations/:id/messages
+
+Fetches the message history for a specific thread.
+
+**Path Parameter:**
+- `id`: UUID (required) - Conversation ID
+
+**Request:**
+- Method: `GET`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  ```
+- Authentication: Required (Patient or Professional)
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "message_id": "uuid-string",
+      "sender_type": "Doctor",
+      "message_content": "Please share your previous report.",
+      "message_type": "Text",
+      "attachment_url": null,
+      "sent_at": "2025-11-19T09:10:00Z",
+      "is_read": true
+    }
+ ]
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Invalid conversation ID
+- `401 Unauthorized`: Invalid or missing JWT token
+- `403 Forbidden`: User doesn't have access to this conversation
+- `404 Not Found`: Conversation doesn't exist or user doesn't exist
+- `500 Internal Server Error`: Server error while fetching messages
+
+---
+
+### POST /api/conversations/:id/messages
+
+Sends a new message. (patient or doctor can send messages)
+
+**Path Parameter:**
+- `id`: UUID (required) - Conversation ID
+
+**Request:**
+- Method: `POST`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  Content-Type: application/json
+  ```
+- Authentication: Required (Patient or Professional)
+
+**Request Body:**
+```json
+{
+  "message_content": "Here is the report you asked for.",
+  "message_type": "Text"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "data": {
+    "message_id": "uuid-string",
+    "sent_at": "2025-11-19T09:12:00Z"
+  }
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Message content is missing or invalid
+- `401 Unauthorized`: Invalid or missing JWT token
+- `403 Forbidden`: User doesn't have access to this conversation
+- `404 Not Found`: Conversation doesn't exist or user doesn't exist
+- `500 Internal Server Error`: Server error while sending message
+
+---
+
 Common status codes:
 - 400: Bad Request (validation error)
 - 401: Unauthorized (invalid/expired token)

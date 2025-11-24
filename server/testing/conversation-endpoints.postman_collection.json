@@ -1,0 +1,111 @@
+{
+  "info": {
+    "name": "Conversation Endpoints",
+    "description": "API endpoints for chat and messaging system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET /api/conversations",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "description": "JWT token for authentication"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/conversations",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "conversations"]
+        },
+        "description": "Fetches the list of active conversations for the user (Patient or Doctor)."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/conversations/:id/messages",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "description": "JWT token for authentication"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/conversations/{{conversationId}}/messages",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "conversations", "{{conversationId}}", "messages"]
+        },
+        "description": "Fetches the message history for a specific thread."
+      },
+      "response": []
+    },
+    {
+      "name": "POST /api/conversations/:id/messages",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "description": "JWT token for authentication"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": "JSON content type"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"message_content\": \"Here is the report you asked for.\",\n  \"message_type\": \"Text\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/conversations/{{conversationId}}/messages",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "conversations", "{{conversationId}}", "messages"]
+        },
+        "description": "Sends a new message. (patient or doctor can send messages)"
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "description": "Base URL for the API"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "description": "JWT token for authentication"
+    },
+    {
+      "key": "conversationId",
+      "value": "",
+      "description": "ID of the conversation"
+    }
+  ]
+}

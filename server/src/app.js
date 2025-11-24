@@ -15,6 +15,7 @@ const healthRoutes = require('./api/routes/health.routes');
 const medicalProfileRoutes = require('./api/routes/medicalProfile.routes');
 const consultationsRoutes = require('./api/routes/consultations.routes');
 const uploadReportRequestsRoutes = require('./api/routes/upload-report-requests.routes');
+const conversationRoutes = require('./api/routes/conversations.routes');
 
 const app = express();
 
@@ -64,6 +65,7 @@ app.use('/api/clinics', clinicRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/prescriptions', prescriptionRoutes);
 app.use('/api/vault', vaultRoutes);
+app.use('/api/conversations', conversationRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api', healthRoutes);
 app.use('/api', medicalProfileRoutes);
