@@ -15,6 +15,7 @@ This document provides a comprehensive overview of all available API endpoints i
 9. [Vault Endpoints](#vault-endpoints)
 10. [Review Endpoints](#review-endpoints)
 11. [Medical Profile Endpoints](#medical-profile-endpoints)
+12. [Upload Report Requests Endpoints](#upload-report-requests-endpoints)
 
 ## CORS Configuration
 
@@ -935,64 +936,6 @@ Issue a new prescription during or after consultation.
 
 ---
 
-### POST /api/upload-report-requests
-Request patient to upload specific lab test reports.
-
-**Request:**
-- Method: `POST`
-- Headers:
-  ```
-  Authorization: Bearer {jwt_token}
-  Content-Type: application/json
-  ```
-- Authentication: Required (Professional only)
-
-**Request Body:**
-```json
-{
-  "patient_id": 55,
-  "consultation_id": 205,
-  "requested_tests": "string (required) - Comma-separated test names",
-  "due_date": "date (required) - YYYY-MM-DD",
-  "additional_notes": "string (optional) - Special instructions"
-}
-```
-
-**Response (201 Created):**
-```json
-{
-  "success": true,
-  "message": "Report request sent to patient",
-  "request": {
-    "request_id": "uuid-string",
-    "request_code": "REQ-2025-889",
-    "patient_id": 55,
-    "professional_id": 10,
-    "requested_tests": "CBC, Lipid Profile, HbA1c",
-    "due_date": "2025-11-25",
-    "status": "Pending",
-    "additional_notes": "Fasting required for 12 hours before test",
-    "created_at": "2025-11-19T10:30:00Z"
-  }
-}
-```
-
-**Response (400 Bad Request):**
-```json
-{
-  "error": "Invalid patient ID or due date"
-}
-```
-
-**Response (404 Not Found):**
-```json
-{
-  "error": "Patient not found"
-}
-```
-
----
-
 ## Clinic Endpoints
 
 Public clinic endpoints do not require authentication, while review endpoints require authentication.
@@ -1820,6 +1763,194 @@ Retrieve complete medical history for consultation reference.
 - `403 Forbidden`: User doesn't have permission to access patient medical profile
 - `404 Not Found`: Patient doesn't exist
 - `500 Internal Server Error`: Server error while fetching medical profile
+
+---
+
+## Upload Report Requests Endpoints
+
+All upload report requests endpoints require authentication via JWT token.
+
+### POST /api/upload-report-requests
+Request patient to upload specific lab test reports.
+
+**Request:**
+- Method: `POST`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  Content-Type: application/json
+  ```
+- Authentication: Required (Professional only)
+
+**Request Body:**
+```json
+{
+  "patient_id": 55,
+  "consultation_id": 205,
+  "requested_tests": "string (required) - Comma-separated test names",
+  "due_date": "date (required) - YYYY-MM-DD",
+  "additional_notes": "string (optional) - Special instructions"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "message": "Report request sent to patient",
+  "request": {
+    "request_id": "uuid-string",
+    "request_code": "REQ-2025-889",
+    "patient_id": 55,
+    "professional_id": 10,
+    "requested_tests": "CBC, Lipid Profile, HbA1c",
+    "due_date": "2025-11-25",
+    "status": "Pending",
+    "additional_notes": "Fasting required for 12 hours before test",
+    "created_at": "2025-11-19T10:30:00Z"
+  }
+}
+```
+
+**Response (400 Bad Request):**
+```json
+{
+  "error": "Invalid patient ID or due date"
+}
+```
+
+**Response (404 Not Found):**
+```json
+{
+  "error": "Patient not found"
+}
+```
+
+---
+
+### GET /api/upload-report-requests
+Get all report requests created by the logged-in professional.
+
+**Request:**
+- Method: `GET`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  ```
+- Authentication: Required (Professional only)
+
+**Query Parameters:**
+- `status`: string (optional) - Filter by status: 'Pending' | 'Submitted' | 'Reviewed'
+- `patient_id`: integer (optional) - Filter by patient
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "total": 15,
+ "requests": [
+    {
+      "request_id": "uuid-string",
+      "request_code": "REQ-2025-889",
+      "patient_id": 55,
+      "patient_name": "Abhay Raj",
+      "requested_tests": "CBC, Lipid Profile",
+      "due_date": "2025-11-25",
+      "status": "Pending",
+      "created_at": "2025-11-19T10:30:00Z"
+    }
+  ]
+}
+```
+
+---
+
+### GET /api/upload-report-requests/me
+Get all report requests for the logged-in patient.
+
+**Request:**
+- Method: `GET`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  ```
+- Authentication: Required (Patient only)
+
+**Query Parameters:**
+- `status`: string (optional) - Filter by status
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+ "total": 3,
+  "requests": [
+    {
+      "request_id": "uuid-string",
+      "request_code": "REQ-2025-889",
+      "professional_name": "Dr. Smith",
+      "requested_tests": "CBC, Lipid Profile",
+      "due_date": "2025-11-25",
+      "status": "Pending",
+      "additional_notes": "Fasting required",
+      "created_at": "2025-11-19T10:30:00Z"
+    }
+  ]
+}
+```
+
+---
+
+### POST /api/upload-report-requests/:requestId/upload
+Patient uploads requested test report.
+
+**Path Parameter:**
+- `requestId`: UUID (required) - Report request ID
+
+**Request:**
+- Method: `POST`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  Content-Type: multipart/form-data
+  ```
+- Authentication: Required (Patient only)
+
+**Form Data:**
+- `reportFile`: file (required) - Test report document
+- `test_type`: string (required) - Type of test
+- `upload_method`: enum (required) - 'File' | 'Camera'
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Test report uploaded successfully",
+  "upload": {
+    "upload_id": "uuid-string",
+    "request_id": "uuid-string",
+    "test_type": "CBC",
+    "document_url": "https://storage.example.com/...",
+    "uploaded_at": "2025-11-20T14:30:00Z",
+    "upload_method": "File"
+  },
+  "request_status": "Submitted"
+}
+```
+
+**Response (403 Forbidden):**
+```json
+{
+  "error": "This request is not for you"
+}
+```
+
+**Response (404 Not Found):**
+```json
+{
+  "error": "Report request not found"
+}
+```
 
 ---
 

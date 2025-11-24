@@ -1,0 +1,138 @@
+{
+  "info": {
+    "name": "Upload Report Requests Endpoints",
+    "description": "Collection for testing upload report requests functionality",
+    "_postman_id": "upload-report-requests-workflow",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Request Lab Report Upload",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"patient_id\": 5,\n  \"consultation_id\": 205,\n  \"requested_tests\": \"string (required) - Comma-separated test names\",\n  \"due_date\": \"date (required) - YYYY-MM-DD\",\n  \"additional_notes\": \"string (optional) - Special instructions\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/upload-report-requests",
+          "host": ["{{base_url}}"],
+          "path": ["api", "upload-report-requests"]
+        },
+        "description": "Request patient to upload specific lab test reports (Professional only)"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Report Requests (Professional)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/upload-report-requests?status=Pending&patient_id=5",
+          "host": ["{{base_url}}"],
+          "path": ["api", "upload-report-requests"],
+          "query": [
+            {
+              "key": "status",
+              "value": "Pending",
+              "description": "Filter by status: 'Pending' | 'Submitted' | 'Reviewed'"
+            },
+            {
+              "key": "patient_id",
+              "value": "55",
+              "description": "Filter by patient"
+            }
+          ]
+        },
+        "description": "Get all report requests created by the logged-in professional (Professional only)"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Report Request (Patient View)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/upload-report-requests/me?status=Pending",
+          "host": ["{{base_url}}"],
+          "path": ["api", "upload-report-requests", "me"],
+          "query": [
+            {
+              "key": "status",
+              "value": "Pending",
+              "description": "Filter by status"
+            }
+          ]
+        },
+        "description": "Get all report requests for the logged-in patient (Patient only)"
+      },
+      "response": []
+    },
+    {
+      "name": "Upload Test Report",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "reportFile",
+              "type": "file",
+              "src": "/path/to/test/report.pdf"
+            },
+            {
+              "key": "test_type",
+              "value": "string (required) - Type of test",
+              "type": "text"
+            },
+            {
+              "key": "upload_method",
+              "value": "enum (required) - 'File' | 'Camera'",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/upload-report-requests/{{requestId}}/upload",
+          "host": ["{{base_url}}"],
+          "path": ["api", "upload-report-requests", "{{requestId}}", "upload"]
+        },
+        "description": "Patient uploads requested test report (Patient only)"
+      },
+      "response": []
+    }
+  ]
+}
