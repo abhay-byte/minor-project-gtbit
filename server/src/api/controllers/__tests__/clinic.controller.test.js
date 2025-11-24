@@ -104,12 +104,30 @@ describe('Clinic Controller', () => {
         it('should return doctors for a specific clinic', async () => {
             mockReq.params = { id: 1 };
             mockReq.query = {};
-            const mockDoctors = [{ clinic_doctor_id: 1, full_name: 'Dr. Kumar', specialty: 'Cardiologist' }];
+            const mockDoctors = [{
+                clinic_doctor_id: 1,
+                clinic_doctor_id_uuid: 'clinic-doctor-uuid',
+                full_name: 'Dr. Kumar',
+                specialty: 'Cardiologist',
+                consultation_fee: null,
+                qualifications: null,
+                available_days: null,
+                available_hours: null,
+                rating: null,
+                review_count: null,
+                languages: null,
+                distance_km: null,
+                hospital_affiliation: null,
+                is_volunteer: null,
+                available_today: null,
+                available_tomorrow: null,
+                available_this_week: null
+            }];
             db.query.mockResolvedValue({ rows: mockDoctors });
             
             await getDoctorsByClinic(mockReq, mockRes);
             
-            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('FROM clinic_doctors WHERE clinic_id = $1'), [1]);
+            expect(db.query).toHaveBeenCalledWith(expect.stringMatching(/SELECT[\s\S]*FROM clinic_doctors[\s\S]*WHERE clinic_id = \$1[\s\S]*ORDER BY rating DESC, review_count DESC/), [1]);
             expect(mockRes.status).toHaveBeenCalledWith(200);
             expect(mockRes.json).toHaveBeenCalledWith({
                 clinic_id: 1,
@@ -190,15 +208,37 @@ describe('Clinic Controller', () => {
         it('should fetch all reviews for a clinic doctor', async () => {
             mockReq.params = { doctorId: 5 };
             const mockReviews = [
-                { review_id: 1, rating: 5, comment: 'Excellent service', author: 'John Doe' }
+                {
+                    review_id: 1,
+                    review_id_uuid: 'review-uuid',
+                    patient_id: 101,
+                    rating: 5,
+                    comment: 'Excellent service',
+                    appreciated_aspects: null,
+                    feedback_suggestions: null,
+                    is_verified_visit: false,
+                    created_at: '2025-01-01T00:00:00Z',
+                    author: 'John Doe'
+                }
             ];
-            db.query.mockResolvedValue({ rows: mockReviews });
+            db.query
+                .mockResolvedValueOnce({ rows: mockReviews }) // Main query
+                .mockResolvedValueOnce({ rows: [{ total: 1 }] }) // Count query
+                .mockResolvedValueOnce({ rows: [{ average_rating: 5.0 }] }); // Average rating query
             
             await getClinicDoctorReviews(mockReq, mockRes);
             
-            expect(db.query).toHaveBeenCalledWith(expect.stringContaining('FROM reviews r JOIN patients p ON r.patient_id = p.patient_id WHERE r.target_type = $1 AND r.target_id = $2'), ['ClinicDoctor', 5]);
+            expect(db.query).toHaveBeenNthCalledWith(1, expect.stringContaining('WHERE r.target_type = $1 AND r.target_id = $2'), ['ClinicDoctor', 5, 50, 0]);
+            expect(db.query).toHaveBeenNthCalledWith(2, expect.stringContaining('COUNT(*) as total'), ['ClinicDoctor', 5]);
+            expect(db.query).toHaveBeenNthCalledWith(3, expect.stringContaining('AVG(rating)::NUMERIC(3,2) as average_rating'), ['ClinicDoctor', 5]);
             expect(mockRes.status).toHaveBeenCalledWith(200);
-            expect(mockRes.json).toHaveBeenCalledWith(mockReviews);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                total: 1,
+                average_rating: 5.0,
+                limit: 50,
+                offset: 0,
+                reviews: mockReviews
+            });
         });
     });
     
@@ -267,7 +307,14 @@ describe('Clinic Controller', () => {
             mockReq.user = { userId: 1, userUUID: 'some-uuid' };
             mockReq.query = { limit: '10' };
             const mockSearches = [
-                { search_id: 1, search_query: 'cardiologist near me', searched_at: '2025-11-18T00:00:00Z' }
+                {
+                    search_id: 1,
+                    search_query: 'cardiologist near me',
+                    search_filters: null,
+                    location_searched: null,
+                    results_count: null,
+                    searched_at: '2025-11-18T00:00:00Z'
+                }
             ];
             db.query
                 .mockResolvedValueOnce({ rows: [{ patient_id: 101, patient_id_uuid: 'patient-uuid' }] }) // Find patient
@@ -276,7 +323,7 @@ describe('Clinic Controller', () => {
             await getSearchHistory(mockReq, mockRes);
             
             expect(db.query).toHaveBeenNthCalledWith(1, expect.stringContaining('SELECT patient_id, patient_id_uuid FROM patients WHERE user_id_uuid = $1'), ['some-uuid']);
-            expect(db.query).toHaveBeenNthCalledWith(2, expect.stringContaining('FROM search_history WHERE patient_id = $1'), [101, 10]);
+            expect(db.query).toHaveBeenNthCalledWith(2, expect.stringMatching(/SELECT[\s\S]*FROM search_history[\s\S]*WHERE patient_id = \$1[\s\S]*ORDER BY searched_at DESC[\s\S]*LIMIT \$2/), [101, 10]);
             expect(mockRes.status).toHaveBeenCalledWith(200);
             expect(mockRes.json).toHaveBeenCalledWith({ count: 1, searches: mockSearches });
         });

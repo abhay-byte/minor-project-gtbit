@@ -101,10 +101,10 @@ describe('User Controller', () => {
             expect(mockClient.query).toHaveBeenNthCalledWith(1, 'BEGIN');
             // Verify update on 'users' table
             expect(mockClient.query).toHaveBeenNthCalledWith(2, expect.stringContaining('UPDATE users'), ['Test User Updated', '1234567890', 1]);
-            // Verify update on 'patients' table using UUID - with all 11 parameters
+            // Verify update on 'patients' table using UUID - with all 10 parameters + user_id_uuid
             expect(mockClient.query).toHaveBeenNthCalledWith(
-                3, 
-                expect.stringContaining('UPDATE patients SET address = COALESCE($1, address)'), 
+                3,
+                expect.stringMatching(/UPDATE patients[\s\S]*SET address = COALESCE\(\$1, address\)/),
                 [
                     '456 New Address St',  // address
                     undefined,             // gender
@@ -116,7 +116,7 @@ describe('User Controller', () => {
                     undefined,             // lifestyle_notes
                     undefined,             // current_location
                     undefined,             // current_full_address
-                    'some-uuid'            // user_id_uuid
+                    'some-uuid'            // user_id_uuid (not user_id)
                 ]
             );
             expect(mockClient.query).toHaveBeenNthCalledWith(4, 'COMMIT');
@@ -188,8 +188,27 @@ describe('User Controller', () => {
 
         it('should fetch all medical records for a patient', async () => {
             mockReq.user = { userId: 1, userUUID: 'some-uuid', role: 'Patient' };
-            const mockRecords = [{ record_id: 501, document_name: 'Blood Test' }];
-            db.query.mockResolvedValue({ rows: mockRecords });
+            const mockRecords = [{
+                record_id: 501,
+                document_name: 'Blood Test',
+                document_type: 'Report',
+                document_url: 'https://example.com/test.pdf',
+                uploaded_at: '2025-01-01T00:00:00Z',
+                comments_notes: null,
+                report_date: null,
+                file_format: null,
+                file_size_mb: null
+            }];
+            
+            // Ensure the mock is set up properly after clearAllMocks
+            db.query = jest.fn().mockImplementation((query, params) => {
+                // Check if this is the medical records query by looking for key elements
+                if (query && query.includes('FROM medical_records') && query.includes('JOIN patients') && query.includes('user_id_uuid')) {
+                    return Promise.resolve({ rows: mockRecords });
+                }
+                // For any other query, return empty results
+                return Promise.resolve({ rows: [] });
+            });
 
             await getMyMedicalRecords(mockReq, mockRes);
 
