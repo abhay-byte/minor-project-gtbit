@@ -211,14 +211,14 @@ Fetches the message history for a specific thread.
 
 ### `POST /api/conversations/:id/messages`
 
-Sends a new message.
+Sends a new message. (patient or doctor can send messages)
 
   * **Tables:** `messages`, `patient_doctor_conversations`
   * **Request Body:**
     ```json
     {
       "message_content": "Here is the report you asked for.",
-      "message_type": "Text" // or "Report"
+      "message_type": "Text"
     }
     ```
   * **Response:**
@@ -233,7 +233,6 @@ Sends a new message.
 
 ## 4\. AI Care Companion
 
-The provided documentation does not include the AI Agent endpoints.
 
 ### `POST /v1/agent/orchestrate`
 

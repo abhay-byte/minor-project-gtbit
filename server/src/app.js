@@ -16,6 +16,7 @@ const medicalProfileRoutes = require('./api/routes/medicalProfile.routes');
 const consultationsRoutes = require('./api/routes/consultations.routes');
 const uploadReportRequestsRoutes = require('./api/routes/upload-report-requests.routes');
 const conversationRoutes = require('./api/routes/conversations.routes');
+const aiChatRoutes = require('./api/routes/aiChat.routes');
 
 const app = express();
 
@@ -71,6 +72,7 @@ app.use('/api', healthRoutes);
 app.use('/api', medicalProfileRoutes);
 app.use('/api/consultations', consultationsRoutes);
 app.use('/api/upload-report-requests', uploadReportRequestsRoutes);
+app.use('/api/ai', aiChatRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {

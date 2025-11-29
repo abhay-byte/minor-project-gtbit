@@ -2086,6 +2086,204 @@ Sends a new message. (patient or doctor can send messages)
 
 ---
 
+## AI Chat Endpoints
+
+All AI chat endpoints require authentication via JWT token.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+### POST /api/ai/chat
+
+Send a query to AI and save response.
+
+**Request:**
+- Method: `POST`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  Content-Type: application/json
+  ```
+- Authentication: Required (Patient, Professional, or Admin)
+
+**Request Body:**
+```json
+{
+  "query": "string (required) - The user's query or message to the AI",
+  "session_id": "UUID (optional) - Existing session ID to continue conversation",
+  "image_url": "string (optional) - URL of image to analyze (if applicable)"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "session_id": "UUID - The session ID for this conversation",
+  "reply": "string - The AI's response to the query",
+  "action": "string - The recommended action based on the query",
+  "crisis_detected": "boolean - Whether a crisis situation was detected",
+  "timestamp": "string - ISO 8601 formatted timestamp"
+}
+```
+
+**Response (400 Bad Request):**
+```json
+{
+  "success": false,
+  "error": "Query is required"
+}
+```
+
+**Response (404 Not Found):**
+```json
+{
+  "success": false,
+  "error": "Patient profile not found"
+}
+```
+
+**Response (500 Internal Server Error):**
+```json
+{
+  "success": false,
+  "error": "Failed to get response from AI service"
+}
+```
+
+---
+
+### GET /api/ai/sessions
+
+Get all past AI conversations for the authenticated user.
+
+**Request:**
+- Method: `GET`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  ```
+- Authentication: Required (Patient, Professional, or Admin)
+
+**Response (200 OK):**
+```json
+[
+  {
+    "session_id": "UUID - Unique identifier for the session",
+    "started_at": "string - ISO 8601 formatted start time",
+    "session_summary": "string - Brief summary of the session",
+    "session_type": "string - Type of session (e.g., Health Query, Mental Wellness)",
+    "last_updated": "string - ISO 8601 formatted last update time",
+    "crisis_flag": "boolean - Whether a crisis was detected in this session"
+  }
+]
+```
+
+**Response (404 Not Found):**
+```json
+{
+  "success": false,
+  "error": "Patient profile not found"
+}
+```
+
+**Response (500 Internal Server Error):**
+```json
+{
+  "success": false,
+  "error": "Database error occurred"
+}
+```
+
+---
+
+### GET /api/ai/sessions/:session_id/messages
+
+Get conversation messages for a specific session.
+
+**Path Parameter:**
+- `session_id`: UUID (required) - Session ID to retrieve messages for
+
+**Request:**
+- Method: `GET`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  ```
+- Authentication: Required (Patient, Professional, or Admin)
+
+**Response (200 OK):**
+```json
+[
+  {
+    "role": "string - Either 'user' or 'assistant'",
+    "message": "string - The message content",
+    "image_url": "string (nullable) - URL of any attached image",
+    "timestamp": "string - ISO 8601 formatted timestamp"
+  }
+]
+```
+
+**Response (404 Not Found):**
+```json
+{
+  "success": false,
+  "error": "Session not found or does not belong to user"
+}
+```
+
+**Response (500 Internal Server Error):**
+```json
+{
+  "success": false,
+  "error": "Database error occurred"
+}
+```
+
+---
+
+### DELETE /api/ai/sessions/:session_id
+
+Soft-delete a stored conversation.
+
+**Path Parameter:**
+- `session_id`: UUID (required) - Session ID to delete
+
+**Request:**
+- Method: `DELETE`
+- Headers:
+  ```
+  Authorization: Bearer {jwt_token}
+  ```
+- Authentication: Required (Patient, Professional, or Admin)
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Session deleted successfully"
+}
+```
+
+**Response (404 Not Found):**
+```json
+{
+  "success": false,
+  "error": "Session not found or does not belong to user"
+}
+```
+
+**Response (500 Internal Server Error):**
+```json
+{
+  "success": false,
+  "error": "Database error occurred"
+}
+```
+
+---
+
 Common status codes:
 - 400: Bad Request (validation error)
 - 401: Unauthorized (invalid/expired token)
