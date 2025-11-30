@@ -1,17 +1,19 @@
 import { useState, useEffect } from "react";
+import { ChatProvider, useChat } from "./context/ChatContext";
 import Login from "./Login";
-import Conversations from "./Conversations";
-import ChatWindow from "./ChatWindow";
+import SessionList from "./components/ChatSidebar/SessionList";
+import ChatWindow from "./components/ChatArea/ChatWindow";
+import AIChatInterface from "./components/AIChat/AIChatInterface";
 
-export default function App() {
+function AppContent() {
+  const { state, dispatch } = useChat();
   const [user, setUser] = useState(null);
-  const [activeConversation, setActiveConversation] = useState(null);
   const [showUserSwitcher, setShowUserSwitcher] = useState(false);
   
   // Pre-seeded users
-  const preSeededUsers = {
-    patient: { 
-      role: "Patient", 
+ const preSeededUsers = {
+    patient: {
+      role: "Patient",
       token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWJoYXkucmFqQGV4YW1wbGUuY29tIiwicm9sZSI6IlBhdGllbnQiLCJ1c2VyX2lkX3V1aWQiOiIzNWVhMWMyZC0yMDg4LTRiZTUtOWRhOS1lZTY1MzNiNmU4ZjAiLCJpYXQiOjE3NjM5OTYzNTYsImV4cCI6MTc2NDA4Mjc1Nn0.96f-q2nGt7dX_eQWu_7kiJgqSx9bhE2v7vPUHdxUg08",
       user: {
         user_id: 1,
@@ -20,8 +22,8 @@ export default function App() {
         role: "Patient"
       }
     },
-    doctor: { 
-      role: "Professional", 
+    doctor: {
+      role: "Professional",
       token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImVtYWlsIjoiYW1pdC5wYXRlbEBleGFtcGxlLmNvbSIsInJvbGUiOiJQcm9mZXNzaW9uYWwiLCJ1c2VyX2lkX3V1aWQiOiIwNmQyMzEwNi1mM2FiLTQ3YzQtOThlNC00NTJhZWZjZmFjNTAiLCJpYXQiOjE3NjM5OTYzODMsImV4cCI6MTc2NDA4Mjc4M30.FyZPxKMbSd9Yu8EQoyjytVnRZK8qTSo2KZvj2afcyZk",
       user: {
         user_id: 4,
@@ -32,27 +34,45 @@ export default function App() {
     }
   };
 
-  // Auto-login patient user
-  useEffect(() => {
-    // Auto-login as patient after a short delay to show the login screen briefly
-    const timer = setTimeout(() => {
-      setUser(preSeededUsers.patient);
-    }, 2000);
-    
-    return () => clearTimeout(timer);
-  }, []);
 
   const switchUser = (userType) => {
     setUser(preSeededUsers[userType]);
-    setActiveConversation(null);
+    dispatch({ type: 'SET_ACTIVE_SESSION', payload: null });
     setShowUserSwitcher(false);
+  };
+
+  const handleSessionSelect = (session) => {
+    dispatch({ type: 'SET_ACTIVE_SESSION', payload: session });
+  };
+
+  const handleCreateNewAISession = () => {
+    // Create a temporary AI session object
+    const newSession = {
+      id: `ai-${Date.now()}`,
+      type: 'ai',
+      title: 'New AI Chat',
+      lastMessage: 'Health Query',
+      lastMessageTime: new Date().toISOString(),
+    };
+    
+    dispatch({ type: 'SET_ACTIVE_SESSION', payload: newSession });
+  };
+
+  const handleUpdateSession = (sessionId, messages) => {
+    // Update the session with the real ID from the API
+    const updatedSession = {
+      ...state.activeSession,
+      id: sessionId,
+    };
+    
+    dispatch({ type: 'SET_ACTIVE_SESSION', payload: updatedSession });
   };
 
   if (!user) return <Login onLogin={setUser} />;
 
-  return (
-    <div style={{ 
-      display: "flex", 
+ return (
+    <div style={{
+      display: "flex",
       flexDirection: "column",
       height: "100vh",
       width: "100vw",
@@ -72,7 +92,7 @@ export default function App() {
           <div style={{ fontSize: "0.9em", opacity: 0.8 }}>{user.user.email}</div>
         </div>
         <div style={{ display: "flex", gap: "10px" }}>
-          <button 
+          <button
             onClick={() => setShowUserSwitcher(!showUserSwitcher)}
             style={{
               backgroundColor: "white",
@@ -85,8 +105,8 @@ export default function App() {
           >
             Switch User
           </button>
-          <button 
-            onClick={() => setActiveConversation(null)}
+          <button
+            onClick={() => dispatch({ type: 'SET_ACTIVE_SESSION', payload: null })}
             style={{
               backgroundColor: "white",
               color: "#007bff",
@@ -110,7 +130,7 @@ export default function App() {
           justifyContent: "center",
           gap: "20px"
         }}>
-          <button 
+          <button
             onClick={() => switchUser('patient')}
             style={{
               backgroundColor: user?.user?.role === 'Patient' ? "#007bff" : "#6c757d",
@@ -123,7 +143,7 @@ export default function App() {
           >
             Switch to Patient
           </button>
-          <button 
+          <button
             onClick={() => switchUser('doctor')}
             style={{
               backgroundColor: user?.user?.role === 'Professional' ? "#007bff" : "#6c757d",
@@ -140,23 +160,60 @@ export default function App() {
       )}
       
       {/* Main content */}
-      <div style={{ 
-        display: "flex", 
+      <div style={{
+        display: "flex",
         flex: 1,
         overflow: "hidden"
       }}>
-        <Conversations 
-          token={user.token} 
-          onSelect={(conversationId) => {
-            console.log("Selected conversation:", conversationId);
-            setActiveConversation(conversationId);
-          }} 
-        />
-        <ChatWindow 
-          token={user.token} 
-          conversationId={activeConversation} 
-        />
+        <div style={{
+          width: "30%",
+          borderRight: "1px solid #ddd",
+          backgroundColor: "#fff",
+          display: "flex",
+          flexDirection: "column"
+        }}>
+          <div style={{
+            padding: "15px",
+            backgroundColor: "#007bff",
+            color: "white",
+            fontWeight: "bold"
+          }}>
+            Your Conversations
+          </div>
+          
+          <SessionList
+            token={user.token}
+            onSelectSession={handleSessionSelect}
+            activeSession={state.activeSession}
+            user={user}
+            onCreateNewAISession={handleCreateNewAISession}
+          />
+        </div>
+        
+        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          {state.activeSession?.type === 'ai' ? (
+            <AIChatInterface
+              token={user.token}
+              session={state.activeSession}
+              onUpdateSession={handleUpdateSession}
+            />
+          ) : (
+            <ChatWindow
+              token={user.token}
+              conversationId={state.activeSession?.id}
+              sessionType={state.activeSession?.type || 'doctor'}
+            />
+          )}
+        </div>
       </div>
     </div>
+ );
+}
+
+export default function App() {
+  return (
+    <ChatProvider>
+      <AppContent />
+    </ChatProvider>
   );
 }

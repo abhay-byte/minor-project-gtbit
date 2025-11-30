@@ -89,10 +89,10 @@ describe('AI Chat Controller Tests', () => {
       // Mock fetch response from AI service
       global.fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ 
-          reply: 'This might be a tension headache', 
-          action: 'recommend_consultation',
-          crisis_detected: false 
+        json: async () => ({
+          answer: 'This might be a tension headache',
+          response_type: 'recommend_consultation',
+          crisis_detected: false
         })
       });
       
@@ -130,10 +130,10 @@ describe('AI Chat Controller Tests', () => {
       // Mock fetch response from AI service
       global.fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ 
-          reply: 'This might be a tension headache', 
-          action: 'recommend_consultation',
-          crisis_detected: false 
+        json: async () => ({
+          answer: 'This might be a tension headache',
+          response_type: 'recommend_consultation',
+          crisis_detected: false
         })
       });
       
@@ -198,9 +198,9 @@ describe('AI Chat Controller Tests', () => {
       // Mock fetch response with crisis detected
       global.fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ 
-          reply: 'I understand you are feeling hopeless. This is concerning and you should seek immediate help.', 
-          action: 'crisis_escalation',
+        json: async () => ({
+          answer: 'I understand you are feeling hopeless. This is concerning and you should seek immediate help.',
+          response_type: 'crisis_escalation',
           crisis_detected: true,
           crisis_type: 'Severe distress'
         })

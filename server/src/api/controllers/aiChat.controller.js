@@ -78,7 +78,7 @@ const sendChatQuery = async (req, res) => {
     let aiResponse;
     try {
       // Extract the token from the Authorization header
-      const authHeader = req.headers.authorization;
+      const authHeader = req.headers?.authorization;
       const token = authHeader ? authHeader.replace('Bearer ', '') : '';
       
       const response = await fetch(`${aiServiceUrl}/v1/agent/orchestrate`, {
@@ -103,10 +103,11 @@ const sendChatQuery = async (req, res) => {
       });
     }
 
-    // Extract response data
+    // Extract response data based on the AI service's response structure
+    // The AI service returns: { answer: "...", response_type: "...", crisis_detected: false, ... }
     const {
-      reply = 'I encountered an issue processing your request. Please try again.',
-      action = 'general_response',
+      answer: reply = 'I encountered an issue processing your request. Please try again.',
+      response_type: action = 'general_response',
       crisis_detected = false,
       crisis_type = null
     } = aiResponse;
@@ -119,7 +120,7 @@ const sendChatQuery = async (req, res) => {
     `;
     await pool.query(userMessageQuery, [userId, query, image_url || null, sessionId]);
     
-
+    
     // Save AI response to chat logs
     const aiMessageQuery = `
       INSERT INTO ai_chat_logs (user_id, user_id_uuid, message_content, sender, timestamp, ai_metadata, session_id)
