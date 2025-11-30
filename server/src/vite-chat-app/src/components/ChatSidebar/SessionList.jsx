@@ -103,7 +103,12 @@ const SessionList = ({ token, onSelectSession, activeSession, user, onCreateNewA
   }
 
   return (
-    <div style={{ flex: 1, overflowY: "auto" }}>
+    <div style={{
+      flex: 1,
+      overflowY: "auto",
+      display: "flex",
+      flexDirection: "column"
+    }}>
       {/* Doctor Conversations Section */}
       <div style={{ marginBottom: "20px", border: "1px solid #e9ecef", borderRadius: "8px", overflow: "hidden" }}>
         <div style={{

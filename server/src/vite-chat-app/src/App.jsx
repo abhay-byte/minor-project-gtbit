@@ -170,7 +170,8 @@ function AppContent() {
           borderRight: "1px solid #ddd",
           backgroundColor: "#fff",
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
+          overflow: "hidden"  /* This ensures the sidebar container doesn't expand beyond its bounds */
         }}>
           <div style={{
             padding: "15px",

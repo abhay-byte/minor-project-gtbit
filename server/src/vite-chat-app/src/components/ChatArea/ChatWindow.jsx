@@ -138,14 +138,17 @@ const ChatWindow = ({ token, conversationId, sessionType }) => {
       flex: 1,
       display: "flex",
       flexDirection: "column",
-      borderLeft: "1px solid #ddd"
+      borderLeft: "1px solid #ddd",
+      minHeight: 0  /* This allows the flex item to shrink below its content size */
     }}>
       {/* Messages Container */}
       <div style={{
         flex: 1,
         overflowY: "auto",
         padding: "20px",
-        backgroundColor: "#fafafa"
+        backgroundColor: "#fafafa",
+        display: "flex",
+        flexDirection: "column"
       }}>
         {loading && messages.length === 0 ? (
           <div style={{
