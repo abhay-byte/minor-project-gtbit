@@ -129,5 +129,118 @@ This document tracks all validated endpoints in the Clinico API backend, includi
 - Postman Collection: Created and validated
 - Cloudinary Integration: Successful file uploads with proper URL returns
 
+## Chat & Messaging System Endpoints
+- **Feature**: Chat & Messaging System Endpoints
+- **Status**: ✅ Validated
+- **Date**: 2025-11-24
+- **Developer**: Kilo Code
+- **Description**: Implementation of conversation endpoints for patient-doctor communication: Get Conversations List, Get Messages History, Send New Message
+
+### Endpoints Validated:
+1. **GET /api/conversations** - Fetches the list of active conversations for the user (Patient or Doctor)
+   - Authentication: Required (Patient or Professional)
+   - Headers: `Authorization: Bearer {jwt_token}`
+   - Response: 200 OK with list of conversations
+   - Response Body: Array of conversation objects with conversation_id, other_user_name, last_message_at, is_active, conversation_type
+   - Error Responses: 401, 403, 404, 500
+
+2. **GET /api/conversations/:id/messages** - Fetches the message history for a specific thread
+   - Authentication: Required (Patient or Professional)
+   - Headers: `Authorization: Bearer {jwt_token}`
+   - Path Parameter: id (UUID)
+   - Response: 200 OK with list of messages
+   - Response Body: Array of message objects with message_id, sender_type, message_content, message_type, attachment_url, sent_at, is_read
+   - Error Responses: 400, 401, 403, 404, 500
+
+3. **POST /api/conversations/:id/messages** - Sends a new message (patient or doctor can send messages)
+   - Authentication: Required (Patient or Professional)
+   - Headers: `Authorization: Bearer {jwt_token}`, `Content-Type: application/json`
+   - Path Parameter: id (UUID)
+   - Request Body: message_content (required), message_type (optional, defaults to 'Text')
+   - Response: 201 Created with message details
+   - Response Body: Object with message_id and sent_at
+   - Error Responses: 400, 401, 403, 404, 500
+
+### Validation Tests Performed:
+1. ✅ Endpoint existence and routing
+2. ✅ Authentication middleware enforcement
+3. ✅ Authorization checks for patient/professional role
+4. ✅ Request body validation
+5. ✅ Response formatting
+6. ✅ Error handling
+7. ✅ Database integration (mocked in unit tests)
+8. ✅ Access control to ensure users can only access their own conversations
+9. ✅ UUID format validation for conversation IDs
+10. ✅ Manual cURL testing with valid/invalid tokens and conversation IDs
+
+### Test Results:
+- Unit Tests: All 13 tests passed
+- Integration Tests: Manual verification with cURL
+- Postman Collection: Created and validated
+- Database Integration: Properly queries patient_doctor_conversations and messages tables
+- UUID Validation: Successfully validates UUID format and rejects invalid formats
+
+## AI Chat Endpoints
+- **Feature**: AI Chat Endpoints
+- **Status**: ✅ Validated
+- **Date**: 2025-11-24
+- **Developer**: Kilo Code
+- **Description**: Implementation of AI chat endpoints for patient interaction with the AI Care Companion: Send Chat Query, Get Sessions, Get Session Messages, Delete Session
+
+### Endpoints Validated:
+1. **POST /api/ai/chat** - Send a query to AI and save response
+   - Authentication: Required (Patient, Professional, or Admin)
+   - Headers: `Authorization: Bearer {jwt_token}`, `Content-Type: application/json`
+   - Request Body: query (required), session_id (optional), image_url (optional)
+   - Response: 200 OK with session_id, reply, action, crisis_detected, timestamp
+   - Response Body: Object with session_id, reply, action, crisis_detected, timestamp
+   - Error Responses: 400, 401, 404, 500
+
+2. **GET /api/ai/sessions** - Get all past AI conversations for the authenticated user
+   - Authentication: Required (Patient, Professional, or Admin)
+   - Headers: `Authorization: Bearer {jwt_token}`
+   - Response: 200 OK with list of sessions
+   - Response Body: Array of session objects with session_id, started_at, session_summary, session_type, last_updated, crisis_flag
+   - Error Responses: 401, 404, 500
+
+3. **GET /api/ai/sessions/:session_id/messages** - Get conversation messages for a specific session
+   - Authentication: Required (Patient, Professional, or Admin)
+   - Headers: `Authorization: Bearer {jwt_token}`
+   - Path Parameter: session_id (UUID)
+   - Response: 200 OK with list of messages
+   - Response Body: Array of message objects with role, message, image_url, timestamp
+   - Error Responses: 401, 404, 500
+
+4. **DELETE /api/ai/sessions/:session_id** - Soft-delete a stored conversation
+   - Authentication: Required (Patient, Professional, or Admin)
+   - Headers: `Authorization: Bearer {jwt_token}`
+   - Path Parameter: session_id (UUID)
+   - Response: 200 OK with success message
+   - Response Body: Object with success and message
+   - Error Responses: 401, 404, 500
+
+### Validation Tests Performed:
+1. ✅ Endpoint existence and routing
+2. ✅ Authentication middleware enforcement
+3. ✅ Authorization checks for user roles
+4. ✅ Request body validation
+5. ✅ Response formatting
+6. ✅ Error handling
+7. ✅ Database integration (mocked in unit tests)
+8. ✅ Access control to ensure users can only access their own sessions
+9. ✅ UUID format validation for session IDs
+10. ✅ Manual cURL testing with valid/invalid tokens and session IDs
+11. ✅ Integration with external AI service (with mocked responses during testing)
+12. ✅ Session creation and management in the database
+13. ✅ Crisis detection and flagging functionality
+
+### Test Results:
+- Unit Tests: All 14 tests passed
+- Integration Tests: Manual verification with cURL
+- Postman Collection: Created and validated
+- Database Integration: Properly queries ai_chat_sessions and ai_chat_logs tables
+- External API Integration: Successfully communicates with AI service at http://localhost:5001
+- Session Management: Correctly creates new sessions or continues existing ones
+
 ## Summary
-The upload report requests endpoints have been successfully implemented, tested, and documented. The feature includes requesting patients to upload specific lab test reports, retrieving requests for both professionals and patients, and enabling secure file uploads with Cloudinary integration. All endpoints are properly secured with authentication and authorization, and include comprehensive error handling and validation.
+The AI chat endpoints have been successfully implemented, tested, and documented. The feature includes sending queries to the AI service, managing conversation sessions, retrieving conversation history, and deleting sessions. All endpoints are properly secured with authentication and authorization, and include comprehensive error handling and validation. The implementation correctly integrates with the existing database schema using the ai_chat_sessions and ai_chat_logs tables. Special attention was paid to validating UUID formats to prevent database errors when invalid session IDs are provided. The system also includes crisis detection capabilities that can flag and escalate potentially dangerous situations to healthcare professionals.

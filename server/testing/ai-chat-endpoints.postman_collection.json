@@ -1,0 +1,140 @@
+{
+  "info": {
+    "_postman_id": "8c6df8c7-7e9c-4d5a-9e3e-7f5b1e69b5a1",
+    "name": "AI Chat Endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection for testing AI Chat endpoints in the Clinico backend"
+  },
+  "item": [
+    {
+      "name": "POST /api/ai/chat",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"I have a headache and fever\",\n  \"session_id\": \"{{session_id}}\",\n  \"image_url\": \"{{image_url}}\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/ai/chat",
+          "host": ["{{base_url}}"],
+          "path": ["api", "ai", "chat"]
+        },
+        "description": "Send a query to AI and save response. Creates new session if session_id not provided."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/ai/sessions",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/ai/sessions",
+          "host": ["{{base_url}}"],
+          "path": ["api", "ai", "sessions"]
+        },
+        "description": "Get all past AI conversations for the authenticated user."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /api/ai/sessions/:session_id/messages",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/ai/sessions/{{session_id}}/messages",
+          "host": ["{{base_url}}"],
+          "path": ["api", "ai", "sessions", "{{session_id}}", "messages"]
+        },
+        "description": "Get conversation messages for a specific session."
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE /api/ai/sessions/:session_id",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/ai/sessions/{{session_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "ai", "sessions", "{{session_id}}"]
+        },
+        "description": "Soft-delete a stored conversation."
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "id": "base_url",
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "id": "auth_token",
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "session_id",
+      "key": "session_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "image_url",
+      "key": "image_url",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
