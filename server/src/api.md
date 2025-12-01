@@ -16,6 +16,7 @@ This document provides a comprehensive overview of all available API endpoints i
 10. [Review Endpoints](#review-endpoints)
 11. [Medical Profile Endpoints](#medical-profile-endpoints)
 12. [Upload Report Requests Endpoints](#upload-report-requests-endpoints)
+13. [Signaling Endpoints](#signaling-endpoints)
 
 ## CORS Configuration
 
@@ -2290,5 +2291,68 @@ Common status codes:
 - 403: Forbidden (insufficient permissions)
 - 404: Not Found (resource doesn't exist)
 - 409: Conflict (duplicate email during registration)
+## Signaling Endpoints
+
+All signaling endpoints require authentication via JWT token.
+
+**Headers:**
+```
+Authorization: Bearer {jwt_token}
+```
+
+### POST /api/signaling/room
+Creates a video consultation room for an appointment.
+
+**Authentication Required:** Yes
+
+**Request Body:**
+```json
+{
+  "appointment_id": 102
+}
+```
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "data": {
+    "room_id": "uuid-room-id",
+    "consultation_link": "https://clinico.com/room/uuid-room-id"
+  }
+}
+```
+
+**Error Responses:**
+- **400 Bad Request:** Missing appointment_id
+- **404 Not Found:** Appointment does not exist
+- **401 Unauthorized:** Invalid or missing authentication token
+
+---
+
+### GET /api/signaling/validate/:roomId
+Validates if the authenticated user is allowed to join a video consultation room.
+
+**Authentication Required:** Yes
+
+**URL Parameters:**
+- `roomId` (string): UUID of the video room
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "data": {
+    "is_valid": true,
+    "role": "Patient",
+    "identity_name": "Abhay Raj"
+  }
+}
+```
+
+**Error Responses:**
+- **404 Not Found:** Room does not exist
+- **403 Forbidden:** User not authorized to join this room
+- **401 Unauthorized:** Invalid or missing authentication token
 - 429: Too Many Requests (rate limit exceeded)
 - 500: Internal Server Error
