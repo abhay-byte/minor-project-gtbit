@@ -4,11 +4,9 @@ import { useChat } from '../context/ChatContext';
 import { getMyAppointments, createVideoRoom } from '../services/appointmentService';
 import './MyAppointments.css';
 
-const MyAppointments = () => {
+const MyAppointments = ({ token }) => {
   const navigate = useNavigate();
-  const { state } = useChat();
-  const token = state.user?.token; // Get token from context
- const [appointments, setAppointments] = useState([]);
+  const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creatingRoom, setCreatingRoom] = useState(null);
 

@@ -218,17 +218,63 @@ function AppContent() {
 }
 
 function App() {
-  return (
+ return (
     <BrowserRouter>
       <ChatProvider>
         <Routes>
           <Route path="/" element={<AppContent />} />
-          <Route path="/appointments" element={<MyAppointments />} />
+          <Route path="/appointments" element={<AppContentForAppointments />} />
           <Route path="/room/:roomId" element={<VideoRoom />} />
         </Routes>
       </ChatProvider>
     </BrowserRouter>
  );
+}
+
+function AppContentForAppointments() {
+  const { state, dispatch } = useChat();
+  const [user, setUser] = useState(null);
+  
+  // Pre-seeded users
+ const preSeededUsers = {
+    patient: {
+      role: "Patient",
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWJoYXkucmFqQGV4YW1wbGUuY29tIiwicm9sZSI6IlBhdGllbnQiLCJ1c2VyX2lkX3V1aWQiOiIzNWVhMWMyZC0yMDg4LTRiZTUtOWRhOS1lZTY1MzNiNmU4ZjAiLCJpYXQiOjE3NjM5OTYzNTYsImV4cCI6MTc2NDA4Mjc1Nn0.96f-q2nGt7dX_eQWu_7kiJgqSx9bhE2v7vPUHdxUg08",
+      user: {
+        user_id: 1,
+        email: "abhay.raj@example.com",
+        full_name: "Abhay Raj",
+        role: "Patient"
+      }
+    },
+    doctor: {
+      role: "Professional",
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImVtYWlsIjoiYW1pdC5wYXRlbEBleGFtcGxlLmNvbSIsInJvbGUiOiJQcm9mZXNzaW9uYWwiLCJ1c2VyX2lkX3V1aWQiOiIwNmQyMzEwNi1mM2FiLTQ3YzQtOThlNC00NTJhZWZjZmFjNTAiLCJpYXQiOjE3NjM5OTYzODMsImV4cCI6MTc2NDA4Mjc4M30.FyZPxKMbSd9Yu8EQoyjytVnRZK8qTSo2KZvj2afcyZk",
+      user: {
+        user_id: 4,
+        email: "amit.patel@example.com",
+        full_name: "Dr. Amit Patel",
+        role: "Professional"
+      }
+    }
+  };
+
+  // Check if user is already in localStorage
+  useEffect(() => {
+    const storedToken = localStorage.getItem('authToken');
+    if (storedToken) {
+      // Determine which user based on token
+      if (storedToken === preSeededUsers.patient.token) {
+        setUser(preSeededUsers.patient);
+      } else if (storedToken === preSeededUsers.doctor.token) {
+        setUser(preSeededUsers.doctor);
+      }
+    }
+  }, []);
+
+  if (!user) return <Login onLogin={setUser} />;
+
+  return <MyAppointments token={user.token} />;
 }
 
 export default App;
