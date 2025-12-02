@@ -18,8 +18,25 @@ exports.createRoom = async (req, res, next) => {
     }
 
     // Check if appointment exists
-    const appointmentQuery = 'SELECT appointment_id FROM appointments WHERE appointment_id = $1';
-    const result = await db.query(appointmentQuery, [appointment_id]);
+    // First try with integer (original format)
+    let result;
+    let appointmentQuery;
+    
+    // Try to convert to integer first, if it fails, handle as UUID
+    let appointmentIdForQuery;
+    const isInteger = Number.isInteger(Number(appointment_id));
+    
+    if (isInteger) {
+      appointmentIdForQuery = parseInt(appointment_id);
+      appointmentQuery = 'SELECT appointment_id FROM appointments WHERE appointment_id = $1';
+      result = await db.query(appointmentQuery, [appointmentIdForQuery]);
+    } else {
+      // If not an integer, assume it might be a UUID or another format
+      // We'll need to determine the correct approach based on the actual data model
+      // For now, let's try to find if there's an appointment_id_uuid column
+      appointmentQuery = 'SELECT appointment_id FROM appointments WHERE appointment_id::text = $1';
+      result = await db.query(appointmentQuery, [appointment_id]);
+    }
     
     if (result.rows.length === 0) {
       return res.status(404).json({
@@ -61,7 +78,14 @@ exports.createRoom = async (req, res, next) => {
 exports.validateRoom = async (req, res, next) => {
   try {
     const { roomId } = req.params;
-    const userId = req.user.id; // From auth middleware
+    // Extract user ID from token - check both id and userId fields to handle different token formats
+    const userId = req.user.id || req.user.userId || req.user_id; // From auth middleware
+
+    console.log('=== ROOM VALIDATION DEBUG ===');
+    console.log('Room ID:', roomId);
+    console.log('User ID from token:', userId);
+    console.log('Full user object:', req.user);
+    console.log('APP_DOMAIN environment variable:', process.env.APP_DOMAIN);
 
     // Validate input
     if (!roomId) {
@@ -74,6 +98,8 @@ exports.validateRoom = async (req, res, next) => {
     // Construct consultation link to search
     const domain = process.env.APP_DOMAIN || 'https://clinico.com';
     const consultation_link = `${domain}/room/${roomId}`;
+    
+    console.log('Looking for consultation_link:', consultation_link);
 
     // Find appointment with this room
     const appointmentQuery = `
@@ -95,7 +121,10 @@ exports.validateRoom = async (req, res, next) => {
     
     const result = await db.query(appointmentQuery, [consultation_link]);
     
+    console.log('Found appointments:', result.rows);
+
     if (result.rows.length === 0) {
+      console.log('❌ No appointment found');
       return res.status(404).json({
         success: false,
         message: 'Room not found',
@@ -106,6 +135,13 @@ exports.validateRoom = async (req, res, next) => {
     }
 
     const appointment = result.rows[0];
+    console.log('Appointment details:', {
+      appointment_id: appointment.appointment_id,
+      patient_user_id: appointment.patient_user_id,
+      professional_user_id: appointment.professional_user_id,
+      matches_patient: userId === appointment.patient_user_id,
+      matches_professional: userId === appointment.professional_user_id
+    });
 
     // Check if user is participant
     let role = null;
@@ -114,20 +150,35 @@ exports.validateRoom = async (req, res, next) => {
     if (userId === appointment.patient_user_id) {
       role = 'Patient';
       identity_name = appointment.patient_name;
+      console.log('✅ User authorized as Patient');
     } else if (userId === appointment.professional_user_id) {
       role = 'Doctor';
       identity_name = appointment.professional_name;
+      console.log('✅ User authorized as Doctor');
     }
 
     if (!role) {
+      console.log('❌ User not authorized');
+      console.log('Token user_id:', userId);
+      console.log('Patient user_id:', appointment.patient_user_id);
+      console.log('Doctor user_id:', appointment.professional_user_id);
+      
       return res.status(403).json({
         success: false,
         message: 'Unauthorized to join this room',
+        debug: {
+          token_user_id: userId,
+          patient_user_id: appointment.patient_user_id,
+          professional_user_id: appointment.professional_user_id
+        },
         data: {
           is_valid: false
         }
       });
     }
+
+    console.log('✅ Validation successful');
+    console.log('============================');
 
     // Valid access
     res.status(200).json({

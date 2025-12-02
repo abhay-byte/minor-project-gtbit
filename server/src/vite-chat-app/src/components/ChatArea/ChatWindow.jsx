@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { fetchMessages, sendMessage } from '../../services/apiClient';
 import { getMessages, setMessages } from '../../utils/localStorage';
 import MessageItem from './MessageItem';
+import axios from 'axios';
+import { initiateVideoConsultationForPatient, initiateVideoConsultationForDoctor } from '../../services/appointmentService';
 
 const ChatWindow = ({ token, conversationId, sessionType }) => {
   const [messages, setMessagesState] = useState([]);
@@ -9,6 +11,79 @@ const ChatWindow = ({ token, conversationId, sessionType }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
+
+  // Function to create a video room for an appointment
+  const handleJoinVideoCall = async () => {
+    try {
+      // In the testing web app, we need to create an appointment first
+      // Then use that appointment ID to create the video room
+      // We'll need to get patient and doctor IDs from the user context
+      
+      // Use the token passed as a prop from parent component
+      if (!token) {
+        alert('Please log in first');
+        return;
+      }
+
+      // We need to identify if the current user is a patient or doctor
+      // and get the corresponding IDs to create an appointment
+      // For this demo, we'll simulate the process
+      
+      // Let's try to get the current user's info from the token
+      // First decode the token to get user info (simplified)
+      // Extract payload from JWT token (format: header.payload.signature)
+      const tokenParts = token?.split('.');
+      const tokenPayload = tokenParts?.length === 3 ? tokenParts[1] : null;
+      let userId, userRole;
+      
+      if (tokenPayload) {
+        try {
+          const decodedPayload = atob(tokenPayload); // Decode base64
+          const decoded = JSON.parse(decodedPayload);
+          userId = decoded.user_id;
+          userRole = decoded.role;
+        } catch (e) {
+          console.error('Could not decode token', e);
+        }
+      }
+      
+      // For a conversation, we need to determine the other party
+      // In a real implementation, we'd get this from the conversation details
+      // For now, we'll implement the logic differently based on user role
+      
+      let patientId, doctorId;
+      
+      if (userRole === 'Patient') {
+        patientId = userId;
+        // For demo purposes, we'll use a default doctor ID
+        // In real implementation, this would come from the conversation
+        // Use doctor's professional ID (we know Dr. Amit Patel has ID 10)
+        doctorId = 10; // Using Dr. Amit Patel's ID (as we know from the profile)
+        
+        // For patients, create a new appointment and video room
+        const result = await initiateVideoConsultationForPatient(patientId, doctorId, token);
+        const { roomId } = result;
+        
+        // Navigate to the video room
+        window.location.href = `/room/${roomId}`;
+      } else if (userRole === 'Professional') {
+        doctorId = userId;
+        
+        // For doctors, join an existing appointment
+        const result = await initiateVideoConsultationForDoctor(doctorId, token);
+        const { roomId } = result;
+        
+        // Navigate to the video room
+        window.location.href = `/room/${roomId}`;
+      } else {
+        alert('Only patients and professionals can start video calls');
+        return;
+      }
+    } catch (error) {
+      console.error('Failed to start video consultation:', error);
+      alert('Failed to start video call: ' + (error.response?.data?.message || error.message));
+    }
+   };
 
   useEffect(() => {
     if (conversationId && sessionType === 'doctor') {
@@ -141,6 +216,44 @@ const ChatWindow = ({ token, conversationId, sessionType }) => {
       borderLeft: "1px solid #ddd",
       minHeight: 0  /* This allows the flex item to shrink below its content size */
     }}>
+      {/* Header with video call button */}
+      <div style={{
+        padding: "10px 15px",
+        borderBottom: "1px solid #ddd",
+        backgroundColor: "#f8f9fa",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 10
+      }}>
+        <h3>Chat</h3>
+        <div style={{ display: "flex", gap: "10px" }}>
+          {sessionType === 'doctor' && (
+            <button
+              onClick={handleJoinVideoCall}
+              style={{
+                backgroundColor: "#28a745",
+                color: "white",
+                border: "none",
+                padding: "8px 15px",
+                borderRadius: "4px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "5px"
+              }}
+            >
+              <span>🎥</span>
+              Start Video Call
+            </button>
+          )}
+        </div>
+      </div>
+      
       {/* Messages Container */}
       <div style={{
         flex: 1,
@@ -148,12 +261,13 @@ const ChatWindow = ({ token, conversationId, sessionType }) => {
         padding: "20px",
         backgroundColor: "#fafafa",
         display: "flex",
-        flexDirection: "column"
+        flexDirection: "column",
+        marginTop: "60px" /* Make space for the header */
       }}>
         {loading && messages.length === 0 ? (
           <div style={{
             textAlign: "center",
-            color: "#666",
+            color: "#66",
             paddingTop: "50px"
           }}>
             Loading messages...
@@ -168,7 +282,7 @@ const ChatWindow = ({ token, conversationId, sessionType }) => {
         ) : (
           <div style={{
             textAlign: "center",
-            color: "#666",
+            color: "#66",
             paddingTop: "50px"
           }}>
             No messages yet. Start the conversation!

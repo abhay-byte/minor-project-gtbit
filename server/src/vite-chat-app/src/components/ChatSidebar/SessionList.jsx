@@ -17,11 +17,8 @@ const SessionList = ({ token, onSelectSession, activeSession, user, onCreateNewA
       setLoading(true);
       setError(null);
       
-      // Fetch both doctor conversations and AI sessions
-      const [doctorConversations, aiConversations] = await Promise.all([
-        fetchConversations(token),
-        fetchAISessions(token)
-      ]);
+      // Fetch doctor conversations
+      const doctorConversations = await fetchConversations(token);
       
       if (doctorConversations.success) {
         setSessions(doctorConversations.data || []);
@@ -29,9 +26,21 @@ const SessionList = ({ token, onSelectSession, activeSession, user, onCreateNewA
         setSessions([]);
       }
       
-      if (Array.isArray(aiConversations)) {
-        setAISessions(aiConversations);
+      // Only fetch AI sessions for patients, not for doctors
+      if (user?.role === 'Patient') {
+        try {
+          const aiConversations = await fetchAISessions(token);
+          if (Array.isArray(aiConversations)) {
+            setAISessions(aiConversations);
+          } else {
+            setAISessions([]);
+          }
+        } catch (aiError) {
+          console.error('AI sessions not available for this user:', aiError);
+          setAISessions([]); // Set empty array if user is not a patient
+        }
       } else {
+        // For non-patients (doctors, admins, etc.), set empty AI sessions
         setAISessions([]);
       }
     } catch (err) {
@@ -152,62 +161,64 @@ const SessionList = ({ token, onSelectSession, activeSession, user, onCreateNewA
         )}
       </div>
 
-      {/* AI Assistant Sessions Section */}
-      <div style={{ border: "1px solid #e9ecef", borderRadius: "8px", overflow: "hidden" }}>
-        <div style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "10px 15px",
-          backgroundColor: "#f8f0ff",
-          fontWeight: "bold",
-          fontSize: "0.9em",
-          color: "#6f42c1",
-          borderBottom: "1px solid #e9ecef"
-        }}>
-          <div>🤖 AI Assistant Sessions</div>
-          <button 
-            onClick={onCreateNewAISession}
-            style={{
-              backgroundColor: "#6f42c1",
-              color: "white",
-              border: "none",
-              padding: "2px 8px",
-              borderRadius: "4px",
-              fontSize: "0.8em",
-              cursor: "pointer"
-            }}
-          >
-            New
-          </button>
-        </div>
-        {aiSessions.length > 0 ? (
-          aiSessions.map(session => (
-            <SessionItem
-              key={session.session_id}
-              session={{
-                id: session.session_id,
-                title: session.session_summary || "AI Chat",
-                lastMessage: session.session_type || "Health Query",
-                lastMessageTime: session.last_updated,
-                type: 'ai',
-                isActive: activeSession?.id === session.session_id && activeSession?.type === 'ai'
-              }}
-              onSelect={onSelectSession}
-              onDelete={handleDeleteSession}
-            />
-          ))
-        ) : (
+      {/* AI Assistant Sessions Section - Only show for patients */}
+      {user?.role === 'Patient' && (
+        <div style={{ border: "1px solid #e9ecef", borderRadius: "8px", overflow: "hidden" }}>
           <div style={{
-            padding: "15px",
-            textAlign: "center",
-            color: "#6c757d",
-            fontSize: "0.9em"
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "10px 15px",
+            backgroundColor: "#f8f0ff",
+            fontWeight: "bold",
+            fontSize: "0.9em",
+            color: "#6f42c1",
+            borderBottom: "1px solid #e9ecef"
           }}>
-            No AI sessions yet
+            <div>🤖 AI Assistant Sessions</div>
+            <button 
+              onClick={onCreateNewAISession}
+              style={{
+                backgroundColor: "#6f42c1",
+                color: "white",
+                border: "none",
+                padding: "2px 8px",
+                borderRadius: "4px",
+                fontSize: "0.8em",
+                cursor: "pointer"
+              }}
+            >
+              New
+            </button>
           </div>
-        )}
-      </div>
+          {aiSessions.length > 0 ? (
+            aiSessions.map(session => (
+              <SessionItem
+                key={session.session_id}
+                session={{
+                  id: session.session_id,
+                  title: session.session_summary || "AI Chat",
+                  lastMessage: session.session_type || "Health Query",
+                  lastMessageTime: session.last_updated,
+                  type: 'ai',
+                  isActive: activeSession?.id === session.session_id && activeSession?.type === 'ai'
+                }}
+                onSelect={onSelectSession}
+                onDelete={handleDeleteSession}
+              />
+            ))
+          ) : (
+            <div style={{
+              padding: "15px",
+              textAlign: "center",
+              color: "#6c757d",
+              fontSize: "0.9em"
+            }}>
+              No AI sessions yet
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

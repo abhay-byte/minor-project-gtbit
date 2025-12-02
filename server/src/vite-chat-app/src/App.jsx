@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { ChatProvider, useChat } from "./context/ChatContext";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Login from "./Login";
 import SessionList from "./components/ChatSidebar/SessionList";
 import ChatWindow from "./components/ChatArea/ChatWindow";
 import AIChatInterface from "./components/AIChat/AIChatInterface";
+import VideoRoom from "./pages/VideoRoom";
+import MyAppointments from "./pages/MyAppointments";
 
 function AppContent() {
   const { state, dispatch } = useChat();
@@ -36,7 +39,10 @@ function AppContent() {
 
 
   const switchUser = (userType) => {
-    setUser(preSeededUsers[userType]);
+    const selectedUser = preSeededUsers[userType];
+    setUser(selectedUser);
+    // Store token in localStorage for components that need it
+    localStorage.setItem('authToken', selectedUser.token);
     dispatch({ type: 'SET_ACTIVE_SESSION', payload: null });
     setShowUserSwitcher(false);
   };
@@ -211,10 +217,18 @@ function AppContent() {
  );
 }
 
-export default function App() {
+function App() {
   return (
-    <ChatProvider>
-      <AppContent />
-    </ChatProvider>
-  );
+    <BrowserRouter>
+      <ChatProvider>
+        <Routes>
+          <Route path="/" element={<AppContent />} />
+          <Route path="/appointments" element={<MyAppointments />} />
+          <Route path="/room/:roomId" element={<VideoRoom />} />
+        </Routes>
+      </ChatProvider>
+    </BrowserRouter>
+ );
 }
+
+export default App;
