@@ -22,6 +22,8 @@ const uploadReportRequestsRoutes = require('./api/routes/upload-report-requests.
 const conversationRoutes = require('./api/routes/conversations.routes');
 const aiChatRoutes = require('./api/routes/aiChat.routes');
 const signalingRoutes = require('./api/routes/signaling');
+const reminderRoutes = require('./api/routes/reminders');
+const notificationRoutes = require('./api/routes/notifications');
 
 // --- CORS Configuration ---
 const corsOptions = {
@@ -77,6 +79,8 @@ app.use('/api/consultations', consultationsRoutes);
 app.use('/api/upload-report-requests', uploadReportRequestsRoutes);
 app.use('/api/ai', aiChatRoutes);
 app.use('/api/signaling', signalingRoutes);
+app.use('/api/reminders', reminderRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {

@@ -16,7 +16,9 @@ This document provides a comprehensive overview of all available API endpoints i
 10. [Review Endpoints](#review-endpoints)
 11. [Medical Profile Endpoints](#medical-profile-endpoints)
 12. [Upload Report Requests Endpoints](#upload-report-requests-endpoints)
-13. [Signaling Endpoints](#signaling-endpoints)
+13. [Reminder Endpoints](#reminder-endpoints)
+14. [Notification Endpoints](#notification-endpoints)
+15. [Signaling Endpoints](#signaling-endpoints)
 
 ## CORS Configuration
 
@@ -2356,3 +2358,174 @@ Validates if the authenticated user is allowed to join a video consultation room
 - **401 Unauthorized:** Invalid or missing authentication token
 - 429: Too Many Requests (rate limit exceeded)
 - 500: Internal Server Error
+
+## Reminder Endpoints
+
+### POST /api/reminders/:id/log
+Log medicine reminder status (mark as Taken, Missed, or Snoozed).
+
+**Authentication Required:** Yes (Patient only)
+
+**URL Parameters:**
+- `id` (UUID): Reminder ID
+
+**Request Body:**
+```json
+{
+  "status": "Taken",
+  "taken_time": "2025-01-15T08:05:00Z",
+ "notes": "Taken with water"
+}
+```
+
+**Success Response (201):**
+```json
+{
+  "success": true,
+  "message": "Reminder status logged successfully",
+  "data": {
+    "log_id": "uuid-string",
+    "status": "Taken",
+    "taken_time": "2025-01-15T08:05:00Z",
+    "notes": "Taken with water"
+  }
+}
+```
+
+**Error Responses:**
+- **400 Bad Request:** Missing or invalid status
+- **404 Not Found:** Reminder not found or doesn't belong to user
+- **401 Unauthorized:** Invalid or missing authentication token
+
+---
+
+### GET /api/reminders/:id/logs
+Get reminder logs for a specific reminder.
+
+**Authentication Required:** Yes (Patient only)
+
+**URL Parameters:**
+- `id` (UUID): Reminder ID
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "log_id": "uuid-string",
+      "scheduled_time": "timestamp",
+      "taken_time": "timestamp",
+      "status": "enum: Pending | Taken | Missed | Snoozed",
+      "notes": "text",
+      "created_at": "timestamp"
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- **404 Not Found:** Reminder not found
+- **401 Unauthorized:** Invalid or missing authentication token
+
+## Notification Endpoints
+
+### GET /api/notifications
+Fetch in-app notifications for the logged-in user.
+
+**Authentication Required:** Yes
+
+**Query Parameters:**
+- `limit` (integer, optional, default: 50): Number of notifications to return
+- `offset` (integer, optional, default: 0): Pagination offset
+- `is_read` (boolean, optional): Filter by read status
+- `notification_type` (string, optional): Filter by type (Appointment, Prescription, Report, System)
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+ "data": [
+    {
+      "notification_id": "uuid-string",
+      "title": "Appointment Reminder",
+      "message": "Your appointment is in 15 minutes.",
+      "notification_type": "Appointment",
+      "is_read": false,
+      "sent_at": "2025-01-15T09:45:00Z",
+      "created_at": "2025-01-15T09:45:00Z"
+    }
+  ],
+  "metadata": {
+    "total": 1,
+    "unread_count": 1,
+    "limit": 50,
+    "offset": 0
+  }
+}
+```
+
+**Error Responses:**
+- **401 Unauthorized:** Invalid or missing authentication token
+
+---
+
+### PUT /api/notifications/:id/read
+Mark a specific notification as read.
+
+**Authentication Required:** Yes
+
+**URL Parameters:**
+- `id` (UUID): Notification ID
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "message": "Notification marked as read"
+}
+```
+
+**Error Responses:**
+- **404 Not Found:** Notification not found
+- **401 Unauthorized:** Invalid or missing authentication token
+
+---
+
+### PUT /api/notifications/read-all
+Mark all notifications as read.
+
+**Authentication Required:** Yes
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "message": "All notifications marked as read"
+}
+```
+
+**Error Responses:**
+- **401 Unauthorized:** Invalid or missing authentication token
+
+---
+
+### DELETE /api/notifications/:id
+Delete a specific notification.
+
+**Authentication Required:** Yes
+
+**URL Parameters:**
+- `id` (UUID): Notification ID
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "message": "Notification deleted successfully"
+}
+```
+
+**Error Responses:**
+- **404 Not Found:** Notification not found
+- **401 Unauthorized:** Invalid or missing authentication token
