@@ -75,11 +75,11 @@ fi
 echo "✅ Database verified"
 echo ""
 
-# Start application with Gunicorn
+# Start application with Python directly
 echo "=========================================="
-echo "🎯 Starting Flask Application with Gunicorn"
+echo "🎯 Starting Flask Application with Python"
 echo "=========================================="
-echo "🌐 http://0.0.0.0:$PORT"
+echo "🌐 http://0.0.0:$PORT"
 echo ""
 
-exec gunicorn --bind "0.0.0.0:$PORT" --workers 2 --timeout 120 main:app
+python main.py
