@@ -1720,5 +1720,5 @@ if __name__ == '__main__':
     print("="*80 + "\n")
     
     # Use PORT environment variable or default to 5001
-    port = int(os.environ.get('PORT', 5001))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port, debug=False)
