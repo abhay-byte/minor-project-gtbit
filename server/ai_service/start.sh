@@ -5,9 +5,6 @@ echo "=========================================="
 echo "🚀 Clinico AI Service - Starting"
 echo "=========================================="
 
-# Change to the AI service directory
-cd /opt/render/project/src/server/ai_service
-
 # Set port
 export PORT=${PORT:-10000}
 echo "📡 Port: $PORT"
@@ -82,7 +79,7 @@ echo ""
 echo "=========================================="
 echo "🎯 Starting Flask Application with Python"
 echo "=========================================="
-echo "🌐 http://0.0.0:$PORT"
+echo "🌐 http://0.0.0.0:$PORT"
 echo ""
 
-python server/ai_service/main.py
+python main.py
