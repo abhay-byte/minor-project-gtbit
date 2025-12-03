@@ -123,12 +123,39 @@ const AIChatInterface = ({ token, session, onMessagesUpdate, onUpdateSession }) 
       if (response.session_id && (!session?.id || session.id.startsWith('ai-'))) {
         // Update the session in the parent component
         if (onUpdateSession) {
-          onUpdateSession(response.session_id, [userMessage, aiMessage]);
+          // Create the AI response message
+          const aiMessageForUpdate = {
+            message_id: response.timestamp || Date.now().toString(),
+            sender_type: 'AI Assistant',
+            message_content: response.reply || response.answer || response.message, // Handle all possible response fields
+            sent_at: response.timestamp || new Date().toISOString(),
+            sender: 'AI'
+          };
+          
+          onUpdateSession(response.session_id, [userMessage, aiMessageForUpdate]);
         }
       }
 
+      // Add both user message and AI response to the messages state
       setMessagesState(prevMessages => {
-        const updatedMessages = [...prevMessages, userMessage, aiMessage].filter(msg => !msg.message_id.startsWith('temp-'));
+        // First add the user message permanently (remove temp prefix)
+        const permanentUserMessage = {
+          ...userMessage,
+          message_id: Date.now() // Give it a permanent ID
+        };
+        
+        // Create the AI response message
+        const aiResponseMessage = {
+          message_id: response.timestamp || Date.now().toString(),
+          sender_type: 'AI Assistant',
+          message_content: response.reply || response.answer || response.message, // Handle all possible response fields
+          sent_at: response.timestamp || new Date().toISOString(),
+          sender: 'AI'
+        };
+        
+        // Then add the AI response
+        const updatedMessages = [...prevMessages, permanentUserMessage, aiResponseMessage];
+        
         // Save to localStorage with the correct session ID
         const actualSessionId = response.session_id || session.id;
         if (actualSessionId && !actualSessionId.startsWith('ai-')) {
@@ -185,18 +212,21 @@ const AIChatInterface = ({ token, session, onMessagesUpdate, onUpdateSession }) 
   }
 
   return (
-    <div style={{ 
-      flex: 1, 
-      display: "flex", 
+    <div style={{
+      flex: 1,
+      display: "flex",
       flexDirection: "column",
-      borderLeft: "1px solid #ddd"
+      borderLeft: "1px solid #ddd",
+      minHeight: 0  /* This allows the flex item to shrink below its content size */
     }}>
       {/* Messages Container */}
-      <div style={{ 
-        flex: 1, 
-        overflowY: "auto", 
+      <div style={{
+        flex: 1,
+        overflowY: "auto",
         padding: "20px",
-        backgroundColor: "#fafafa"
+        backgroundColor: "#fafafa",
+        display: "flex",
+        flexDirection: "column"
       }}>
         {messages.length > 0 ? (
           messages.map((message, index) => (

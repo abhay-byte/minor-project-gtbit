@@ -1,0 +1,21 @@
+.video-room-container {
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  position: relative;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  height: calc(100vh - 150px);
+}
+
+@media (max-width: 768px) {
+  .video-grid {
+    grid-template-columns: 1fr;
+    height: calc(100vh - 180px);
+  }
+}

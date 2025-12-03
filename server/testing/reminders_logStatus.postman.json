@@ -1,0 +1,31 @@
+{
+  "name": "Log Reminder Status",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Authorization",
+        "value": "Bearer {{authToken}}"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"status\": \"Taken\",\n  \"taken_time\": \"2025-01-15T08:05:00Z\",\n \"notes\": \"Taken with water\"\n}"
+    },
+    "url": {
+      "raw": "{{baseUrl}}/api/reminders/:id/log",
+      "host": ["{{baseUrl}}"],
+      "path": ["api", "reminders", ":id", "log"],
+      "variable": [
+        {
+          "key": "id",
+          "value": "reminder-uuid"
+        }
+      ]
+    }
+  }
+}

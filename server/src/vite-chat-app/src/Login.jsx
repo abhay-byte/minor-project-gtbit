@@ -39,6 +39,9 @@ export default function Login({ onLogin }) {
           user: data.user,
         };
         
+        // Store token in localStorage for components that need it
+        localStorage.setItem('authToken', data.token);
+        
         onLogin(userData);
       } else {
         throw new Error("Invalid response from server");
@@ -96,6 +99,9 @@ export default function Login({ onLogin }) {
           token: data.token,
           user: data.user,
         };
+        
+        // Store token in localStorage for components that need it
+        localStorage.setItem('authToken', data.token);
         
         onLogin(userData);
       } else {

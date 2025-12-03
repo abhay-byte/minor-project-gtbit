@@ -226,14 +226,14 @@ const seedDatabase = async () => {
                 appointment_type, consultation_link, appointment_code, patient_notes, 
                 scheduled_at, completed_at, duration_minutes, appointment_id_uuid
             ) VALUES
-            ($1, $2, $3, $4, NULL, NULL, NOW() + INTERVAL '3 days', 'Scheduled', 
-             'Virtual', 'https://meet.clinico.app/abc-123-xyz', 'APT-0001', 
+            ($1, $2, $3, $4, NULL, NULL, NOW() + INTERVAL '3 days', 'Scheduled',
+             'Virtual', 'http://localhost:5000/room/abc-123-xyz', 'APT-0001',
              'Follow-up for anxiety treatment', NOW(), NULL, 30, $5),
             ($6, $7, NULL, NULL, $8, $9, NOW() + INTERVAL '4 days', 'Scheduled', 
              'In-Person', NULL, 'APT-0002', 'Regular checkup', NOW(), NULL, 45, $10),
-            ($11, $12, $13, $14, NULL, NULL, NOW() - INTERVAL '3 days', 'Completed', 
-             'Virtual', 'https://meet.clinico.app/def-456-uvw', 'APT-0003', 
-             'Initial consultation for depression', NOW() - INTERVAL '4 days', 
+            ($11, $12, $13, $14, NULL, NULL, NOW() - INTERVAL '3 days', 'Completed',
+             'Virtual', 'http://localhost:5000/room/def-456-uvw', 'APT-0003',
+             'Initial consultation for depression', NOW() - INTERVAL '4 days',
              NOW() - INTERVAL '3 days', 45, $15)
             RETURNING appointment_id, patient_id, professional_id, status, appointment_id_uuid;
         `, [

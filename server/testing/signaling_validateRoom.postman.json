@@ -1,0 +1,24 @@
+{
+  "name": "Validate Room Access",
+  "request": {
+    "method": "GET",
+    "header": [
+      {
+        "key": "Authorization",
+        "value": "Bearer {{authToken}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/api/signaling/validate/:roomId",
+      "host": ["{{baseUrl}}"],
+      "path": ["api", "signaling", "validate", ":roomId"],
+      "variable": [
+        {
+          "key": "roomId",
+          "value": "550e8400-e29b-41d4-a716-446655440000"
+        }
+      ]
+    }
+  },
+  "response": []
+}

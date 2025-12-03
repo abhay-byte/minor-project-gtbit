@@ -1,0 +1,27 @@
+{
+  "name": "Get Notifications",
+  "request": {
+    "method": "GET",
+    "header": [
+      {
+        "key": "Authorization",
+        "value": "Bearer {{authToken}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/api/notifications?limit=50&is_read=false",
+      "host": ["{{baseUrl}}"],
+      "path": ["api", "notifications"],
+      "query": [
+        {
+          "key": "limit",
+          "value": "50"
+        },
+        {
+          "key": "is_read",
+          "value": "false"
+        }
+      ]
+    }
+  }
+}

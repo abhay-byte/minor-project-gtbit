@@ -1,0 +1,151 @@
+.my-appointments-page {
+  min-height: 100vh;
+ background: #f9fafb;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.my-appointments-page h2 {
+  font-size: 28px;
+  margin-bottom: 24px;
+ color: #1f2937;
+}
+
+.appointments-list {
+  display: grid;
+  gap: 16px;
+ margin-bottom: 24px;
+}
+
+.appointment-card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+ box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.appointment-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.appointment-header h3 {
+  font-size: 20px;
+  margin: 0;
+  color: #1f2937;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+ text-transform: uppercase;
+}
+
+.status-badge.scheduled {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-badge.completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.appointment-details p {
+  margin: 8px 0;
+ color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.appointment-details .specialty {
+  font-weight: 600;
+ color: #1f2937;
+}
+
+.video-call-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.video-call-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.video-call-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.book-new-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.book-new-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.appointments-loading,
+.appointments-empty {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.appointments-empty button {
+  margin-top: 16px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+ border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.appointments-empty button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}

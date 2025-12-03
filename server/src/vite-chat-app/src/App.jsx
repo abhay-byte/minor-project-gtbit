@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { ChatProvider, useChat } from "./context/ChatContext";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Login from "./Login";
 import SessionList from "./components/ChatSidebar/SessionList";
 import ChatWindow from "./components/ChatArea/ChatWindow";
 import AIChatInterface from "./components/AIChat/AIChatInterface";
+import VideoRoom from "./pages/VideoRoom";
+import MyAppointments from "./pages/MyAppointments";
 
 function AppContent() {
   const { state, dispatch } = useChat();
@@ -36,7 +39,10 @@ function AppContent() {
 
 
   const switchUser = (userType) => {
-    setUser(preSeededUsers[userType]);
+    const selectedUser = preSeededUsers[userType];
+    setUser(selectedUser);
+    // Store token in localStorage for components that need it
+    localStorage.setItem('authToken', selectedUser.token);
     dispatch({ type: 'SET_ACTIVE_SESSION', payload: null });
     setShowUserSwitcher(false);
   };
@@ -170,7 +176,8 @@ function AppContent() {
           borderRight: "1px solid #ddd",
           backgroundColor: "#fff",
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
+          overflow: "hidden"  /* This ensures the sidebar container doesn't expand beyond its bounds */
         }}>
           <div style={{
             padding: "15px",
@@ -210,10 +217,64 @@ function AppContent() {
  );
 }
 
-export default function App() {
-  return (
-    <ChatProvider>
-      <AppContent />
-    </ChatProvider>
-  );
+function App() {
+ return (
+    <BrowserRouter>
+      <ChatProvider>
+        <Routes>
+          <Route path="/" element={<AppContent />} />
+          <Route path="/appointments" element={<AppContentForAppointments />} />
+          <Route path="/room/:roomId" element={<VideoRoom />} />
+        </Routes>
+      </ChatProvider>
+    </BrowserRouter>
+ );
 }
+
+function AppContentForAppointments() {
+  const { state, dispatch } = useChat();
+  const [user, setUser] = useState(null);
+  
+  // Pre-seeded users
+ const preSeededUsers = {
+    patient: {
+      role: "Patient",
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWJoYXkucmFqQGV4YW1wbGUuY29tIiwicm9sZSI6IlBhdGllbnQiLCJ1c2VyX2lkX3V1aWQiOiIzNWVhMWMyZC0yMDg4LTRiZTUtOWRhOS1lZTY1MzNiNmU4ZjAiLCJpYXQiOjE3NjM5OTYzNTYsImV4cCI6MTc2NDA4Mjc1Nn0.96f-q2nGt7dX_eQWu_7kiJgqSx9bhE2v7vPUHdxUg08",
+      user: {
+        user_id: 1,
+        email: "abhay.raj@example.com",
+        full_name: "Abhay Raj",
+        role: "Patient"
+      }
+    },
+    doctor: {
+      role: "Professional",
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImVtYWlsIjoiYW1pdC5wYXRlbEBleGFtcGxlLmNvbSIsInJvbGUiOiJQcm9mZXNzaW9uYWwiLCJ1c2VyX2lkX3V1aWQiOiIwNmQyMzEwNi1mM2FiLTQ3YzQtOThlNC00NTJhZWZjZmFjNTAiLCJpYXQiOjE3NjM5OTYzODMsImV4cCI6MTc2NDA4Mjc4M30.FyZPxKMbSd9Yu8EQoyjytVnRZK8qTSo2KZvj2afcyZk",
+      user: {
+        user_id: 4,
+        email: "amit.patel@example.com",
+        full_name: "Dr. Amit Patel",
+        role: "Professional"
+      }
+    }
+  };
+
+  // Check if user is already in localStorage
+  useEffect(() => {
+    const storedToken = localStorage.getItem('authToken');
+    if (storedToken) {
+      // Determine which user based on token
+      if (storedToken === preSeededUsers.patient.token) {
+        setUser(preSeededUsers.patient);
+      } else if (storedToken === preSeededUsers.doctor.token) {
+        setUser(preSeededUsers.doctor);
+      }
+    }
+  }, []);
+
+  if (!user) return <Login onLogin={setUser} />;
+
+  return <MyAppointments token={user.token} />;
+}
+
+export default App;

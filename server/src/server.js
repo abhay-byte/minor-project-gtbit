@@ -1,7 +1,11 @@
 const express = require('express');
+const http = require('http');
 const cors = require('cors');
 require('dotenv').config();
 
+const app = express();
+
+// Import routes
 const authRoutes = require('./api/routes/auth.routes');
 const userRoutes = require('./api/routes/users.routes');
 const professionalRoutes = require('./api/routes/professional.routes');
@@ -18,12 +22,12 @@ const uploadReportRequestsRoutes = require('./api/routes/upload-report-requests.
 const conversationRoutes = require('./api/routes/conversations.routes');
 const aiChatRoutes = require('./api/routes/aiChat.routes');
 const signalingRoutes = require('./api/routes/signaling');
-
-const app = express();
+const reminderRoutes = require('./api/routes/reminders');
+const notificationRoutes = require('./api/routes/notifications');
 
 // --- CORS Configuration ---
 const corsOptions = {
-  origin: function (origin, callback) {
+ origin: function (origin, callback) {
     const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173').split(',').map(url => url.trim());
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -75,6 +79,8 @@ app.use('/api/consultations', consultationsRoutes);
 app.use('/api/upload-report-requests', uploadReportRequestsRoutes);
 app.use('/api/ai', aiChatRoutes);
 app.use('/api/signaling', signalingRoutes);
+app.use('/api/reminders', reminderRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -87,15 +93,17 @@ app.get('/', (req, res) => {
     });
 });
 
-// --- Server Setup ---
+// Create HTTP server
+const server = http.createServer(app);
+
+// Initialize Socket.IO
+const { initializeSocket } = require('./socket/signalingSocket');
+initializeSocket(server);
+
+// Start server
 const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}${process.env.NODE_ENV === 'production' ? ' in production mode' : ''}`);
+});
 
-if (require.main === module) {
-    // Only run the server if this file is executed directly
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}${process.env.NODE_ENV === 'production' ? ' in production mode' : ''}`);
-    });
-}
-
-// --- Export App for Testing and Server ---
-module.exports = app;
+module.exports = server;
