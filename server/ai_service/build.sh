@@ -5,8 +5,30 @@ echo "=========================================="
 echo "🔧 Clinico AI Service - Build Phase"
 echo "=========================================="
 
+# Check current directory
+echo "📂 Current directory: $(pwd)"
+echo "📄 Files in current directory:"
+ls -la
+
 # Change to the AI service directory
-cd /opt/render/project/src/server/ai_service
+# Try different possible paths where pyproject.toml might be located
+if [ -f "./server/ai_service/pyproject.toml" ]; then
+    cd ./server/ai_service
+    echo "📂 Changed to $(pwd)"
+elif [ -f "/opt/render/project/src/server/ai_service/pyproject.toml" ]; then
+    cd /opt/render/project/src/server/ai_service
+    echo "📂 Changed to $(pwd)"
+elif [ -f "server/ai_service/pyproject.toml" ]; then
+    cd server/ai_service
+    echo "📂 Changed to $(pwd)"
+elif [ -f "./pyproject.toml" ]; then
+    echo "📂 pyproject.toml found in current directory: $(pwd)"
+else
+    echo "❌ pyproject.toml not found in any expected location"
+    echo "❌ Available files in current directory:"
+    find . -name "pyproject.toml" -type f
+    exit 1
+fi
 
 # Check Python version
 echo "📋 Checking Python version..."

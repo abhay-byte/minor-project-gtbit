@@ -3,8 +3,30 @@ set -e
 
 echo "🚀 Starting Clinico AI Service..."
 
+# Check current directory
+echo "📂 Current directory: $(pwd)"
+echo "📄 Files in current directory:"
+ls -la
+
 # Change to the AI service directory
-cd /opt/render/project/src/server/ai_service
+# Try different possible paths where the AI service files might be located
+if [ -f "./server/ai_service/main.py" ]; then
+    cd ./server/ai_service
+    echo "📂 Changed to $(pwd)"
+elif [ -f "/opt/render/project/src/server/ai_service/main.py" ]; then
+    cd /opt/render/project/src/server/ai_service
+    echo "📂 Changed to $(pwd)"
+elif [ -f "server/ai_service/main.py" ]; then
+    cd server/ai_service
+    echo "📂 Changed to $(pwd)"
+elif [ -f "./main.py" ]; then
+    echo "📂 main.py found in current directory: $(pwd)"
+else
+    echo "❌ main.py not found in any expected location"
+    echo "❌ Available Python files in current directory:"
+    find . -name "*.py" -type f
+    exit 1
+fi
 
 export PORT=${PORT:-5001}
 
