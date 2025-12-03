@@ -174,3 +174,52 @@ Shows rate-limit usage per user.
 # ✅ You're Ready!
 
 Your Clinico AI Backend is now fully documented and ready to integrate.
+
+# 🚀 Deployment to Render
+
+The Clinico AI Service includes production-ready deployment scripts for Render platform.
+
+## Deployment Scripts
+
+Two scripts are provided for Render deployment:
+
+### `build.sh`
+- Installs Poetry if not available
+- Installs Python dependencies using `poetry install --no-root`
+- Runs the ingestion script (`poetry run python ingest.py`) to populate the knowledge base
+- Verifies application can start without errors
+- Handles error checking and logging
+
+### `start.sh`
+- Starts the Flask application using Gunicorn
+- Uses the PORT environment variable provided by Render (defaults to 5001)
+- Configures production WSGI server with 3 workers
+- Includes proper logging and graceful shutdown handling
+- Verifies required environment variables are set
+
+## Render Configuration
+
+### Build Command
+```
+./build.sh
+```
+
+### Start Command
+```
+./start.sh
+```
+
+### Environment Variables to Set in Render Dashboard
+- `PORT` (automatically provided by Render)
+- `JWT_SECRET` - JWT secret for authentication
+- `AI_SERVICE_AUTH_TOKEN` - Internal service authentication token
+- `GOOGLE_API_KEY` - (Optional) Google API key for Gemini features
+- `NODE_SERVER_URL` - URL of the Node.js backend server
+- `RATE_LIMIT_ENABLED` - (Optional) Enable/disable rate limiting
+- `MONITORING_ENABLED` - (Optional) Enable/disable monitoring
+
+### Health Check
+Configure health check endpoint as: `/v1/health`
+
+## Persistent Storage
+Consider using Render's persistent disk feature for the `db/` directory to maintain ChromaDB data between deployments.
