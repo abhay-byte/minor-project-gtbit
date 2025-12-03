@@ -1,67 +1,62 @@
-#!/bin/bash
-set -e  # Exit immediately if a command exits with a non-zero status
+#!/usr/bin/env bash
+set -e
 
 echo "🚀 Starting Clinico AI Service..."
+export PORT=${PORT:-5001}
 
-# Set default port if not provided
-PORT=${PORT:-5001}
-echo "📡 Application will run on port: $PORT"
+DB_DIR="./db"
+BASE_URL="https://raw.githubusercontent.com/abhay-byte/minor-project-gtbit/api/server/ai_service/db"
 
-# Verify required environment variables are set
-if [ -z "$JWT_SECRET" ]; then
-    echo "❌ Error: JWT_SECRET environment variable not set!"
+if [ -d "$DB_DIR" ] && [ -f "$DB_DIR/chroma.sqlite3" ]; then
+    echo "✅ Database exists"
+else
+    echo "📥 Downloading database from GitHub..."
+    mkdir -p "$DB_DIR"
+    
+    # Download main database file
+    echo "⬇️  Downloading chroma.sqlite3..."
+    wget --quiet --show-progress -O "$DB_DIR/chroma.sqlite3" \
+        "$BASE_URL/chroma.sqlite3" || {
+        echo "❌ Failed to download database"
+        exit 1
+    }
+    
+    # Download collection directories
+    echo "⬇️  Downloading collections..."
+    
+    # Collection 1: 20823e44-21ba-4cfe-8759-ed1c350c3d9c
+    mkdir -p "$DB_DIR/20823e44-21ba-4cfe-8759-ed1c350c3d9c"
+    for file in data_level0.bin header.bin index_metadata.pickle length.bin link_lists.bin; do
+        wget -q -O "$DB_DIR/20823e44-21ba-4cfe-8759-ed1c350c3d9c/$file" \
+            "$BASE_URL/20823e44-21ba-4cfe-8759-ed1c350c3d9c/$file" 2>/dev/null || true
+    done
+    
+    # Collection 2: 8b019dfb-cfcd-4efb-ae12-6d955de7eac7
+    mkdir -p "$DB_DIR/8b019dfb-cfcd-4efb-ae12-6d955de7eac7"
+    for file in data_level0.bin header.bin index_metadata.pickle length.bin link_lists.bin; do
+        wget -q -O "$DB_DIR/8b019dfb-cfcd-4efb-ae12-6d955de7eac7/$file" \
+            "$BASE_URL/8b019dfb-cfcd-4efb-ae12-6d955de7eac7/$file" 2>/dev/null || true
+    done
+    
+    # Collection 3: 8e368b58-c8b4-4f61-8ce1-38588e425389
+    mkdir -p "$DB_DIR/8e368b58-c8b4-4f61-8ce1-38588e425389"
+    for file in data_level0.bin header.bin index_metadata.pickle length.bin link_lists.bin; do
+        wget -q -O "$DB_DIR/8e368b58-c8b4-4f61-8ce1-38588e425389/$file" \
+            "$BASE_URL/8e368b58-c8b4-4f61-8ce1-38588e425389/$file" 2>/dev/null || true
+    done
+    
+    echo "✅ Database downloaded"
+fi
+
+# Verify
+if [ ! -f "$DB_DIR/chroma.sqlite3" ]; then
+    echo "❌ Database not found!"
     exit 1
 fi
 
-if [ -z "$AI_SERVICE_AUTH_TOKEN" ]; then
-    echo "❌ Error: AI_SERVICE_AUTH_TOKEN environment variable not set!"
-    exit 1
-fi
+echo "✅ Database ready ($(du -h $DB_DIR/chroma.sqlite3 | cut -f1))"
 
-# Check if GOOGLE_API_KEY is set (optional, but warn if missing)
-if [ -z "$GOOGLE_API_KEY" ]; then
-    echo "⚠️  Warning: GOOGLE_API_KEY environment variable not set. Gemini features will be disabled."
-    echo "   The service will use local Ollama models instead."
-fi
-
-# Set Flask environment
-export FLASK_ENV=production
-
-# Install Gunicorn if not available
-if ! command -v gunicorn &> /dev/null; then
-    echo "📦 Installing Gunicorn..."
-    pip install gunicorn
-fi
-
-# Verify database exists
-echo ""
-echo "🔍 Verifying database..."
-if [ ! -f "./db/chroma.sqlite3" ]; then
-    echo "❌ ERROR: Database file not found!"
-    echo "   Expected: ./db/chroma.sqlite3"
-    echo "   This should have been provided by Git repository"
-    exit 1
-fi
-
-echo "✅ Database verified: db/chroma.sqlite3"
-echo "📊 Database size: $(du -h db/chroma.sqlite3 | cut -f1)"
-
-# Start the Flask application using Gunicorn
-echo "🏃 Starting Gunicorn server..."
-exec gunicorn \
-    --bind "0.0.0.0:$PORT" \
-    --workers 3 \
-    --worker-class sync \
-    --worker-connections 1000 \
-    --max-requests 1000 \
-    --max-requests-jitter 100 \
-    --timeout 120 \
-    --keep-alive 5 \
-    --preload \
-    --access-logfile - \
-    --error-logfile - \
-    --log-level info \
-    --name clinico-ai-service \
-    main:app
-
-echo "✅ Clinico AI Service started successfully!"
+# Start app
+pip install gunicorn
+exec gunicorn --bind "0.0.0.0:$PORT" --workers 2 --timeout 120 \
+    --access-logfile - --error-logfile - "main:app"
