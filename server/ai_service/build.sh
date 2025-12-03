@@ -53,19 +53,19 @@ else
     echo "📚 Knowledge base directory found."
 fi
 
-# Check if ChromaDB directory already exists
-if [ -d "db" ]; then
-    echo "🔍 Existing ChromaDB directory found. Removing it to ensure clean ingestion..."
-    rm -rf db
-fi
-
-# Run the ingestion script to populate the knowledge base
-echo "🧠 Running knowledge base ingestion script..."
-if [ -f "ingest.py" ]; then
-    poetry run python3 ingest.py
-    echo "✅ Knowledge base ingestion completed."
+# Verify database exists in repository
+echo ""
+echo "🔍 Verifying pre-built database..."
+if [ -f "./db/chroma.sqlite3" ]; then
+    echo "✅ Database file found: db/chroma.sqlite3"
+    echo "📊 Database size: $(du -h db/chroma.sqlite3 | cut -f1)"
+    echo "📁 Database collections:"
+    ls -1 db/ | grep -v "chroma.sqlite3" | head -5
 else
-    echo "⚠️  Warning: ingest.py not found. Skipping knowledge base ingestion."
+    echo "❌ ERROR: Database file not found!"
+    echo "   Expected: ./db/chroma.sqlite3"
+    echo "   Please ensure db/ directory is committed to Git"
+    exit 1
 fi
 
 # Verify that the application can start without errors

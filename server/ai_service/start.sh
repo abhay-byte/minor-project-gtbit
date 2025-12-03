@@ -33,19 +33,18 @@ if ! command -v gunicorn &> /dev/null; then
     pip install gunicorn
 fi
 
-# Verify that the database directory exists
-if [ ! -d "db" ]; then
-    echo "❌ Error: ChromaDB directory 'db' not found!"
-    echo "   Please ensure the build process completed successfully."
+# Verify database exists
+echo ""
+echo "🔍 Verifying database..."
+if [ ! -f "./db/chroma.sqlite3" ]; then
+    echo "❌ ERROR: Database file not found!"
+    echo "   Expected: ./db/chroma.sqlite3"
+    echo "   This should have been provided by Git repository"
     exit 1
 fi
 
-echo "📚 ChromaDB directory found."
-
-# Verify that the knowledge base directory exists
-if [ ! -d "knowledge_base" ]; then
-    echo "⚠️  Warning: knowledge_base directory not found."
-fi
+echo "✅ Database verified: db/chroma.sqlite3"
+echo "📊 Database size: $(du -h db/chroma.sqlite3 | cut -f1)"
 
 # Start the Flask application using Gunicorn
 echo "🏃 Starting Gunicorn server..."
