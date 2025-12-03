@@ -8,9 +8,9 @@ echo "🔍 Checking Python version..."
 python_version=$(python3 --version 2>&1 | cut -d' ' -f2)
 echo "   Python version: $python_version"
 
-# Check if Python version is compatible
-if [[ $(printf '%s\n' "3.1" "$python_version" | sort -V | head -n1) == "3.11" ]] && [[ $(printf '%s\n' "$python_version" "3.12.9" | sort -V | head -n1) == "$python_version" ]]; then
-    echo "✅ Python version is compatible (3.1.x - 3.12.x)"
+# Check if Python version is compatible (3.11.x - 3.12.x)
+if [[ $(printf '%s\n' "3.11.0" "$python_version" | sort -V | head -n1) == "3.11.0" ]] && [[ $(printf '%s\n' "$python_version" "3.12.99" | sort -V | head -n1) == "$python_version" ]]; then
+    echo "✅ Python version is compatible (3.11.x - 3.12.x)"
 else
     echo "❌ Python version $python_version is not compatible. Required: 3.11.x - 3.12.x"
     exit 1
