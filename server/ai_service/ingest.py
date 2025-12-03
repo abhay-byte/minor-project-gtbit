@@ -28,11 +28,21 @@ def main():
 
     try:
         print(f"Loading embedding model '{EMBEDDING_MODEL_NAME}'...")
-        embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME, device='cuda')
+        # Try to use CUDA, but fall back to CPU if not available
+        import torch
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        print(f"Using device: {device}")
+        embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME, device=device)
         print("Embedding model loaded.")
     except Exception as e:
         print(f"Failed to load the SentenceTransformer model: {e}")
-        return
+        print("Trying to load with CPU only...")
+        try:
+            embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME, device='cpu')
+            print("Embedding model loaded on CPU.")
+        except Exception as e2:
+            print(f"Failed to load the SentenceTransformer model on CPU: {e2}")
+            return
 
     try:
         if os.path.exists(DB_PATH):
