@@ -53,7 +53,7 @@ fi
 # Run the ingestion script to populate the knowledge base
 echo "🧠 Running knowledge base ingestion script..."
 if [ -f "ingest.py" ]; then
-    python3 ingest.py
+    poetry run python3 ingest.py
     echo "✅ Knowledge base ingestion completed."
 else
     echo "⚠️  Warning: ingest.py not found. Skipping knowledge base ingestion."
@@ -61,7 +61,7 @@ fi
 
 # Verify that the application can start without errors
 echo "🧪 Testing application import..."
-if python3 -c "import main; print('Application imports successfully')" &> /dev/null; then
+if poetry run python3 -c "import main; print('Application imports successfully')" &> /dev/null; then
     echo "✅ Application imports successfully"
 else
     echo "❌ Application import failed. Please check dependencies."
