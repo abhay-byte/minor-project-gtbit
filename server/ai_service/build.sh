@@ -3,6 +3,11 @@ set -e  # Exit immediately if a command exits with a non-zero status
 
 echo "🚀 Starting Clinico AI Service Build Process..."
 
+# Change to the AI service directory
+cd "$(dirname "$0")"
+
+echo "📂 Changed to directory: $(pwd)"
+
 # Verify Python version
 echo "🔍 Checking Python version..."
 python_version=$(python3 --version 2>&1 | cut -d' ' -f2)
