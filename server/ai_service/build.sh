@@ -38,6 +38,10 @@ echo "   Poetry version: $poetry_version"
 echo "⚙️  Configuring Poetry..."
 poetry config virtualenvs.create false
 
+# Update the lock file if pyproject.toml has changed
+echo "🔒 Updating Poetry lock file..."
+poetry lock --no-update
+
 # Install Python dependencies using Poetry
 echo "📦 Installing Python dependencies..."
 poetry install --no-root --only=main
