@@ -5,6 +5,9 @@ echo "=========================================="
 echo "🔧 Clinico AI Service - Build Phase"
 echo "=========================================="
 
+# Change to the AI service directory
+cd /opt/render/project/src/server/ai_service
+
 # Check Python version
 echo "📋 Checking Python version..."
 python --version

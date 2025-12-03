@@ -2,6 +2,10 @@
 set -e
 
 echo "🚀 Starting Clinico AI Service..."
+
+# Change to the AI service directory
+cd /opt/render/project/src/server/ai_service
+
 export PORT=${PORT:-5001}
 
 DB_DIR="./db"
@@ -14,7 +18,7 @@ else
     mkdir -p "$DB_DIR"
     
     # Download main database file
-    echo "⬇️  Downloading chroma.sqlite3..."
+    echo "⬇️ Downloading chroma.sqlite3..."
     wget --quiet --show-progress -O "$DB_DIR/chroma.sqlite3" \
         "$BASE_URL/chroma.sqlite3" || {
         echo "❌ Failed to download database"
@@ -22,7 +26,7 @@ else
     }
     
     # Download collection directories
-    echo "⬇️  Downloading collections..."
+    echo "⬇️ Downloading collections..."
     
     # Collection 1: 20823e44-21ba-4cfe-8759-ed1c350c3d9c
     mkdir -p "$DB_DIR/20823e44-21ba-4cfe-8759-ed1c350c3d9c"
