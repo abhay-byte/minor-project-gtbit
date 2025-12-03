@@ -1,88 +1,105 @@
 #!/usr/bin/env bash
 set -e
 
-echo "🚀 Starting Clinico AI Service..."
+echo "=========================================="
+echo "🚀 Clinico AI Service - Starting"
+echo "=========================================="
 
-# Check current directory
-echo "📂 Current directory: $(pwd)"
-echo "📄 Files in current directory:"
-ls -la
+# Navigate to AI service directory
+AI_SERVICE_DIR="/opt/render/project/src/server/ai_service"
 
-# Change to the AI service directory
-# Try different possible paths where the AI service files might be located
-if [ -f "./server/ai_service/main.py" ]; then
-    cd ./server/ai_service
-    echo "📂 Changed to $(pwd)"
-elif [ -f "/opt/render/project/src/server/ai_service/main.py" ]; then
-    cd /opt/render/project/src/server/ai_service
-    echo "📂 Changed to $(pwd)"
-elif [ -f "server/ai_service/main.py" ]; then
-    cd server/ai_service
-    echo "📂 Changed to $(pwd)"
-elif [ -f "./main.py" ]; then
-    echo "📂 main.py found in current directory: $(pwd)"
-else
-    echo "❌ main.py not found in any expected location"
-    echo "❌ Available Python files in current directory:"
-    find . -name "*.py" -type f
-    exit 1
-fi
+echo "📂 Navigating to: $AI_SERVICE_DIR"
+cd "$AI_SERVICE_DIR"
+echo "✅ Working directory: $(pwd)"
+echo ""
 
+# Set port
 export PORT=${PORT:-5001}
+echo "📡 Port: $PORT"
+echo ""
 
+# Database download configuration
 DB_DIR="./db"
 BASE_URL="https://raw.githubusercontent.com/abhay-byte/minor-project-gtbit/api/server/ai_service/db"
 
+# Check if database exists
 if [ -d "$DB_DIR" ] && [ -f "$DB_DIR/chroma.sqlite3" ]; then
-    echo "✅ Database exists"
+    echo "✅ Database already exists"
+    echo "📊 Size: $(du -h $DB_DIR/chroma.sqlite3 | cut -f1)"
 else
-    echo "📥 Downloading database from GitHub..."
+    echo "=========================================="
+    echo "📥 Downloading Database from GitHub"
+    echo "=========================================="
+    
     mkdir -p "$DB_DIR"
     
     # Download main database file
-    echo "⬇️ Downloading chroma.sqlite3..."
-    wget --quiet --show-progress -O "$DB_DIR/chroma.sqlite3" \
-        "$BASE_URL/chroma.sqlite3" || {
+    echo "⬇️  Downloading chroma.sqlite3..."
+    wget --quiet --show-progress \
+        -O "$DB_DIR/chroma.sqlite3" \
+        "$BASE_URL/chroma.sqlite3"
+    
+    if [ $? -ne 0 ]; then
         echo "❌ Failed to download database"
         exit 1
-    }
+    fi
     
-    # Download collection directories
-    echo "⬇️ Downloading collections..."
+    echo "✅ Downloaded chroma.sqlite3 ($(du -h $DB_DIR/chroma.sqlite3 | cut -f1))"
+    echo ""
     
-    # Collection 1: 20823e44-21ba-4cfe-8759-ed1c350c3d9c
-    mkdir -p "$DB_DIR/20823e44-21ba-4cfe-8759-ed1c350c3d9c"
-    for file in data_level0.bin header.bin index_metadata.pickle length.bin link_lists.bin; do
-        wget -q -O "$DB_DIR/20823e44-21ba-4cfe-8759-ed1c350c3d9c/$file" \
-            "$BASE_URL/20823e44-21ba-4cfe-8759-ed1c350c3d9c/$file" 2>/dev/null || true
+    # Download collections
+    echo "⬇️  Downloading collection directories..."
+    
+    # Collection IDs from your database
+    COLLECTIONS=(
+        "20823e44-21ba-4cfe-8759-ed1c350c3d9c"
+        "8b019dfb-cfcd-4efb-ae12-6d955de7eac7"
+        "8e368b58-c8b4-4f61-8ce1-38588e425389"
+    )
+    
+    for collection_id in "${COLLECTIONS[@]}"; do
+        echo "   📁 $collection_id"
+        mkdir -p "$DB_DIR/$collection_id"
+        
+        for file in data_level0.bin header.bin index_metadata.pickle length.bin link_lists.bin; do
+            wget -q -O "$DB_DIR/$collection_id/$file" \
+                "$BASE_URL/$collection_id/$file" 2>/dev/null || true
+        done
     done
     
-    # Collection 2: 8b019dfb-cfcd-4efb-ae12-6d955de7eac7
-    mkdir -p "$DB_DIR/8b019dfb-cfcd-4efb-ae12-6d955de7eac7"
-    for file in data_level0.bin header.bin index_metadata.pickle length.bin link_lists.bin; do
-        wget -q -O "$DB_DIR/8b019dfb-cfcd-4efb-ae12-6d955de7eac7/$file" \
-            "$BASE_URL/8b019dfb-cfcd-4efb-ae12-6d955de7eac7/$file" 2>/dev/null || true
-    done
-    
-    # Collection 3: 8e368b58-c8b4-4f61-8ce1-38588e425389
-    mkdir -p "$DB_DIR/8e368b58-c8b4-4f61-8ce1-38588e425389"
-    for file in data_level0.bin header.bin index_metadata.pickle length.bin link_lists.bin; do
-        wget -q -O "$DB_DIR/8e368b58-c8b4-4f61-8ce1-38588e425389/$file" \
-            "$BASE_URL/8e368b58-c8b4-4f61-8ce1-38588e425389/$file" 2>/dev/null || true
-    done
-    
-    echo "✅ Database downloaded"
+    echo ""
+    echo "✅ Database download completed!"
 fi
 
-# Verify
+echo ""
+echo "=========================================="
+
+# Verify database
 if [ ! -f "$DB_DIR/chroma.sqlite3" ]; then
-    echo "❌ Database not found!"
+    echo "❌ ERROR: Database verification failed"
     exit 1
 fi
 
-echo "✅ Database ready ($(du -h $DB_DIR/chroma.sqlite3 | cut -f1))"
+echo "✅ Database verified"
+echo ""
 
-# Start app
+# Install Gunicorn
+echo "📦 Installing Gunicorn..."
 pip install gunicorn
-exec gunicorn --bind "0.0.0.0:$PORT" --workers 2 --timeout 120 \
-    --access-logfile - --error-logfile - "main:app"
+echo ""
+
+# Start application
+echo "=========================================="
+echo "🎯 Starting Flask Application"
+echo "=========================================="
+echo "🌐 http://0.0.0.0:$PORT"
+echo ""
+
+exec gunicorn \
+    --bind "0.0.0.0:$PORT" \
+    --workers 2 \
+    --timeout 120 \
+    --access-logfile - \
+    --error-logfile - \
+    --log-level info \
+    "main:app"

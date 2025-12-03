@@ -5,50 +5,54 @@ echo "=========================================="
 echo "🔧 Clinico AI Service - Build Phase"
 echo "=========================================="
 
-# Check current directory
-echo "📂 Current directory: $(pwd)"
-echo "📄 Files in current directory:"
-ls -la
+# Navigate to AI service directory
+AI_SERVICE_DIR="/opt/render/project/src/server/ai_service"
 
-# Change to the AI service directory
-# Try different possible paths where pyproject.toml might be located
-if [ -f "./server/ai_service/pyproject.toml" ]; then
-    cd ./server/ai_service
-    echo "📂 Changed to $(pwd)"
-elif [ -f "/opt/render/project/src/server/ai_service/pyproject.toml" ]; then
-    cd /opt/render/project/src/server/ai_service
-    echo "📂 Changed to $(pwd)"
-elif [ -f "server/ai_service/pyproject.toml" ]; then
-    cd server/ai_service
-    echo "📂 Changed to $(pwd)"
-elif [ -f "./pyproject.toml" ]; then
-    echo "📂 pyproject.toml found in current directory: $(pwd)"
+echo "📂 Navigating to: $AI_SERVICE_DIR"
+
+if [ -d "$AI_SERVICE_DIR" ]; then
+    cd "$AI_SERVICE_DIR"
 else
-    echo "❌ pyproject.toml not found in any expected location"
-    echo "❌ Available files in current directory:"
-    find . -name "pyproject.toml" -type f
+    echo "❌ ERROR: Directory not found: $AI_SERVICE_DIR"
+    echo "Available in /opt/render/project/src:"
+    ls -la /opt/render/project/src 2>/dev/null || echo "Path doesn't exist"
     exit 1
 fi
 
-# Check Python version
-echo "📋 Checking Python version..."
+echo "✅ Current directory: $(pwd)"
+echo ""
+
+# Verify pyproject.toml
+if [ ! -f "pyproject.toml" ]; then
+    echo "❌ ERROR: pyproject.toml not found!"
+    echo "Files in $(pwd):"
+    ls -la
+    exit 1
+fi
+
+echo "✅ Found pyproject.toml"
+echo ""
+
+# Python version
+echo "📋 Python version:"
 python --version
+echo ""
 
 # Install Poetry
 echo "📦 Installing Poetry..."
 pip install poetry
+echo ""
 
 # Install dependencies
 echo "📚 Installing dependencies..."
 poetry install --no-root
-
-# Test application import
 echo ""
-echo "🧪 Testing application import..."
-poetry run python -c "import flask; print(f'✅ Flask version: {flask.__version__}')"
 
+# Verify installation
+echo "🧪 Verifying installation..."
+poetry run python -c "import flask, chromadb; print('✅ Dependencies installed')"
 echo ""
+
 echo "=========================================="
 echo "✅ Build completed successfully!"
-echo "📝 Database will be downloaded at runtime from GitHub"
 echo "=========================================="
