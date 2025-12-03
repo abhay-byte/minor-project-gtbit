@@ -8,11 +8,11 @@ echo "🔍 Checking Python version..."
 python_version=$(python3 --version 2>&1 | cut -d' ' -f2)
 echo "   Python version: $python_version"
 
-# Check if Python version is compatible (3.11.x - 3.12.x)
-if [[ $(printf '%s\n' "3.11.0" "$python_version" | sort -V | head -n1) == "3.11.0" ]] && [[ $(printf '%s\n' "$python_version" "3.12.99" | sort -V | head -n1) == "$python_version" ]]; then
-    echo "✅ Python version is compatible (3.11.x - 3.12.x)"
+# Check if Python version is compatible (hardcoded for Render - 3.11.11)
+if [[ "$python_version" == "3.11.11" ]]; then
+    echo "✅ Python version is compatible (3.11.11)"
 else
-    echo "❌ Python version $python_version is not compatible. Required: 3.11.x - 3.12.x"
+    echo "❌ Python version $python_version is not compatible. Required: 3.11.11"
     exit 1
 fi
 
