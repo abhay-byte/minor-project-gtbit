@@ -186,16 +186,17 @@ Two scripts are provided for Render deployment:
 ### `build.sh`
 - Installs Poetry if not available
 - Installs Python dependencies using `poetry install --no-root`
-- Runs the ingestion script (`poetry run python ingest.py`) to populate the knowledge base
+- Verifies pre-built ChromaDB database exists from Git repository
 - Verifies application can start without errors
 - Handles error checking and logging
 
 ### `start.sh`
 - Starts the Flask application using Gunicorn
 - Uses the PORT environment variable provided by Render (defaults to 5001)
-- Configures production WSGI server with 3 workers
+- Configures production WSGI server with 2 workers
 - Includes proper logging and graceful shutdown handling
 - Verifies required environment variables are set
+- No ingestion needed - database is pre-built from Git
 
 ## Render Configuration
 
@@ -222,4 +223,4 @@ Two scripts are provided for Render deployment:
 Configure health check endpoint as: `/v1/health`
 
 ## Persistent Storage
-Consider using Render's persistent disk feature for the `db/` directory to maintain ChromaDB data between deployments.
+Not required! The ChromaDB database is now pre-built and committed to Git, so no persistent disk is needed. The database is available immediately from the repository.

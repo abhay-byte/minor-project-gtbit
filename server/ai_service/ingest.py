@@ -28,8 +28,9 @@ def main():
 
     try:
         print(f"Loading embedding model '{EMBEDDING_MODEL_NAME}'...")
-        embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME, device='cuda')
-        print("Embedding model loaded.")
+        # Use CPU only for compatibility with Render
+        embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME, device='cpu')
+        print("Embedding model loaded on CPU.")
     except Exception as e:
         print(f"Failed to load the SentenceTransformer model: {e}")
         return

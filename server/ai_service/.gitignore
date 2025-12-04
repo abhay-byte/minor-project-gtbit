@@ -1,6 +1,8 @@
 .env
 /promts
-/db
 kaggle.py
 /__pycache__
-/db/chroma.sqlite3
+
+# Allow db folder and its contents to be committed
+# We need the ChromaDB database in Git for deployment
+# db/ directory is now committed to Git for fast deployment
