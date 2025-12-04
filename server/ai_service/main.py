@@ -5,7 +5,6 @@ import jwt
 from functools import wraps
 from dotenv import load_dotenv
 import chromadb
-from sentence_transformers import SentenceTransformer
 import requests
 import json
 import base64
@@ -396,15 +395,14 @@ def detect_emergency_situation(user_query: str) -> dict:
     }
 
 # --- Model & Database Initialization ---
-embedding_model = None
 client = genai.Client(api_key=API_KEY)
 collections = {}
 
 try:
     print("--- Initializing AI Service ---")
-    print("Loading embedding model (this may take a moment on first run)...")
-    embedding_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2', device='cpu')
-    print("✅ Embedding model loaded.")
+    print("Initializing Gemini embedding model...")
+    # No need to load a local embedding model since we're using Gemini API
+    print("✅ Gemini embedding model ready.")
 
     db_client = chromadb.PersistentClient(path="db")
     
@@ -428,6 +426,21 @@ except Exception as e:
 
 # --- Agent Core Functions ---
 
+def get_gemini_embedding(text: str):
+    """
+    Generate embedding for the given text using Gemini API.
+    """
+    try:
+        result = client.models.embed_content(
+            model="gemini-embedding-001",
+            contents=text
+        )
+        embedding_values = result.embeddings[0].values  # Get the embedding values
+        return list(embedding_values) if hasattr(embedding_values, '__iter__') else embedding_values  # Return as list
+    except Exception as e:
+        print(f"⚠️  Error generating embedding: {e}")
+        return []
+
 def retrieve_context_from_collections(user_query: str, collection_names: list, n_results: int = 3) -> dict:
     """
     Retrieve context from multiple specified collections.
@@ -435,7 +448,13 @@ def retrieve_context_from_collections(user_query: str, collection_names: list, n
     """
     all_results = []
     
-    query_embedding = embedding_model.encode(user_query).tolist()
+    query_embedding = get_gemini_embedding(user_query)
+    
+    if not query_embedding:  # If embedding generation failed, return empty results
+        return {
+            'results': [],
+            'context': ""
+        }
     
     for col_name in collection_names:
         if col_name not in collections:
@@ -1340,7 +1359,7 @@ def orchestrate_agent():
     Main orchestration endpoint with image support.
     Accepts both text queries and images (base64 encoded).
     """
-    if not embedding_model or not collections:
+    if not collections:
         return jsonify({"error": "Service is not initialized properly."}), 500
 
     user_id = request.user['user_id']
@@ -1512,7 +1531,7 @@ def analyze_image_only():
     Endpoint for image analysis without query context.
     Requires authentication.
     """
-    if not embedding_model:
+    if not collections:
         return jsonify({"error": "Service is not initialized properly."}), 500
 
     user_id = request.user['user_id']
